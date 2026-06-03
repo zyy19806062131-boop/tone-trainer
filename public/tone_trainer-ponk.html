@@ -208,6 +208,7 @@ header{display:flex;justify-content:space-between;align-items:flex-start;gap:14p
 .item .zh{font-family:var(--cjk);font-size:1.12rem;font-weight:500}
 .item .py{font-family:var(--mono);font-size:.72rem;color:var(--accent);margin-top:2px}
 .item .mini{font-family:var(--mono);font-size:.7rem;color:var(--soft)}
+.empty-state{font-family:var(--mono);color:var(--soft);border:1px dashed var(--line-2);background:rgba(5,217,232,.035);padding:18px;text-align:center;grid-column:1/-1;letter-spacing:.08em;text-transform:uppercase}
 .legend{margin-top:26px;font-size:.78rem;color:var(--soft);background:rgba(5,217,232,.04);border:1px solid var(--line-2);border-radius:2px;padding:15px 17px;line-height:1.75}
 .legend b{color:var(--accent)}
 @media(max-width:900px){.gate-shell{grid-template-columns:1fr}.gate-side{display:none}}
@@ -407,7 +408,8 @@ function runHl(n,durMs){
   },i*step));}
 }
 function play(){
-  const s=decks[dIdx].sents[sIdx];const a=AUDIO[s.id];const n=s.syl.length;
+  const s=decks[dIdx]&&decks[dIdx].sents[sIdx];if(!s)return;
+  const a=AUDIO[s.id];const n=s.syl.length;
   if(selfAudio){selfAudio.pause();selfAudio.currentTime=0;}
   if(a&&a[voiceKey]&&a[voiceKey][speedMode]){
     const au=new Audio(a[voiceKey][speedMode]);
@@ -518,13 +520,22 @@ function renderTabs(){
 }
 function renderDots(){
   const d=document.getElementById('dots');
-  d.innerHTML=decks[dIdx].sents.map((_,i)=>`<span class="dot ${i===sIdx?'on':''}" data-i="${i}"></span>`).join('');
+  d.innerHTML=(decks[dIdx].sents||[]).map((_,i)=>`<span class="dot ${i===sIdx?'on':''}" data-i="${i}"></span>`).join('');
   d.querySelectorAll('.dot').forEach(x=>x.addEventListener('click',()=>{sIdx=+x.dataset.i;renderSentence();renderList();renderDots();}));
 }
 function renderSentence(){
   const sec=document.getElementById('sentence');sec.classList.add('swap');
   setTimeout(()=>{
     const s=decks[dIdx].sents[sIdx];
+    if(!s){
+      document.getElementById('sPy').textContent='';
+      document.getElementById('sZh').textContent='No sentences yet';
+      document.getElementById('sEn').textContent='Add sentences for this project in Admin.';
+      const grid=document.getElementById('toneGrid');
+      grid.style.setProperty('--tone-count',1);
+      grid.innerHTML='<div class="empty-state">Empty project</div>';
+      applyEn();sec.classList.remove('swap');return;
+    }
     document.getElementById('sPy').textContent=s.syl.map(x=>x.p).join(' ');
     document.getElementById('sZh').textContent=s.zh;
     document.getElementById('sEn').textContent=s.en;
@@ -534,8 +545,9 @@ function renderSentence(){
 }
 function renderList(){
   const l=document.getElementById('list');
-  l.innerHTML=decks[dIdx].sents.map((s,i)=>`<div class="item ${i===sIdx?'on':''}" data-i="${i}"><div><div class="zh cn">${s.zh}</div><div class="py">${s.syl.map(x=>x.p).join(' ')}</div></div><div class="mini">${String(i+1).padStart(2,'0')}</div></div>`).join('');
-  l.querySelectorAll('.item').forEach(it=>it.addEventListener('click',()=>{sIdx=+it.dataset.i;renderSentence();renderList();renderDots();}));
+  const sents=decks[dIdx].sents||[];
+  l.innerHTML=sents.length?sents.map((s,i)=>`<div class="item ${i===sIdx?'on':''}" data-i="${i}"><div><div class="zh cn">${s.zh}</div><div class="py">${s.syl.map(x=>x.p).join(' ')}</div></div><div class="mini">${String(i+1).padStart(2,'0')}</div></div>`).join(''):'<div class="item"><div><div class="zh">No sentences yet</div><div class="py">Use Admin to add training content.</div></div><div class="mini">--</div></div>';
+  l.querySelectorAll('.item[data-i]').forEach(it=>it.addEventListener('click',()=>{sIdx=+it.dataset.i;renderSentence();renderList();renderDots();}));
 }
 function applyEn(){document.getElementById('sEn').classList.toggle('hide',!showEn);}
 function renderAll(){renderTabs();renderSentence();renderList();renderDots();}
@@ -547,15 +559,15 @@ document.getElementById('recStop').addEventListener('click',stopRecording);
 document.getElementById('recPlay').addEventListener('click',playSelfRecording);
 document.getElementById('mode').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;document.querySelectorAll('#mode button').forEach(x=>x.classList.remove('on'));b.classList.add('on');speedMode=b.dataset.m;});
 document.getElementById('voicePick').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;document.querySelectorAll('#voicePick button').forEach(x=>x.classList.remove('on'));b.classList.add('on');voiceKey=b.dataset.v;});
-document.getElementById('prev').addEventListener('click',()=>{sIdx=(sIdx-1+decks[dIdx].sents.length)%decks[dIdx].sents.length;renderSentence();renderList();renderDots();});
-document.getElementById('next').addEventListener('click',()=>{sIdx=(sIdx+1)%decks[dIdx].sents.length;renderSentence();renderList();renderDots();});
+document.getElementById('prev').addEventListener('click',()=>{const n=decks[dIdx].sents.length;if(!n)return;sIdx=(sIdx-1+n)%n;renderSentence();renderList();renderDots();});
+document.getElementById('next').addEventListener('click',()=>{const n=decks[dIdx].sents.length;if(!n)return;sIdx=(sIdx+1)%n;renderSentence();renderList();renderDots();});
 document.getElementById('langBtn').addEventListener('click',()=>{showEn=!showEn;document.getElementById('langBtn').textContent=showEn?'中文':'EN';applyEn();});
 document.getElementById('themeBtn').addEventListener('click',()=>{document.body.classList.toggle('noscan');});
 document.addEventListener('keydown',e=>{
   if(app.style.display==='none')return;
   if(e.code==='Space'){e.preventDefault();play();}
-  else if(e.code==='ArrowRight'){sIdx=(sIdx+1)%decks[dIdx].sents.length;renderSentence();renderList();renderDots();}
-  else if(e.code==='ArrowLeft'){sIdx=(sIdx-1+decks[dIdx].sents.length)%decks[dIdx].sents.length;renderSentence();renderList();renderDots();}
+  else if(e.code==='ArrowRight'){const n=decks[dIdx].sents.length;if(!n)return;sIdx=(sIdx+1)%n;renderSentence();renderList();renderDots();}
+  else if(e.code==='ArrowLeft'){const n=decks[dIdx].sents.length;if(!n)return;sIdx=(sIdx-1+n)%n;renderSentence();renderList();renderDots();}
 });
 </script>
 </body>

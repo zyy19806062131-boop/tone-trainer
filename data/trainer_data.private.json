@@ -227,575 +227,100 @@
   },
   "decks": [
     {
-      "id": "cafe",
-      "name": "咖啡生存口语",
-      "full": true,
-      "sents": [
-        {
-          "id": "cafe-1",
-          "zh": "我要一杯咖啡",
-          "en": "I'd like a coffee.",
-          "syl": [
-            {
-              "p": "wǒ",
-              "t": 5,
-              "s": "weak"
-            },
-            {
-              "p": "yào",
-              "t": 4,
-              "s": "weak"
-            },
-            {
-              "p": "yì",
-              "t": 4
-            },
-            {
-              "p": "bēi",
-              "t": 1
-            },
-            {
-              "p": "kā",
-              "t": 1,
-              "s": "stress"
-            },
-            {
-              "p": "fēi",
-              "t": 1
-            }
-          ]
-        },
-        {
-          "id": "cafe-2",
-          "zh": "我要热的",
-          "en": "I'd like it hot.",
-          "syl": [
-            {
-              "p": "wǒ",
-              "t": 5,
-              "s": "weak"
-            },
-            {
-              "p": "yào",
-              "t": 4,
-              "s": "weak"
-            },
-            {
-              "p": "rè",
-              "t": 4,
-              "s": "stress"
-            },
-            {
-              "p": "de",
-              "t": 0,
-              "s": "weak"
-            }
-          ]
-        },
-        {
-          "id": "cafe-3",
-          "zh": "来一个蛋糕",
-          "en": "I'll have a cake.",
-          "syl": [
-            {
-              "p": "lái",
-              "t": 2
-            },
-            {
-              "p": "yí",
-              "t": 2
-            },
-            {
-              "p": "ge",
-              "t": 0,
-              "s": "weak"
-            },
-            {
-              "p": "dàn",
-              "t": 4,
-              "s": "stress"
-            },
-            {
-              "p": "gāo",
-              "t": 1
-            }
-          ]
-        },
-        {
-          "id": "cafe-4",
-          "zh": "这个多少钱",
-          "en": "How much is this?",
-          "syl": [
-            {
-              "p": "zhè",
-              "t": 4
-            },
-            {
-              "p": "ge",
-              "t": 0,
-              "s": "weak"
-            },
-            {
-              "p": "duō",
-              "t": 1,
-              "s": "stress"
-            },
-            {
-              "p": "shao",
-              "t": 0,
-              "s": "weak"
-            },
-            {
-              "p": "qián",
-              "t": 2,
-              "s": "stress"
-            }
-          ]
-        },
-        {
-          "id": "cafe-5",
-          "zh": "还要别的吗",
-          "en": "Anything else?",
-          "syl": [
-            {
-              "p": "hái",
-              "t": 2
-            },
-            {
-              "p": "yào",
-              "t": 4
-            },
-            {
-              "p": "bié",
-              "t": 2,
-              "s": "stress"
-            },
-            {
-              "p": "de",
-              "t": 0,
-              "s": "weak"
-            },
-            {
-              "p": "ma",
-              "t": 0,
-              "s": "weak"
-            }
-          ]
-        },
-        {
-          "id": "cafe-6",
-          "zh": "一共四十五块",
-          "en": "Forty-five yuan in total.",
-          "syl": [
-            {
-              "p": "yí",
-              "t": 2
-            },
-            {
-              "p": "gòng",
-              "t": 4
-            },
-            {
-              "p": "sì",
-              "t": 4,
-              "s": "stress"
-            },
-            {
-              "p": "shí",
-              "t": 2
-            },
-            {
-              "p": "wǔ",
-              "t": 5
-            },
-            {
-              "p": "kuài",
-              "t": 4,
-              "s": "stress"
-            }
-          ]
-        },
-        {
-          "id": "cafe-7",
-          "zh": "可以用手机支付吗",
-          "en": "Can I pay by phone?",
-          "syl": [
-            {
-              "p": "ké",
-              "t": 2
-            },
-            {
-              "p": "yǐ",
-              "t": 3
-            },
-            {
-              "p": "yòng",
-              "t": 4
-            },
-            {
-              "p": "shǒu",
-              "t": 5,
-              "s": "stress"
-            },
-            {
-              "p": "jī",
-              "t": 1
-            },
-            {
-              "p": "zhī",
-              "t": 1,
-              "s": "stress"
-            },
-            {
-              "p": "fù",
-              "t": 4
-            },
-            {
-              "p": "ma",
-              "t": 0,
-              "s": "weak"
-            }
-          ]
-        },
-        {
-          "id": "cafe-8",
-          "zh": "扫这里",
-          "en": "Scan here.",
-          "syl": [
-            {
-              "p": "sǎo",
-              "t": 3,
-              "s": "stress"
-            },
-            {
-              "p": "zhè",
-              "t": 4
-            },
-            {
-              "p": "lǐ",
-              "t": 3
-            }
-          ]
-        }
-      ]
+      "id": "hsk1",
+      "name": "HSK1",
+      "full": false,
+      "sents": []
     },
     {
-      "id": "kids",
-      "name": "儿童",
+      "id": "hsk2",
+      "name": "HSK2",
       "full": false,
-      "sents": [
-        {
-          "id": "kids-1",
-          "zh": "我喜欢你",
-          "en": "I like you.",
-          "syl": [
-            {
-              "p": "wǒ",
-              "t": 5,
-              "s": "weak"
-            },
-            {
-              "p": "xǐ",
-              "t": 5,
-              "s": "stress"
-            },
-            {
-              "p": "huan",
-              "t": 0,
-              "s": "weak"
-            },
-            {
-              "p": "nǐ",
-              "t": 3,
-              "s": "stress"
-            }
-          ]
-        },
-        {
-          "id": "kids-2",
-          "zh": "这是什么",
-          "en": "What is this?",
-          "syl": [
-            {
-              "p": "zhè",
-              "t": 4
-            },
-            {
-              "p": "shì",
-              "t": 4
-            },
-            {
-              "p": "shén",
-              "t": 2,
-              "s": "stress"
-            },
-            {
-              "p": "me",
-              "t": 0,
-              "s": "weak"
-            }
-          ]
-        }
-      ]
+      "sents": []
     },
     {
-      "id": "e1",
-      "name": "初级一",
+      "id": "hsk3",
+      "name": "HSK3",
       "full": false,
-      "sents": [
-        {
-          "id": "e1-1",
-          "zh": "我是老师",
-          "en": "I am a teacher.",
-          "syl": [
-            {
-              "p": "wǒ",
-              "t": 5,
-              "s": "weak"
-            },
-            {
-              "p": "shì",
-              "t": 4
-            },
-            {
-              "p": "lǎo",
-              "t": 5,
-              "s": "stress"
-            },
-            {
-              "p": "shī",
-              "t": 1
-            }
-          ]
-        },
-        {
-          "id": "e1-2",
-          "zh": "今天天气很好",
-          "en": "The weather is nice today.",
-          "syl": [
-            {
-              "p": "jīn",
-              "t": 1
-            },
-            {
-              "p": "tiān",
-              "t": 1
-            },
-            {
-              "p": "tiān",
-              "t": 1,
-              "s": "stress"
-            },
-            {
-              "p": "qì",
-              "t": 4
-            },
-            {
-              "p": "hěn",
-              "t": 5
-            },
-            {
-              "p": "hǎo",
-              "t": 3,
-              "s": "stress"
-            }
-          ]
-        }
-      ]
+      "sents": []
     },
     {
-      "id": "e2",
-      "name": "初级二",
+      "id": "hsk4",
+      "name": "HSK4",
       "full": false,
-      "sents": [
-        {
-          "id": "e2-1",
-          "zh": "你周末有空吗",
-          "en": "Are you free this weekend?",
-          "syl": [
-            {
-              "p": "nǐ",
-              "t": 5,
-              "s": "weak"
-            },
-            {
-              "p": "zhōu",
-              "t": 1
-            },
-            {
-              "p": "mò",
-              "t": 4,
-              "s": "stress"
-            },
-            {
-              "p": "yǒu",
-              "t": 5
-            },
-            {
-              "p": "kòng",
-              "t": 4,
-              "s": "stress"
-            },
-            {
-              "p": "ma",
-              "t": 0,
-              "s": "weak"
-            }
-          ]
-        },
-        {
-          "id": "e2-2",
-          "zh": "我想去北京旅游",
-          "en": "I want to travel to Beijing.",
-          "syl": [
-            {
-              "p": "wǒ",
-              "t": 5,
-              "s": "weak"
-            },
-            {
-              "p": "xiǎng",
-              "t": 5
-            },
-            {
-              "p": "qù",
-              "t": 4
-            },
-            {
-              "p": "běi",
-              "t": 5,
-              "s": "stress"
-            },
-            {
-              "p": "jīng",
-              "t": 1
-            },
-            {
-              "p": "lǚ",
-              "t": 5,
-              "s": "stress"
-            },
-            {
-              "p": "yóu",
-              "t": 2
-            }
-          ]
-        }
-      ]
+      "sents": []
     },
     {
-      "id": "mid",
-      "name": "中级",
+      "id": "hsk5",
+      "name": "HSK5",
       "full": false,
-      "sents": [
-        {
-          "id": "mid-1",
-          "zh": "我觉得这部电影很有意思",
-          "en": "I think this movie is interesting.",
-          "syl": [
-            {
-              "p": "wǒ",
-              "t": 5,
-              "s": "weak"
-            },
-            {
-              "p": "jué",
-              "t": 2
-            },
-            {
-              "p": "de",
-              "t": 0,
-              "s": "weak"
-            },
-            {
-              "p": "zhè",
-              "t": 4
-            },
-            {
-              "p": "bù",
-              "t": 2
-            },
-            {
-              "p": "diàn",
-              "t": 4,
-              "s": "stress"
-            },
-            {
-              "p": "yǐng",
-              "t": 5
-            },
-            {
-              "p": "hěn",
-              "t": 5
-            },
-            {
-              "p": "yǒu",
-              "t": 5,
-              "s": "stress"
-            },
-            {
-              "p": "yì",
-              "t": 4
-            },
-            {
-              "p": "si",
-              "t": 0,
-              "s": "weak"
-            }
-          ]
-        },
-        {
-          "id": "mid-2",
-          "zh": "这个问题不太容易回答",
-          "en": "This question isn't easy to answer.",
-          "syl": [
-            {
-              "p": "zhè",
-              "t": 4
-            },
-            {
-              "p": "ge",
-              "t": 0,
-              "s": "weak"
-            },
-            {
-              "p": "wèn",
-              "t": 4,
-              "s": "stress"
-            },
-            {
-              "p": "tí",
-              "t": 2
-            },
-            {
-              "p": "bú",
-              "t": 2
-            },
-            {
-              "p": "tài",
-              "t": 4
-            },
-            {
-              "p": "róng",
-              "t": 2,
-              "s": "stress"
-            },
-            {
-              "p": "yì",
-              "t": 4
-            },
-            {
-              "p": "huí",
-              "t": 2,
-              "s": "stress"
-            },
-            {
-              "p": "dá",
-              "t": 2
-            }
-          ]
-        }
-      ]
+      "sents": []
+    },
+    {
+      "id": "hsk6",
+      "name": "HSK6",
+      "full": false,
+      "sents": []
+    },
+    {
+      "id": "yct1",
+      "name": "YCT1",
+      "full": false,
+      "sents": []
+    },
+    {
+      "id": "yct2",
+      "name": "YCT2",
+      "full": false,
+      "sents": []
+    },
+    {
+      "id": "yct3",
+      "name": "YCT3",
+      "full": false,
+      "sents": []
+    },
+    {
+      "id": "yct4",
+      "name": "YCT4",
+      "full": false,
+      "sents": []
+    },
+    {
+      "id": "yct5",
+      "name": "YCT5",
+      "full": false,
+      "sents": []
+    },
+    {
+      "id": "yct6",
+      "name": "YCT6",
+      "full": false,
+      "sents": []
+    },
+    {
+      "id": "new-target1",
+      "name": "NEW TARGET1",
+      "full": false,
+      "sents": []
+    },
+    {
+      "id": "new-target2",
+      "name": "NEW TARGET2",
+      "full": false,
+      "sents": []
+    },
+    {
+      "id": "new-target3",
+      "name": "NEW TARGET3",
+      "full": false,
+      "sents": []
+    },
+    {
+      "id": "bussiness",
+      "name": "bussiness",
+      "full": false,
+      "sents": []
     }
   ]
 }
