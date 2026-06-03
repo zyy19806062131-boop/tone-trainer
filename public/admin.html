@@ -33,9 +33,13 @@ button.ghost{background:transparent}
 .err{color:#ff95b6;min-height:1.2em;margin-top:10px}
 .grid{display:grid;grid-template-columns:1.2fr .8fr;gap:18px}
 .card{border:1px solid var(--line);background:rgba(14,27,42,.84);border-radius:8px;overflow:hidden}
-.card h2{margin:0;padding:16px 18px;border-bottom:1px solid var(--line);font-size:1.05rem}
+.card h2{margin:0;font-size:1.05rem}
+.card-head{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:16px 18px;border-bottom:1px solid var(--line)}
+.card-head .mini{font-size:.78rem;padding:6px 8px}
 .body{padding:16px 18px}
 .muted{color:var(--muted)}
+.help{color:var(--muted);font-size:.9rem;line-height:1.6;margin:0 0 14px}
+.callout{border:1px solid rgba(18,215,232,.25);background:rgba(18,215,232,.06);color:#c9f8ff;border-radius:7px;padding:11px 12px;margin-bottom:14px;line-height:1.55}
 .table{width:100%;border-collapse:collapse}
 .table th,.table td{text-align:left;padding:12px 10px;border-bottom:1px solid rgba(35,68,95,.75);vertical-align:top}
 .table th{font-size:.78rem;color:var(--muted);text-transform:uppercase;letter-spacing:.08em}
@@ -43,6 +47,7 @@ button.ghost{background:transparent}
 .deck-list{display:grid;gap:10px}
 .deck{display:flex;justify-content:space-between;gap:12px;padding:12px;border:1px solid rgba(35,68,95,.75);border-radius:7px;background:rgba(18,38,59,.45)}
 .deck b{font-family:var(--cjk)}
+.tag{display:inline-flex;align-items:center;border:1px solid rgba(244,211,94,.45);color:var(--yellow);border-radius:99px;padding:4px 8px;font-size:.76rem;white-space:nowrap}
 .form{display:grid;gap:12px}
 .checks{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px}
 label.check{display:flex;gap:8px;align-items:center;padding:9px;border:1px solid rgba(35,68,95,.75);border-radius:6px;background:rgba(8,21,34,.65)}
@@ -74,8 +79,12 @@ label.check{display:flex;gap:8px;align-items:center;padding:9px;border:1px solid
 
     <div class="grid">
       <section class="card">
-        <h2>口令权限</h2>
+        <div class="card-head">
+          <h2>口令权限</h2>
+          <button class="primary mini" id="newCodeTop">新增口令</button>
+        </div>
         <div class="body">
+          <p class="help">新增 code：点“新增口令”，在右侧填写 Code、显示名称、勾选可访问项目，然后点“保存口令”。编辑已有 code：点表格里的“编辑”。</p>
           <table class="table">
             <thead><tr><th>Code</th><th>Label</th><th>Projects</th><th></th></tr></thead>
             <tbody id="codesTable"></tbody>
@@ -84,8 +93,11 @@ label.check{display:flex;gap:8px;align-items:center;padding:9px;border:1px solid
       </section>
 
       <aside class="card">
-        <h2 id="formTitle">新增 / 修改口令</h2>
+        <div class="card-head">
+          <h2 id="formTitle">新增口令</h2>
+        </div>
         <div class="body">
+          <div class="callout" id="formHelp">创建一个新 code 后，学生用这个 code 登录主页面，只会看到你勾选的训练项目。</div>
           <div class="form">
             <label>Code <input id="codeInput" type="text" placeholder="studentA2026"></label>
             <label>显示名称 <input id="labelInput" type="text" placeholder="STUDENT A"></label>
@@ -101,8 +113,14 @@ label.check{display:flex;gap:8px;align-items:center;padding:9px;border:1px solid
       </aside>
 
       <section class="card">
-        <h2>训练项目</h2>
-        <div class="body deck-list" id="deckList"></div>
+        <div class="card-head">
+          <h2>训练项目</h2>
+          <span class="tag">只读 · 下一步开放编辑</span>
+        </div>
+        <div class="body">
+          <p class="help">这里先显示已有项目和句子数量。项目内容编辑、新增句子、修改拼音声调会在下一版后台加入。</p>
+          <div class="deck-list" id="deckList"></div>
+        </div>
       </section>
     </div>
   </section>
@@ -120,6 +138,8 @@ const codeInput = document.getElementById('codeInput');
 const labelInput = document.getElementById('labelInput');
 const allDecksInput = document.getElementById('allDecks');
 const formErr = document.getElementById('formErr');
+const formTitle = document.getElementById('formTitle');
+const formHelp = document.getElementById('formHelp');
 let adminCode = sessionStorage.getItem('toneAdminCode') || '';
 let decks = [];
 let accessCodes = {};
@@ -165,18 +185,29 @@ async function loadOverview(){
 function editCode(code){
   const profile = accessCodes[code];
   if(!profile) return;
+  formTitle.textContent = '修改口令';
+  formHelp.textContent = `正在修改 ${code}。保存后，这个 code 的可访问项目会立即更新。`;
   codeInput.value = code;
   labelInput.value = profile.label || '';
   allDecksInput.checked = profile.decks === 'all';
   const allowed = new Set(Array.isArray(profile.decks) ? profile.decks : []);
   deckChecks.querySelectorAll('input').forEach(input=>input.checked = allowed.has(input.value));
+  syncDeckChecks();
+  codeInput.focus();
 }
 function clearForm(){
+  formTitle.textContent = '新增口令';
+  formHelp.textContent = '创建一个新 code 后，学生用这个 code 登录主页面，只会看到你勾选的训练项目。';
   codeInput.value = '';
   labelInput.value = '';
   allDecksInput.checked = false;
   deckChecks.querySelectorAll('input').forEach(input=>input.checked = false);
+  syncDeckChecks();
   formErr.textContent = '';
+  codeInput.focus();
+}
+function syncDeckChecks(){
+  deckChecks.querySelectorAll('input').forEach(input=>input.disabled = allDecksInput.checked);
 }
 async function saveCode(){
   const checked = [...deckChecks.querySelectorAll('input:checked')].map(input=>input.value);
@@ -227,6 +258,8 @@ document.getElementById('loginBtn').addEventListener('click', doLogin);
 adminCodeInput.addEventListener('keydown', e=>{if(e.key==='Enter')doLogin();});
 document.getElementById('saveBtn').addEventListener('click', ()=>saveCode().catch(err=>formErr.textContent=err.message));
 document.getElementById('clearBtn').addEventListener('click', clearForm);
+document.getElementById('newCodeTop').addEventListener('click', clearForm);
+allDecksInput.addEventListener('change', syncDeckChecks);
 codesTable.addEventListener('click', e=>{
   const edit = e.target.closest('[data-edit]');
   const del = e.target.closest('[data-delete]');
