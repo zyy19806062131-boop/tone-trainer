@@ -1,0 +1,31 @@
+{
+  "tone2026": {
+    "label": "FULL ACCESS",
+    "decks": "all"
+  },
+  "cafe2026": {
+    "label": "CAFE SURVIVAL",
+    "decks": [
+      "cafe"
+    ]
+  },
+  "kids2026": {
+    "label": "KIDS TRACK",
+    "decks": [
+      "kids"
+    ]
+  },
+  "beginner2026": {
+    "label": "BEGINNER TRACK",
+    "decks": [
+      "e1",
+      "e2"
+    ]
+  },
+  "mid2026": {
+    "label": "INTERMEDIATE TRACK",
+    "decks": [
+      "mid"
+    ]
+  }
+}
