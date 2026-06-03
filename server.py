@@ -15,6 +15,8 @@ DATA_PATH = BASE_DIR / "data" / "trainer_data.private.json"
 CODES_PATH = BASE_DIR / "data" / "access_codes.private.json"
 ADMIN_CODE = os.environ.get("ADMIN_CODE", "admin2026")
 DECK_ID_RE = re.compile(r"^[a-z0-9][a-z0-9-]*$")
+DEFAULT_UNIT_ID = "default"
+DEFAULT_UNIT_NAME = "全部"
 
 
 def load_json(path):
@@ -32,12 +34,15 @@ def save_json(path, payload):
 
 def deck_summaries():
     data = load_json(DATA_PATH)
+    for deck in data.get("decks", []):
+        normalize_deck(deck)
     return [
         {
             "id": deck.get("id"),
             "name": deck.get("name"),
             "full": bool(deck.get("full", False)),
             "sentenceCount": len(deck.get("sents", [])),
+            "unitCount": len(deck.get("units", [])),
         }
         for deck in data.get("decks", [])
     ]
@@ -48,6 +53,44 @@ def find_deck(data, deck_id):
         if deck.get("id") == deck_id:
             return deck
     return None
+
+
+def normalize_deck(deck):
+    units = deck.get("units")
+    if not isinstance(units, list) or not units:
+        units = [{"id": DEFAULT_UNIT_ID, "name": DEFAULT_UNIT_NAME}]
+    clean_units = []
+    seen = set()
+    for unit in units:
+        unit_id = str(unit.get("id", "")).strip()
+        name = str(unit.get("name", "")).strip()
+        if not unit_id or not name or unit_id in seen:
+            continue
+        clean_units.append({"id": unit_id, "name": name})
+        seen.add(unit_id)
+    if not clean_units:
+        clean_units = [{"id": DEFAULT_UNIT_ID, "name": DEFAULT_UNIT_NAME}]
+        seen = {DEFAULT_UNIT_ID}
+    if DEFAULT_UNIT_ID not in seen:
+        clean_units.insert(0, {"id": DEFAULT_UNIT_ID, "name": DEFAULT_UNIT_NAME})
+        seen.add(DEFAULT_UNIT_ID)
+    deck["units"] = clean_units
+    for sentence in deck.get("sents", []):
+        if sentence.get("unitId") not in seen:
+            sentence["unitId"] = clean_units[0]["id"]
+    return deck
+
+
+def validate_unit(unit):
+    unit_id = str(unit.get("id", "")).strip()
+    name = str(unit.get("name", "")).strip()
+    if not unit_id:
+        raise ValueError("二级项目 ID 不能为空")
+    if not DECK_ID_RE.match(unit_id):
+        raise ValueError("二级项目 ID 只能用小写字母、数字和连字符，并且要以字母或数字开头")
+    if not name:
+        raise ValueError("二级项目名称不能为空")
+    return {"id": unit_id, "name": name}
 
 
 def validate_sentence(sentence):
@@ -112,6 +155,8 @@ def build_payload(code):
     else:
         allowed_set = set(allowed or [])
         decks = [deck for deck in all_decks if deck.get("id") in allowed_set]
+    for deck in decks:
+        normalize_deck(deck)
 
     allowed_sentence_ids = {
         sentence.get("id")
@@ -214,6 +259,7 @@ class ToneTrainerHandler(BaseHTTPRequestHandler):
         if not deck:
             self.send_json(HTTPStatus.NOT_FOUND, {"error": "项目不存在"})
             return
+        normalize_deck(deck)
         self.send_json(HTTPStatus.OK, {"deck": deck})
 
     def save_deck(self, body):
@@ -234,13 +280,15 @@ class ToneTrainerHandler(BaseHTTPRequestHandler):
         access_codes = load_json(CODES_PATH)
         access_changed = False
         if existing_index is None:
-            decks.append({**clean_deck, "sents": []})
+            decks.append({**clean_deck, "units": [{"id": DEFAULT_UNIT_ID, "name": DEFAULT_UNIT_NAME}], "sents": []})
         else:
             old_deck = decks[existing_index]
+            normalize_deck(old_deck)
             old_id = old_deck.get("id")
             decks[existing_index] = {
                 **old_deck,
                 **clean_deck,
+                "units": old_deck.get("units", []),
                 "sents": old_deck.get("sents", []),
             }
             if old_id != clean_deck["id"]:
@@ -305,8 +353,85 @@ class ToneTrainerHandler(BaseHTTPRequestHandler):
             save_json(DATA_PATH, data)
         self.send_json(HTTPStatus.OK, {"ok": True, "decks": deck_summaries()})
 
+    def save_unit(self, body):
+        deck_id = str(body.get("deckId", "")).strip()
+        original_id = str(body.get("originalId", "")).strip()
+        clean_unit = validate_unit(body.get("unit") or {})
+        data = load_json(DATA_PATH)
+        deck = find_deck(data, deck_id)
+        if not deck:
+            self.send_json(HTTPStatus.NOT_FOUND, {"error": "项目不存在"})
+            return
+        normalize_deck(deck)
+        units = deck.setdefault("units", [])
+        match_id = original_id or clean_unit["id"]
+        existing_index = next((i for i, item in enumerate(units) if item.get("id") == match_id), None)
+        duplicate = next((item for item in units if item.get("id") == clean_unit["id"] and item.get("id") != match_id), None)
+        if duplicate:
+            self.send_json(HTTPStatus.BAD_REQUEST, {"error": "二级项目 ID 已存在"})
+            return
+        if existing_index is None:
+            units.append(clean_unit)
+        else:
+            old_id = units[existing_index].get("id")
+            units[existing_index] = clean_unit
+            if old_id != clean_unit["id"]:
+                for sentence in deck.get("sents", []):
+                    if sentence.get("unitId") == old_id:
+                        sentence["unitId"] = clean_unit["id"]
+        save_json(DATA_PATH, data)
+        self.send_json(HTTPStatus.OK, {"ok": True, "deck": deck, "decks": deck_summaries()})
+
+    def delete_unit(self, body):
+        deck_id = str(body.get("deckId", "")).strip()
+        unit_id = str(body.get("unitId", "")).strip()
+        if unit_id == DEFAULT_UNIT_ID:
+            self.send_json(HTTPStatus.BAD_REQUEST, {"error": "默认二级项目不能删除"})
+            return
+        data = load_json(DATA_PATH)
+        deck = find_deck(data, deck_id)
+        if not deck:
+            self.send_json(HTTPStatus.NOT_FOUND, {"error": "项目不存在"})
+            return
+        normalize_deck(deck)
+        before = len(deck.get("units", []))
+        deck["units"] = [item for item in deck.get("units", []) if item.get("id") != unit_id]
+        if len(deck["units"]) == before:
+            self.send_json(HTTPStatus.NOT_FOUND, {"error": "二级项目不存在"})
+            return
+        for sentence in deck.get("sents", []):
+            if sentence.get("unitId") == unit_id:
+                sentence["unitId"] = DEFAULT_UNIT_ID
+        save_json(DATA_PATH, data)
+        self.send_json(HTTPStatus.OK, {"ok": True, "deck": deck, "decks": deck_summaries()})
+
+    def reorder_unit(self, body):
+        deck_id = str(body.get("deckId", "")).strip()
+        unit_id = str(body.get("unitId", "")).strip()
+        direction = str(body.get("direction", "")).strip()
+        data = load_json(DATA_PATH)
+        deck = find_deck(data, deck_id)
+        if not deck:
+            self.send_json(HTTPStatus.NOT_FOUND, {"error": "项目不存在"})
+            return
+        normalize_deck(deck)
+        units = deck.get("units", [])
+        index = next((i for i, item in enumerate(units) if item.get("id") == unit_id), None)
+        if index is None:
+            self.send_json(HTTPStatus.NOT_FOUND, {"error": "二级项目不存在"})
+            return
+        if direction not in {"up", "down"}:
+            self.send_json(HTTPStatus.BAD_REQUEST, {"error": "移动方向不对"})
+            return
+        new_index = index - 1 if direction == "up" else index + 1
+        if 0 <= new_index < len(units):
+            units[index], units[new_index] = units[new_index], units[index]
+            save_json(DATA_PATH, data)
+        self.send_json(HTTPStatus.OK, {"ok": True, "deck": deck, "decks": deck_summaries()})
+
     def save_sentence(self, body):
         deck_id = str(body.get("deckId", "")).strip()
+        unit_id = str(body.get("unitId", "")).strip() or DEFAULT_UNIT_ID
         original_id = str(body.get("originalId", "")).strip()
         sentence = validate_sentence(body.get("sentence") or {})
         data = load_json(DATA_PATH)
@@ -314,6 +439,12 @@ class ToneTrainerHandler(BaseHTTPRequestHandler):
         if not deck:
             self.send_json(HTTPStatus.NOT_FOUND, {"error": "项目不存在"})
             return
+        normalize_deck(deck)
+        unit_ids = {unit.get("id") for unit in deck.get("units", [])}
+        if unit_id not in unit_ids:
+            self.send_json(HTTPStatus.BAD_REQUEST, {"error": "二级项目不存在"})
+            return
+        sentence["unitId"] = unit_id
 
         sentences = deck.setdefault("sents", [])
         match_id = original_id or sentence["id"]
@@ -429,6 +560,35 @@ class ToneTrainerHandler(BaseHTTPRequestHandler):
                 return
             try:
                 self.reorder_deck(self.read_json_body())
+            except Exception:
+                self.send_json(HTTPStatus.BAD_REQUEST, {"error": "请求格式不对"})
+            return
+
+        if self.path == "/api/admin/unit":
+            if not self.require_admin():
+                return
+            try:
+                self.save_unit(self.read_json_body())
+            except ValueError as err:
+                self.send_json(HTTPStatus.BAD_REQUEST, {"error": str(err)})
+            except Exception:
+                self.send_json(HTTPStatus.BAD_REQUEST, {"error": "请求格式不对"})
+            return
+
+        if self.path == "/api/admin/unit/delete":
+            if not self.require_admin():
+                return
+            try:
+                self.delete_unit(self.read_json_body())
+            except Exception:
+                self.send_json(HTTPStatus.BAD_REQUEST, {"error": "请求格式不对"})
+            return
+
+        if self.path == "/api/admin/unit/reorder":
+            if not self.require_admin():
+                return
+            try:
+                self.reorder_unit(self.read_json_body())
             except Exception:
                 self.send_json(HTTPStatus.BAD_REQUEST, {"error": "请求格式不对"})
             return

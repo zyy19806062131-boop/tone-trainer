@@ -15,7 +15,7 @@ body{margin:0;min-height:100vh;background:
   linear-gradient(135deg,rgba(18,215,232,.08),transparent 35%),
   radial-gradient(circle at 80% 0,rgba(255,59,125,.12),transparent 30%),
   var(--bg);color:var(--ink);font-family:Inter,system-ui,var(--cjk),sans-serif}
-button,input{font:inherit}
+button,input,select{font:inherit}
 .wrap{max-width:1180px;margin:0 auto;padding:28px 18px 64px}
 header{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:22px}
 h1{font-size:clamp(1.7rem,4vw,2.8rem);margin:0;letter-spacing:.02em}
@@ -25,7 +25,9 @@ h1{font-size:clamp(1.7rem,4vw,2.8rem);margin:0;letter-spacing:.02em}
 .login h2{margin:0 0 12px}
 .row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
 input[type=text],input[type=password]{width:100%;padding:11px 12px;border:1px solid var(--line);border-radius:6px;background:#081522;color:var(--ink);outline:none}
+select{width:100%;padding:11px 12px;border:1px solid var(--line);border-radius:6px;background:#081522;color:var(--ink);outline:none}
 input:focus{border-color:var(--cyan);box-shadow:0 0 0 3px rgba(18,215,232,.12)}
+select:focus{border-color:var(--cyan);box-shadow:0 0 0 3px rgba(18,215,232,.12)}
 button{border:1px solid var(--line);background:var(--panel2);color:var(--ink);border-radius:6px;padding:10px 13px;cursor:pointer}
 button.primary{background:var(--cyan);border-color:var(--cyan);color:#031014;font-weight:700}
 button.danger{border-color:rgba(255,59,125,.55);color:#ffd9e5;background:rgba(255,59,125,.12)}
@@ -53,6 +55,9 @@ button.ghost{background:transparent}
 .deck-tools{display:flex;justify-content:flex-end;align-items:center;gap:8px;flex-wrap:wrap}
 .deck-tools .count{color:var(--muted);white-space:nowrap}
 .icon-btn{width:38px;height:38px;display:inline-grid;place-items:center;padding:0}
+.unit-bar{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:18px}
+.unit-bar h3{margin:0 0 10px;font-size:.95rem}
+.unit-table .actions{justify-content:flex-end}
 .tag{display:inline-flex;align-items:center;border:1px solid rgba(244,211,94,.45);color:var(--yellow);border-radius:99px;padding:4px 8px;font-size:.76rem;white-space:nowrap}
 .form{display:grid;gap:12px}
 .form.two{grid-template-columns:1fr 1fr}
@@ -63,7 +68,7 @@ label.check{display:flex;gap:8px;align-items:center;padding:9px;border:1px solid
 textarea{width:100%;min-height:72px;padding:11px 12px;border:1px solid var(--line);border-radius:6px;background:#081522;color:var(--ink);outline:none;resize:vertical}
 textarea:focus{border-color:var(--cyan);box-shadow:0 0 0 3px rgba(18,215,232,.12)}
 .hidden{display:none!important}
-@media(max-width:850px){.grid{grid-template-columns:1fr}header{display:block}.chip{display:inline-block;margin-top:12px}}
+@media(max-width:850px){.grid,.unit-bar{grid-template-columns:1fr}header{display:block}.chip{display:inline-block;margin-top:12px}}
 </style>
 </head>
 <body>
@@ -158,14 +163,36 @@ textarea:focus{border-color:var(--cyan);box-shadow:0 0 0 3px rgba(18,215,232,.12
           <button class="primary mini" id="newSentenceTop">新增句子</button>
         </div>
         <div class="body">
-          <p class="help">拼音、声调、重弱读都用空格分隔，数量必须和中文汉字数量一致。声调用 1-4，轻声用 0，半三声可用 5。重弱读可填 normal / stress / weak。</p>
+          <p class="help">先建立二级项目/单元，再把句子归入对应单元。拼音、声调、重弱读都用空格分隔，数量必须和中文汉字数量一致。声调用 1-4，轻声用 0，半三声可用 5。</p>
+          <div class="unit-bar">
+            <div>
+              <h3>二级项目</h3>
+              <table class="table unit-table">
+                <thead><tr><th>ID</th><th>名称</th><th></th></tr></thead>
+                <tbody id="unitsTable"></tbody>
+              </table>
+            </div>
+            <div>
+              <h3 id="unitTitle">新增二级项目</h3>
+              <div class="form">
+                <label>Unit ID <input id="unitId" type="text" placeholder="lesson-1"></label>
+                <label>显示名称 <input id="unitName" type="text" placeholder="Lesson 1"></label>
+                <div class="actions">
+                  <button class="primary" id="saveUnitBtn">保存二级项目</button>
+                  <button class="ghost" id="clearUnitBtn">清空</button>
+                </div>
+                <div class="err" id="unitErr"></div>
+              </div>
+            </div>
+          </div>
           <table class="table">
-            <thead><tr><th>ID</th><th>中文</th><th>English</th><th></th></tr></thead>
+            <thead><tr><th>ID</th><th>二级项目</th><th>中文</th><th>English</th><th></th></tr></thead>
             <tbody id="sentencesTable"></tbody>
           </table>
           <div class="callout" id="sentenceHelp">选择一个项目后，可以新增或编辑句子。</div>
           <div class="form two">
             <label>ID <input id="sentenceId" type="text" placeholder="cafe-9"></label>
+            <label>所属二级项目 <select id="sentenceUnit"></select></label>
             <label>中文 <input id="sentenceZh" type="text" placeholder="我要一杯茶"></label>
             <label class="wide">English <input id="sentenceEn" type="text" placeholder="I'd like a cup of tea."></label>
             <label class="wide">Pinyin <textarea id="sentencePinyin" placeholder="wǒ yào yì bēi chá"></textarea></label>
@@ -204,10 +231,16 @@ const sentenceHelp = document.getElementById('sentenceHelp');
 const sentenceIdInput = document.getElementById('sentenceId');
 const sentenceZhInput = document.getElementById('sentenceZh');
 const sentenceEnInput = document.getElementById('sentenceEn');
+const sentenceUnitInput = document.getElementById('sentenceUnit');
 const sentencePinyinInput = document.getElementById('sentencePinyin');
 const sentenceTonesInput = document.getElementById('sentenceTones');
 const sentenceStressInput = document.getElementById('sentenceStress');
 const sentenceErr = document.getElementById('sentenceErr');
+const unitsTable = document.getElementById('unitsTable');
+const unitTitle = document.getElementById('unitTitle');
+const unitIdInput = document.getElementById('unitId');
+const unitNameInput = document.getElementById('unitName');
+const unitErr = document.getElementById('unitErr');
 const projectTitle = document.getElementById('projectTitle');
 const projectHelp = document.getElementById('projectHelp');
 const projectIdInput = document.getElementById('projectId');
@@ -220,6 +253,7 @@ let accessCodes = {};
 let selectedDeck = null;
 let originalSentenceId = '';
 let originalProjectId = '';
+let originalUnitId = '';
 
 function adminHeaders(){
   return {'Content-Type':'application/json','X-Admin-Code':adminCode};
@@ -247,7 +281,7 @@ function renderDecks(){
   deckList.innerHTML = decks.map((d,i)=>`<div class="deck ${selectedDeck&&selectedDeck.id===d.id?'on':''}">
     <div class="deck-meta"><b>${escapeHtml(d.name)}</b><div class="muted">${escapeHtml(d.id)}</div></div>
     <div class="deck-tools">
-      <span class="count">${d.sentenceCount} 句</span>
+      <span class="count">${d.sentenceCount} 句 · ${d.unitCount || 1} 单元</span>
       <button class="icon-btn" title="上移" data-project-move="${escapeHtml(d.id)}" data-direction="up" ${i===0?'disabled':''}>↑</button>
       <button class="icon-btn" title="下移" data-project-move="${escapeHtml(d.id)}" data-direction="down" ${i===decks.length-1?'disabled':''}>↓</button>
       <button data-project-edit="${escapeHtml(d.id)}">编辑</button>
@@ -336,10 +370,52 @@ function stressWord(value){
   const v = String(value || '').trim();
   return v === 'stress' || v === 'weak' ? v : 'normal';
 }
+function unitName(unitId){
+  const unit = selectedDeck && (selectedDeck.units || []).find(item=>item.id===unitId);
+  return unit ? unit.name : (unitId || '全部');
+}
+function renderUnitSelect(selectedId){
+  const units = selectedDeck && selectedDeck.units && selectedDeck.units.length ? selectedDeck.units : [{id:'default',name:'全部'}];
+  sentenceUnitInput.innerHTML = units.map(unit=>`<option value="${escapeHtml(unit.id)}" ${unit.id===selectedId?'selected':''}>${escapeHtml(unit.name)}</option>`).join('');
+}
+function renderUnits(){
+  if(!selectedDeck || !unitsTable) return;
+  const units = selectedDeck.units || [];
+  unitsTable.innerHTML = units.map((unit,i)=>`<tr>
+    <td><code>${escapeHtml(unit.id)}</code></td>
+    <td>${escapeHtml(unit.name)}</td>
+    <td class="actions">
+      <button class="icon-btn" title="上移" data-unit-move="${escapeHtml(unit.id)}" data-direction="up" ${i===0?'disabled':''}>↑</button>
+      <button class="icon-btn" title="下移" data-unit-move="${escapeHtml(unit.id)}" data-direction="down" ${i===units.length-1?'disabled':''}>↓</button>
+      <button data-unit-edit="${escapeHtml(unit.id)}">编辑</button>
+      <button class="danger" data-unit-delete="${escapeHtml(unit.id)}" ${unit.id==='default'?'disabled':''}>删除</button>
+    </td>
+  </tr>`).join('');
+  renderUnitSelect(sentenceUnitInput.value || (units[0] && units[0].id));
+}
+function editUnit(unitId){
+  const unit = selectedDeck && (selectedDeck.units || []).find(item=>item.id===unitId);
+  if(!unit) return;
+  originalUnitId = unit.id;
+  unitTitle.textContent = '修改二级项目';
+  unitIdInput.value = unit.id;
+  unitNameInput.value = unit.name;
+  unitErr.textContent = '';
+  unitIdInput.focus();
+}
+function clearUnitForm(){
+  originalUnitId = '';
+  unitTitle.textContent = '新增二级项目';
+  unitIdInput.value = '';
+  unitNameInput.value = '';
+  unitErr.textContent = '';
+  unitIdInput.focus();
+}
 function sentenceToForm(sentence){
   originalSentenceId = sentence.id || '';
   sentenceHelp.textContent = originalSentenceId ? `正在修改 ${originalSentenceId}` : '正在新增句子';
   sentenceIdInput.value = sentence.id || '';
+  renderUnitSelect(sentence.unitId || 'default');
   sentenceZhInput.value = sentence.zh || '';
   sentenceEnInput.value = sentence.en || '';
   sentencePinyinInput.value = (sentence.syl || []).map(x=>x.p).join(' ');
@@ -352,6 +428,7 @@ function clearSentenceForm(){
   originalSentenceId = '';
   sentenceHelp.textContent = selectedDeck ? `正在给「${selectedDeck.name}」新增句子` : '选择一个项目后，可以新增或编辑句子。';
   sentenceIdInput.value = '';
+  renderUnitSelect(selectedDeck && selectedDeck.units && selectedDeck.units[0] ? selectedDeck.units[0].id : 'default');
   sentenceZhInput.value = '';
   sentenceEnInput.value = '';
   sentencePinyinInput.value = '';
@@ -367,8 +444,10 @@ function renderSentences(){
   }
   sentencePanel.classList.remove('hidden');
   sentenceTitle.textContent = `句子管理 · ${selectedDeck.name}`;
+  renderUnits();
   sentencesTable.innerHTML = (selectedDeck.sents || []).map(s=>`<tr>
     <td><code>${escapeHtml(s.id)}</code></td>
+    <td>${escapeHtml(unitName(s.unitId || 'default'))}</td>
     <td>${escapeHtml(s.zh)}</td>
     <td>${escapeHtml(s.en)}</td>
     <td class="actions">
@@ -411,6 +490,7 @@ async function saveSentence(){
     headers: adminHeaders(),
     body: JSON.stringify({
       deckId: selectedDeck.id,
+      unitId: sentenceUnitInput.value,
       originalId: originalSentenceId,
       sentence: buildSentenceFromForm()
     })
@@ -431,6 +511,52 @@ async function deleteSentence(sentenceId){
   renderSentences();
   clearSentenceForm();
   await loadOverview();
+}
+async function saveUnit(){
+  if(!selectedDeck){unitErr.textContent='请先选择训练项目';return;}
+  unitErr.textContent = '保存中...';
+  const payload = await jsonFetch('/api/admin/unit', {
+    method:'POST',
+    headers: adminHeaders(),
+    body: JSON.stringify({
+      deckId: selectedDeck.id,
+      originalId: originalUnitId,
+      unit: {id: unitIdInput.value.trim(), name: unitNameInput.value.trim()}
+    })
+  });
+  selectedDeck = payload.deck;
+  decks = payload.decks || decks;
+  unitErr.textContent = '已保存';
+  renderDecks();
+  renderUnits();
+  renderSentences();
+  originalUnitId = unitIdInput.value.trim();
+}
+async function deleteUnit(unitId){
+  if(!selectedDeck || !confirm(`删除二级项目 ${unitName(unitId)}？里面的句子会移到“全部”。`)) return;
+  const payload = await jsonFetch('/api/admin/unit/delete', {
+    method:'POST',
+    headers: adminHeaders(),
+    body: JSON.stringify({deckId:selectedDeck.id, unitId})
+  });
+  selectedDeck = payload.deck;
+  decks = payload.decks || decks;
+  renderDecks();
+  renderUnits();
+  renderSentences();
+  clearUnitForm();
+}
+async function moveUnit(unitId, direction){
+  if(!selectedDeck) return;
+  const payload = await jsonFetch('/api/admin/unit/reorder', {
+    method:'POST',
+    headers: adminHeaders(),
+    body: JSON.stringify({deckId:selectedDeck.id, unitId, direction})
+  });
+  selectedDeck = payload.deck;
+  decks = payload.decks || decks;
+  renderDecks();
+  renderUnits();
 }
 async function saveProject(){
   projectErr.textContent = '保存中...';
@@ -538,6 +664,8 @@ document.getElementById('newCodeTop').addEventListener('click', clearForm);
 document.getElementById('newSentenceTop').addEventListener('click', clearSentenceForm);
 document.getElementById('clearSentenceBtn').addEventListener('click', clearSentenceForm);
 document.getElementById('saveSentenceBtn').addEventListener('click', ()=>saveSentence().catch(err=>sentenceErr.textContent=err.message));
+document.getElementById('clearUnitBtn').addEventListener('click', clearUnitForm);
+document.getElementById('saveUnitBtn').addEventListener('click', ()=>saveUnit().catch(err=>unitErr.textContent=err.message));
 document.getElementById('newProjectTop').addEventListener('click', clearProjectForm);
 document.getElementById('clearProjectBtn').addEventListener('click', clearProjectForm);
 document.getElementById('saveProjectBtn').addEventListener('click', ()=>saveProject().catch(err=>projectErr.textContent=err.message));
@@ -560,6 +688,14 @@ sentencesTable.addEventListener('click', e=>{
     if(sentence) sentenceToForm(sentence);
   }
   if(del) deleteSentence(del.dataset.sentenceDelete).catch(err=>sentenceErr.textContent=err.message);
+});
+unitsTable.addEventListener('click', e=>{
+  const edit = e.target.closest('[data-unit-edit]');
+  const del = e.target.closest('[data-unit-delete]');
+  const move = e.target.closest('[data-unit-move]');
+  if(edit) editUnit(edit.dataset.unitEdit);
+  if(del) deleteUnit(del.dataset.unitDelete).catch(err=>unitErr.textContent=err.message);
+  if(move) moveUnit(move.dataset.unitMove, move.dataset.direction).catch(err=>unitErr.textContent=err.message);
 });
 codesTable.addEventListener('click', e=>{
   const edit = e.target.closest('[data-edit]');

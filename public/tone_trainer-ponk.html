@@ -128,6 +128,11 @@ header{display:flex;justify-content:space-between;align-items:flex-start;gap:14p
 .tab{border:1px solid var(--line-2);background:rgba(5,217,232,.04);border-radius:2px;padding:9px 16px;font-size:.88rem;white-space:nowrap;color:var(--soft);font-weight:500;flex:none;transition:.2s}
 .tab .cn{font-weight:600}.tab:hover{border-color:var(--accent);color:var(--ink)}
 .tab.on{background:rgba(5,217,232,.14);color:var(--accent);border-color:var(--accent);box-shadow:0 0 16px var(--glow)}
+.unit-tabs{display:flex;gap:7px;overflow-x:auto;padding:2px 0 8px;scrollbar-width:none}
+.unit-tabs::-webkit-scrollbar{display:none}
+.unit-tab{font-family:var(--mono);border:1px solid rgba(141,245,255,.26);background:rgba(255,42,109,.04);border-radius:2px;padding:7px 12px;font-size:.68rem;letter-spacing:.08em;white-space:nowrap;color:var(--soft);flex:none;transition:.2s;text-transform:uppercase}
+.unit-tab:hover{border-color:var(--accent-2);color:var(--ink)}
+.unit-tab.on{border-color:var(--accent-2);color:#ffd7e4;background:rgba(255,42,109,.13);box-shadow:0 0 14px var(--glow-2)}
 .deck-note{font-family:var(--mono);font-size:.7rem;color:var(--soft);margin:8px 2px 0;letter-spacing:.08em}
 
 .stage{position:relative;background:var(--panel);border:1px solid var(--line);border-radius:3px;padding:32px 28px;margin-top:16px;
@@ -284,6 +289,7 @@ header{display:flex;justify-content:space-between;align-items:flex-start;gap:14p
   </header>
 
   <div class="tabs" id="tabs"></div>
+  <div class="unit-tabs" id="unitTabs"></div>
   <div class="deck-note" id="deckNote"></div>
 
   <div class="stage">
@@ -357,7 +363,7 @@ let AUDIO = {};
 const allDecks=[];
 
 let decks=[];
-let dIdx=0,sIdx=0,showEn=false,speedMode='n',voiceKey='f',hlTimers=[];
+let dIdx=0,uIdx=0,sIdx=0,showEn=false,speedMode='n',voiceKey='f',hlTimers=[];
 let recStream=null,recorder=null,recChunks=[],selfAudioUrl='',selfAudio=null;
 const VOICE_LABELS={f:'女声',m:'男声',k:'儿童'};
 let listOpen=false;
@@ -366,7 +372,7 @@ const gate=document.getElementById('gate'),app=document.getElementById('app');
 function applyAccess(payload){
   AUDIO=payload.audio||{};
   decks=payload.decks||[];
-  dIdx=0;sIdx=0;
+  dIdx=0;uIdx=0;sIdx=0;
   syncVoiceButtons();
   const label=document.getElementById('accessLabel');
   if(label)label.textContent=`${payload.label||'ACCESS GRANTED'} · ${decks.length} MODULE${decks.length>1?'S':''}`;
@@ -459,7 +465,7 @@ function speakFallback(s,n,msg){
   runHl(n,(speedMode==='s'?n*620:n*400));
 }
 function play(){
-  const s=decks[dIdx]&&decks[dIdx].sents[sIdx];
+  const s=currentSents()[sIdx];
   if(!s){audioNotice('This project has no sentences yet.');return;}
   const a=AUDIO[s.id];const n=s.syl.length;
   if(selfAudio){selfAudio.pause();selfAudio.currentTime=0;}
@@ -473,6 +479,34 @@ function play(){
     return;
   }
   speakFallback(s,n,'No embedded audio for this sentence. Using fallback voice.');
+}
+
+function unitsForDeck(deck){
+  if(!deck)return[{id:'default',name:'全部'}];
+  return deck.units&&deck.units.length?deck.units:[{id:'default',name:'全部'}];
+}
+function firstUsefulUnitIndex(deck){
+  const units=unitsForDeck(deck);
+  const sents=deck&&deck.sents?deck.sents:[];
+  const index=units.findIndex(unit=>sents.some(s=>(s.unitId||'default')===unit.id));
+  return index>=0?index:0;
+}
+function currentUnit(){
+  const units=unitsForDeck(decks[dIdx]);
+  if(uIdx>=units.length)uIdx=0;
+  return units[uIdx]||{id:'default',name:'全部'};
+}
+function currentSents(){
+  const deck=decks[dIdx];
+  if(!deck)return[];
+  const unit=currentUnit();
+  return (deck.sents||[]).filter(s=>(s.unitId||'default')===unit.id);
+}
+function switchSentence(index){
+  sIdx=index;
+  renderSentence();
+  renderList();
+  renderDots();
 }
 
 function setRecUi(state,msg){
@@ -569,18 +603,25 @@ function drawContour(syl,zh){
 function renderTabs(){
   const t=document.getElementById('tabs');
   t.innerHTML=decks.map((d,i)=>`<button class="tab ${i===dIdx?'on':''}" data-i="${i}"><span class="cn">${d.name}</span></button>`).join('');
-  t.querySelectorAll('.tab').forEach(b=>b.addEventListener('click',()=>{dIdx=+b.dataset.i;sIdx=0;renderAll();}));
+  t.querySelectorAll('.tab').forEach(b=>b.addEventListener('click',()=>{dIdx=+b.dataset.i;uIdx=firstUsefulUnitIndex(decks[dIdx]);sIdx=0;renderAll();}));
   document.getElementById('deckNote').textContent=decks[dIdx].full?'':'// 种子句，想补满可以让我继续加';
+}
+function renderUnitTabs(){
+  const wrap=document.getElementById('unitTabs');
+  const units=unitsForDeck(decks[dIdx]);
+  if(uIdx>=units.length)uIdx=0;
+  wrap.innerHTML=units.map((unit,i)=>`<button class="unit-tab ${i===uIdx?'on':''}" data-i="${i}">${unit.name}</button>`).join('');
+  wrap.querySelectorAll('.unit-tab').forEach(b=>b.addEventListener('click',()=>{uIdx=+b.dataset.i;sIdx=0;renderSentence();renderList();renderDots();renderUnitTabs();}));
 }
 function renderDots(){
   const d=document.getElementById('dots');
-  d.innerHTML=(decks[dIdx].sents||[]).map((_,i)=>`<span class="dot ${i===sIdx?'on':''}" data-i="${i}"></span>`).join('');
-  d.querySelectorAll('.dot').forEach(x=>x.addEventListener('click',()=>{sIdx=+x.dataset.i;renderSentence();renderList();renderDots();}));
+  d.innerHTML=currentSents().map((_,i)=>`<span class="dot ${i===sIdx?'on':''}" data-i="${i}"></span>`).join('');
+  d.querySelectorAll('.dot').forEach(x=>x.addEventListener('click',()=>switchSentence(+x.dataset.i)));
 }
 function renderSentence(){
   const sec=document.getElementById('sentence');sec.classList.add('swap');
   setTimeout(()=>{
-    const s=decks[dIdx].sents[sIdx];
+    const s=currentSents()[sIdx];
     if(!s){
       document.getElementById('sPy').textContent='';
       document.getElementById('sZh').textContent='No sentences yet';
@@ -599,11 +640,11 @@ function renderSentence(){
 }
 function renderList(){
   const l=document.getElementById('list');
-  const sents=decks[dIdx].sents||[];
+  const sents=currentSents();
   const meta=document.getElementById('listMeta');
-  if(meta)meta.textContent=`${decks[dIdx].name} · ${sents.length} sentences`;
+  if(meta)meta.textContent=`${decks[dIdx].name} / ${currentUnit().name} · ${sents.length} sentences`;
   l.innerHTML=sents.length?sents.map((s,i)=>`<div class="item ${i===sIdx?'on':''}" data-i="${i}"><div><div class="zh cn">${s.zh}</div><div class="py">${s.syl.map(x=>x.p).join(' ')}</div></div><div class="mini">${String(i+1).padStart(2,'0')}</div></div>`).join(''):'<div class="item"><div><div class="zh">No sentences yet</div><div class="py">Use Admin to add training content.</div></div><div class="mini">--</div></div>';
-  l.querySelectorAll('.item[data-i]').forEach(it=>it.addEventListener('click',()=>{sIdx=+it.dataset.i;renderSentence();renderList();renderDots();}));
+  l.querySelectorAll('.item[data-i]').forEach(it=>it.addEventListener('click',()=>switchSentence(+it.dataset.i)));
 }
 function setListOpen(open){
   listOpen=open;
@@ -611,7 +652,7 @@ function setListOpen(open){
   document.getElementById('listToggle').textContent=listOpen?'HIDE':'SHOW';
 }
 function applyEn(){document.getElementById('sEn').classList.toggle('hide',!showEn);}
-function renderAll(){renderTabs();renderSentence();renderList();renderDots();}
+function renderAll(){renderTabs();renderUnitTabs();renderSentence();renderList();renderDots();}
 function init(){if(hasAudio()){document.getElementById('voiceRow').style.display='none';document.getElementById('ttsOff').style.display='none';}renderAll();}
 
 document.getElementById('play').addEventListener('click',play);
@@ -620,16 +661,16 @@ document.getElementById('recStop').addEventListener('click',stopRecording);
 document.getElementById('recPlay').addEventListener('click',playSelfRecording);
 document.getElementById('mode').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;document.querySelectorAll('#mode button').forEach(x=>x.classList.remove('on'));b.classList.add('on');speedMode=b.dataset.m;});
 document.getElementById('voicePick').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;document.querySelectorAll('#voicePick button').forEach(x=>x.classList.remove('on'));b.classList.add('on');voiceKey=b.dataset.v;});
-document.getElementById('prev').addEventListener('click',()=>{const n=decks[dIdx].sents.length;if(!n)return;sIdx=(sIdx-1+n)%n;renderSentence();renderList();renderDots();});
-document.getElementById('next').addEventListener('click',()=>{const n=decks[dIdx].sents.length;if(!n)return;sIdx=(sIdx+1)%n;renderSentence();renderList();renderDots();});
+document.getElementById('prev').addEventListener('click',()=>{const n=currentSents().length;if(!n)return;switchSentence((sIdx-1+n)%n);});
+document.getElementById('next').addEventListener('click',()=>{const n=currentSents().length;if(!n)return;switchSentence((sIdx+1)%n);});
 document.getElementById('langBtn').addEventListener('click',()=>{showEn=!showEn;document.getElementById('langBtn').textContent=showEn?'中文':'EN';applyEn();});
 document.getElementById('themeBtn').addEventListener('click',()=>{document.body.classList.toggle('noscan');});
 document.getElementById('listHead').addEventListener('click',()=>setListOpen(!listOpen));
 document.addEventListener('keydown',e=>{
   if(app.style.display==='none')return;
   if(e.code==='Space'){e.preventDefault();play();}
-  else if(e.code==='ArrowRight'){const n=decks[dIdx].sents.length;if(!n)return;sIdx=(sIdx+1)%n;renderSentence();renderList();renderDots();}
-  else if(e.code==='ArrowLeft'){const n=decks[dIdx].sents.length;if(!n)return;sIdx=(sIdx-1+n)%n;renderSentence();renderList();renderDots();}
+  else if(e.code==='ArrowRight'){const n=currentSents().length;if(!n)return;switchSentence((sIdx+1)%n);}
+  else if(e.code==='ArrowLeft'){const n=currentSents().length;if(!n)return;switchSentence((sIdx-1+n)%n);}
 });
 </script>
 </body>
