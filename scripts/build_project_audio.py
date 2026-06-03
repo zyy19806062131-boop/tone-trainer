@@ -57,9 +57,9 @@ async def synth(text, voice, rate, path):
     for attempt in range(1, 4):
         try:
             comm = edge_tts.Communicate(text, voice, rate=rate)
-            await comm.save(str(path))
+            await asyncio.wait_for(comm.save(str(path)), timeout=45)
             return
-        except Exception as exc:
+        except (asyncio.TimeoutError, Exception) as exc:
             last_error = exc
             if path.exists():
                 path.unlink()
@@ -69,7 +69,7 @@ async def synth(text, voice, rate, path):
 
 
 async def list_voices():
-    voices = await edge_tts.list_voices()
+    voices = await asyncio.wait_for(edge_tts.list_voices(), timeout=45)
     for voice in sorted(v["ShortName"] for v in voices if v["ShortName"].startswith("zh-CN")):
         print(voice)
 
@@ -80,7 +80,7 @@ async def build(deck_ids, force):
     if not decks:
         raise SystemExit("No matching decks.")
 
-    available = {v["ShortName"] for v in await edge_tts.list_voices()}
+    available = {v["ShortName"] for v in await asyncio.wait_for(edge_tts.list_voices(), timeout=45)}
     needed = {voice for deck in decks for voice in deck_voice_set(deck["id"]).values()}
     missing = sorted(needed - available)
     if missing:
@@ -114,7 +114,7 @@ async def build(deck_ids, force):
         normal_path.unlink(missing_ok=True)
         slow_path.unlink(missing_ok=True)
         done += 2
-        print(f"[{done}/{total}] {deck_id} {sid} {key}: {text}")
+        print(f"[{done}/{total}] {deck_id} {sid} {key}: {text}", flush=True)
 
     try:
         TMP_DIR.rmdir()
