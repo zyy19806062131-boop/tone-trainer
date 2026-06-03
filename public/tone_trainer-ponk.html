@@ -201,7 +201,14 @@ header{display:flex;justify-content:space-between;align-items:flex-start;gap:14p
 .dot.on{background:var(--accent);box-shadow:0 0 10px var(--glow);transform:scale(1.25)}
 .kbd{text-align:center;font-family:var(--mono);font-size:.66rem;color:var(--soft);opacity:.6;margin-top:16px;letter-spacing:.1em;text-transform:uppercase}
 
-.list{margin-top:22px;display:flex;flex-direction:column;gap:8px}
+.list-panel{margin-top:22px;border:1px solid var(--line-2);background:rgba(5,217,232,.035);border-radius:2px;overflow:hidden}
+.list-head{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 14px;cursor:pointer;user-select:none}
+.list-title{font-family:var(--mono);font-size:.74rem;letter-spacing:.14em;text-transform:uppercase;color:var(--accent)}
+.list-meta{font-family:var(--mono);font-size:.68rem;color:var(--soft);margin-left:8px;letter-spacing:.08em}
+.list-toggle{font-family:var(--mono);font-size:.68rem;color:var(--soft);border:1px solid var(--line-2);padding:5px 8px;background:rgba(5,217,232,.04)}
+.list-panel.open .list-toggle{color:var(--accent);border-color:var(--accent)}
+.list{display:none;max-height:330px;overflow:auto;border-top:1px solid var(--line-2);padding:10px;flex-direction:column;gap:8px}
+.list-panel.open .list{display:flex}
 .item{display:flex;justify-content:space-between;align-items:center;gap:10px;background:rgba(5,217,232,.035);border:1px solid var(--line-2);border-radius:2px;padding:12px 16px;cursor:pointer;transition:.2s}
 .item:hover{border-color:var(--accent);transform:translateX(3px);box-shadow:0 0 16px rgba(5,217,232,.18)}
 .item.on{border-color:var(--accent);background:rgba(5,217,232,.1)}
@@ -329,7 +336,13 @@ header{display:flex;justify-content:space-between;align-items:flex-start;gap:14p
     <div class="kbd">SPACE play · ◄ ► switch</div>
   </div>
 
-  <div class="list" id="list"></div>
+  <div class="list-panel" id="listPanel">
+    <div class="list-head" id="listHead">
+      <div><span class="list-title">Sentence Bank</span><span class="list-meta" id="listMeta"></span></div>
+      <span class="list-toggle" id="listToggle">SHOW</span>
+    </div>
+    <div class="list" id="list"></div>
+  </div>
 
   <div class="legend">
     <b>How to read the tone cells:</b> each Chinese character has its own cell showing the standard tone shape: Tone 1 is high and level, Tone 2 rises, Tone 3 dips, Tone 4 falls, and the neutral tone is a dot.
@@ -347,6 +360,7 @@ let decks=[];
 let dIdx=0,sIdx=0,showEn=false,speedMode='n',voiceKey='f',hlTimers=[];
 let recStream=null,recorder=null,recChunks=[],selfAudioUrl='',selfAudio=null;
 const VOICE_LABELS={f:'女声',m:'男声',k:'儿童'};
+let listOpen=false;
 
 const gate=document.getElementById('gate'),app=document.getElementById('app');
 function applyAccess(payload){
@@ -564,8 +578,15 @@ function renderSentence(){
 function renderList(){
   const l=document.getElementById('list');
   const sents=decks[dIdx].sents||[];
+  const meta=document.getElementById('listMeta');
+  if(meta)meta.textContent=`${decks[dIdx].name} · ${sents.length} sentences`;
   l.innerHTML=sents.length?sents.map((s,i)=>`<div class="item ${i===sIdx?'on':''}" data-i="${i}"><div><div class="zh cn">${s.zh}</div><div class="py">${s.syl.map(x=>x.p).join(' ')}</div></div><div class="mini">${String(i+1).padStart(2,'0')}</div></div>`).join(''):'<div class="item"><div><div class="zh">No sentences yet</div><div class="py">Use Admin to add training content.</div></div><div class="mini">--</div></div>';
   l.querySelectorAll('.item[data-i]').forEach(it=>it.addEventListener('click',()=>{sIdx=+it.dataset.i;renderSentence();renderList();renderDots();}));
+}
+function setListOpen(open){
+  listOpen=open;
+  document.getElementById('listPanel').classList.toggle('open',listOpen);
+  document.getElementById('listToggle').textContent=listOpen?'HIDE':'SHOW';
 }
 function applyEn(){document.getElementById('sEn').classList.toggle('hide',!showEn);}
 function renderAll(){renderTabs();renderSentence();renderList();renderDots();}
@@ -581,6 +602,7 @@ document.getElementById('prev').addEventListener('click',()=>{const n=decks[dIdx
 document.getElementById('next').addEventListener('click',()=>{const n=decks[dIdx].sents.length;if(!n)return;sIdx=(sIdx+1)%n;renderSentence();renderList();renderDots();});
 document.getElementById('langBtn').addEventListener('click',()=>{showEn=!showEn;document.getElementById('langBtn').textContent=showEn?'中文':'EN';applyEn();});
 document.getElementById('themeBtn').addEventListener('click',()=>{document.body.classList.toggle('noscan');});
+document.getElementById('listHead').addEventListener('click',()=>setListOpen(!listOpen));
 document.addEventListener('keydown',e=>{
   if(app.style.display==='none')return;
   if(e.code==='Space'){e.preventDefault();play();}
