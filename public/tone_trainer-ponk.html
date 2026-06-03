@@ -439,18 +439,40 @@ function runHl(n,durMs){
     if(i===n-1)hlTimers.push(setTimeout(clearHl,step));
   },i*step));}
 }
+function audioNotice(msg){
+  const el=document.getElementById('ttsOff');
+  el.textContent=msg;
+  el.style.display='block';
+}
+function speakFallback(s,n,msg){
+  if(msg)audioNotice(msg);
+  clearHl();
+  if(hasTTS){
+    speechSynthesis.cancel();
+    const u=new SpeechSynthesisUtterance(s.zh);
+    if(chosen){u.voice=chosen;u.lang=chosen.lang;}else{u.lang='zh-CN';}
+    u.rate=(speedMode==='s')?0.6:0.95;
+    speechSynthesis.speak(u);
+  }else{
+    audioNotice('No playable audio or Chinese TTS on this device.');
+  }
+  runHl(n,(speedMode==='s'?n*620:n*400));
+}
 function play(){
-  const s=decks[dIdx]&&decks[dIdx].sents[sIdx];if(!s)return;
+  const s=decks[dIdx]&&decks[dIdx].sents[sIdx];
+  if(!s){audioNotice('This project has no sentences yet.');return;}
   const a=AUDIO[s.id];const n=s.syl.length;
   if(selfAudio){selfAudio.pause();selfAudio.currentTime=0;}
   if(a&&a[voiceKey]&&a[voiceKey][speedMode]){
     const au=new Audio(a[voiceKey][speedMode]);
+    let failed=false;
+    const fallback=()=>{if(failed)return;failed=true;speakFallback(s,n,'Audio playback failed. Using fallback voice.');};
     au.addEventListener('loadedmetadata',()=>runHl(n,(au.duration||n*0.5)*1000));
-    au.play().catch(()=>{});
+    au.addEventListener('error',fallback,{once:true});
+    au.play().then(()=>{document.getElementById('ttsOff').style.display='none';}).catch(fallback);
     return;
   }
-  if(hasTTS){speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(s.zh);if(chosen){u.voice=chosen;u.lang=chosen.lang;}else{u.lang='zh-CN';}u.rate=(speedMode==='s')?0.6:0.95;speechSynthesis.speak(u);}
-  runHl(n,(speedMode==='s'?n*620:n*400));
+  speakFallback(s,n,'No embedded audio for this sentence. Using fallback voice.');
 }
 
 function setRecUi(state,msg){
