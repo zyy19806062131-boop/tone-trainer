@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Tone Trainer Admin</title>
+<style>
+:root{
+  --bg:#071019;--panel:#0e1b2a;--panel2:#12263b;--ink:#e8fbff;--muted:#8aa9bd;
+  --line:#23445f;--cyan:#12d7e8;--pink:#ff3b7d;--green:#49e08a;--yellow:#f4d35e;
+  --cjk:"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;background:
+  linear-gradient(135deg,rgba(18,215,232,.08),transparent 35%),
+  radial-gradient(circle at 80% 0,rgba(255,59,125,.12),transparent 30%),
+  var(--bg);color:var(--ink);font-family:Inter,system-ui,var(--cjk),sans-serif}
+button,input{font:inherit}
+.wrap{max-width:1180px;margin:0 auto;padding:28px 18px 64px}
+header{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:22px}
+h1{font-size:clamp(1.7rem,4vw,2.8rem);margin:0;letter-spacing:.02em}
+.sub{color:var(--muted);margin-top:6px}
+.chip{border:1px solid var(--line);background:rgba(18,215,232,.06);color:var(--cyan);padding:8px 10px;border-radius:6px;font-size:.84rem}
+.login{max-width:420px;margin:14vh auto 0;padding:24px;border:1px solid var(--line);background:rgba(14,27,42,.86);box-shadow:0 0 50px rgba(18,215,232,.08)}
+.login h2{margin:0 0 12px}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+input[type=text],input[type=password]{width:100%;padding:11px 12px;border:1px solid var(--line);border-radius:6px;background:#081522;color:var(--ink);outline:none}
+input:focus{border-color:var(--cyan);box-shadow:0 0 0 3px rgba(18,215,232,.12)}
+button{border:1px solid var(--line);background:var(--panel2);color:var(--ink);border-radius:6px;padding:10px 13px;cursor:pointer}
+button.primary{background:var(--cyan);border-color:var(--cyan);color:#031014;font-weight:700}
+button.danger{border-color:rgba(255,59,125,.55);color:#ffd9e5;background:rgba(255,59,125,.12)}
+button.ghost{background:transparent}
+.err{color:#ff95b6;min-height:1.2em;margin-top:10px}
+.grid{display:grid;grid-template-columns:1.2fr .8fr;gap:18px}
+.card{border:1px solid var(--line);background:rgba(14,27,42,.84);border-radius:8px;overflow:hidden}
+.card h2{margin:0;padding:16px 18px;border-bottom:1px solid var(--line);font-size:1.05rem}
+.body{padding:16px 18px}
+.muted{color:var(--muted)}
+.table{width:100%;border-collapse:collapse}
+.table th,.table td{text-align:left;padding:12px 10px;border-bottom:1px solid rgba(35,68,95,.75);vertical-align:top}
+.table th{font-size:.78rem;color:var(--muted);text-transform:uppercase;letter-spacing:.08em}
+.table code{color:var(--yellow)}
+.deck-list{display:grid;gap:10px}
+.deck{display:flex;justify-content:space-between;gap:12px;padding:12px;border:1px solid rgba(35,68,95,.75);border-radius:7px;background:rgba(18,38,59,.45)}
+.deck b{font-family:var(--cjk)}
+.form{display:grid;gap:12px}
+.checks{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px}
+label.check{display:flex;gap:8px;align-items:center;padding:9px;border:1px solid rgba(35,68,95,.75);border-radius:6px;background:rgba(8,21,34,.65)}
+.actions{display:flex;gap:8px;flex-wrap:wrap}
+.hidden{display:none!important}
+@media(max-width:850px){.grid{grid-template-columns:1fr}header{display:block}.chip{display:inline-block;margin-top:12px}}
+</style>
+</head>
+<body>
+<main class="wrap">
+  <section id="login" class="login">
+    <h2>Admin Access</h2>
+    <p class="muted">输入管理员口令，管理学生 code 和可见项目。</p>
+    <div class="row">
+      <input id="adminCode" type="password" placeholder="Admin code" autocomplete="current-password">
+      <button class="primary" id="loginBtn">登录</button>
+    </div>
+    <div class="err" id="loginErr"></div>
+  </section>
+
+  <section id="app" class="hidden">
+    <header>
+      <div>
+        <h1>Training Admin</h1>
+        <div class="sub">管理口令权限；训练项目内容仍保存在私有 JSON 里。</div>
+      </div>
+      <div class="chip" id="status">CONNECTED</div>
+    </header>
+
+    <div class="grid">
+      <section class="card">
+        <h2>口令权限</h2>
+        <div class="body">
+          <table class="table">
+            <thead><tr><th>Code</th><th>Label</th><th>Projects</th><th></th></tr></thead>
+            <tbody id="codesTable"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <aside class="card">
+        <h2 id="formTitle">新增 / 修改口令</h2>
+        <div class="body">
+          <div class="form">
+            <label>Code <input id="codeInput" type="text" placeholder="studentA2026"></label>
+            <label>显示名称 <input id="labelInput" type="text" placeholder="STUDENT A"></label>
+            <label class="check"><input id="allDecks" type="checkbox"> 允许全部项目</label>
+            <div class="checks" id="deckChecks"></div>
+            <div class="actions">
+              <button class="primary" id="saveBtn">保存口令</button>
+              <button class="ghost" id="clearBtn">清空</button>
+            </div>
+            <div class="err" id="formErr"></div>
+          </div>
+        </div>
+      </aside>
+
+      <section class="card">
+        <h2>训练项目</h2>
+        <div class="body deck-list" id="deckList"></div>
+      </section>
+    </div>
+  </section>
+</main>
+
+<script>
+const login = document.getElementById('login');
+const app = document.getElementById('app');
+const adminCodeInput = document.getElementById('adminCode');
+const loginErr = document.getElementById('loginErr');
+const codesTable = document.getElementById('codesTable');
+const deckChecks = document.getElementById('deckChecks');
+const deckList = document.getElementById('deckList');
+const codeInput = document.getElementById('codeInput');
+const labelInput = document.getElementById('labelInput');
+const allDecksInput = document.getElementById('allDecks');
+const formErr = document.getElementById('formErr');
+let adminCode = sessionStorage.getItem('toneAdminCode') || '';
+let decks = [];
+let accessCodes = {};
+
+function adminHeaders(){
+  return {'Content-Type':'application/json','X-Admin-Code':adminCode};
+}
+async function jsonFetch(url, options={}){
+  const res = await fetch(url, options);
+  const payload = await res.json().catch(()=>({}));
+  if(!res.ok) throw new Error(payload.error || '请求失败');
+  return payload;
+}
+function deckName(id){
+  const deck = decks.find(d=>d.id===id);
+  return deck ? deck.name : id;
+}
+function renderDecks(){
+  deckList.innerHTML = decks.map(d=>`<div class="deck"><div><b>${d.name}</b><div class="muted">${d.id}</div></div><span>${d.sentenceCount} 句</span></div>`).join('');
+  deckChecks.innerHTML = decks.map(d=>`<label class="check"><input type="checkbox" value="${d.id}"> ${d.name}</label>`).join('');
+}
+function renderCodes(){
+  codesTable.innerHTML = Object.entries(accessCodes).map(([code,profile])=>{
+    const projectText = profile.decks === 'all' ? '全部项目' : profile.decks.map(deckName).join('、');
+    return `<tr>
+      <td><code>${code}</code></td>
+      <td>${profile.label || ''}</td>
+      <td>${projectText}</td>
+      <td class="actions">
+        <button data-edit="${code}">编辑</button>
+        <button class="danger" data-delete="${code}">删除</button>
+      </td>
+    </tr>`;
+  }).join('');
+}
+async function loadOverview(){
+  const payload = await jsonFetch('/api/admin/overview', {headers: adminHeaders()});
+  decks = payload.decks || [];
+  accessCodes = payload.accessCodes || {};
+  renderDecks();
+  renderCodes();
+}
+function editCode(code){
+  const profile = accessCodes[code];
+  if(!profile) return;
+  codeInput.value = code;
+  labelInput.value = profile.label || '';
+  allDecksInput.checked = profile.decks === 'all';
+  const allowed = new Set(Array.isArray(profile.decks) ? profile.decks : []);
+  deckChecks.querySelectorAll('input').forEach(input=>input.checked = allowed.has(input.value));
+}
+function clearForm(){
+  codeInput.value = '';
+  labelInput.value = '';
+  allDecksInput.checked = false;
+  deckChecks.querySelectorAll('input').forEach(input=>input.checked = false);
+  formErr.textContent = '';
+}
+async function saveCode(){
+  const checked = [...deckChecks.querySelectorAll('input:checked')].map(input=>input.value);
+  const body = {
+    code: codeInput.value.trim(),
+    label: labelInput.value.trim(),
+    decks: allDecksInput.checked ? 'all' : checked
+  };
+  formErr.textContent = '保存中...';
+  const payload = await jsonFetch('/api/admin/access-code', {
+    method:'POST',
+    headers: adminHeaders(),
+    body: JSON.stringify(body)
+  });
+  accessCodes = payload.accessCodes || {};
+  renderCodes();
+  formErr.textContent = '已保存';
+}
+async function deleteCode(code){
+  if(!confirm(`删除口令 ${code}？`)) return;
+  const payload = await jsonFetch('/api/admin/access-code/delete', {
+    method:'POST',
+    headers: adminHeaders(),
+    body: JSON.stringify({code})
+  });
+  accessCodes = payload.accessCodes || {};
+  renderCodes();
+  if(codeInput.value.trim() === code) clearForm();
+}
+async function doLogin(){
+  adminCode = adminCodeInput.value.trim();
+  loginErr.textContent = '验证中...';
+  try{
+    await jsonFetch('/api/admin/login', {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({code:adminCode})
+    });
+    sessionStorage.setItem('toneAdminCode', adminCode);
+    login.classList.add('hidden');
+    app.classList.remove('hidden');
+    await loadOverview();
+  }catch(err){
+    loginErr.textContent = err.message;
+  }
+}
+document.getElementById('loginBtn').addEventListener('click', doLogin);
+adminCodeInput.addEventListener('keydown', e=>{if(e.key==='Enter')doLogin();});
+document.getElementById('saveBtn').addEventListener('click', ()=>saveCode().catch(err=>formErr.textContent=err.message));
+document.getElementById('clearBtn').addEventListener('click', clearForm);
+codesTable.addEventListener('click', e=>{
+  const edit = e.target.closest('[data-edit]');
+  const del = e.target.closest('[data-delete]');
+  if(edit) editCode(edit.dataset.edit);
+  if(del) deleteCode(del.dataset.delete).catch(err=>formErr.textContent=err.message);
+});
+if(adminCode){
+  adminCodeInput.value = adminCode;
+  doLogin();
+}
+</script>
+</body>
+</html>

@@ -12,11 +12,32 @@ BASE_DIR = Path(__file__).resolve().parent
 ROOT = (BASE_DIR / "public").resolve()
 DATA_PATH = BASE_DIR / "data" / "trainer_data.private.json"
 CODES_PATH = BASE_DIR / "data" / "access_codes.private.json"
+ADMIN_CODE = os.environ.get("ADMIN_CODE", "admin2026")
 
 
 def load_json(path):
     with path.open("r", encoding="utf-8") as f:
         return json.load(f)
+
+
+def save_json(path, payload):
+    temp_path = path.with_suffix(path.suffix + ".tmp")
+    with temp_path.open("w", encoding="utf-8") as f:
+        json.dump(payload, f, ensure_ascii=False, indent=2)
+        f.write("\n")
+    temp_path.replace(path)
+
+
+def deck_summaries():
+    data = load_json(DATA_PATH)
+    return [
+        {
+            "id": deck.get("id"),
+            "name": deck.get("name"),
+            "sentenceCount": len(deck.get("sents", [])),
+        }
+        for deck in data.get("decks", [])
+    ]
 
 
 def build_payload(code):
@@ -68,36 +89,133 @@ class ToneTrainerHandler(BaseHTTPRequestHandler):
         self.end_headers()
         self.wfile.write(body)
 
+    def read_json_body(self, max_length=16384):
+        length = int(self.headers.get("Content-Length", "0") or "0")
+        if length > max_length:
+            raise ValueError("请求太大")
+        raw = self.rfile.read(length).decode("utf-8")
+        return json.loads(raw or "{}")
+
+    def is_admin_request(self):
+        return self.headers.get("X-Admin-Code", "").strip() == ADMIN_CODE
+
+    def require_admin(self):
+        if self.is_admin_request():
+            return True
+        self.send_json(HTTPStatus.UNAUTHORIZED, {"error": "管理员口令不对"})
+        return False
+
+    def admin_overview(self):
+        self.send_json(
+            HTTPStatus.OK,
+            {
+                "decks": deck_summaries(),
+                "accessCodes": load_json(CODES_PATH),
+            },
+        )
+
+    def save_access_code(self, body):
+        code = str(body.get("code", "")).strip()
+        label = str(body.get("label", "")).strip()
+        decks = body.get("decks")
+        deck_ids = {deck["id"] for deck in deck_summaries() if deck.get("id")}
+
+        if not code:
+            self.send_json(HTTPStatus.BAD_REQUEST, {"error": "code 不能为空"})
+            return
+        if not label:
+            self.send_json(HTTPStatus.BAD_REQUEST, {"error": "label 不能为空"})
+            return
+        if decks != "all":
+            if not isinstance(decks, list) or not decks:
+                self.send_json(HTTPStatus.BAD_REQUEST, {"error": "至少选择一个项目"})
+                return
+            unknown = [deck_id for deck_id in decks if deck_id not in deck_ids]
+            if unknown:
+                self.send_json(HTTPStatus.BAD_REQUEST, {"error": "项目不存在: " + ", ".join(unknown)})
+                return
+
+        access_codes = load_json(CODES_PATH)
+        access_codes[code] = {"label": label, "decks": decks}
+        save_json(CODES_PATH, access_codes)
+        self.send_json(HTTPStatus.OK, {"ok": True, "accessCodes": access_codes})
+
+    def delete_access_code(self, body):
+        code = str(body.get("code", "")).strip()
+        access_codes = load_json(CODES_PATH)
+        if code not in access_codes:
+            self.send_json(HTTPStatus.NOT_FOUND, {"error": "code 不存在"})
+            return
+        del access_codes[code]
+        save_json(CODES_PATH, access_codes)
+        self.send_json(HTTPStatus.OK, {"ok": True, "accessCodes": access_codes})
+
     def do_POST(self):
+        if self.path == "/api/login":
+            try:
+                body = self.read_json_body(4096)
+            except ValueError as err:
+                self.send_json(HTTPStatus.REQUEST_ENTITY_TOO_LARGE, {"error": str(err)})
+                return
+            except Exception:
+                self.send_json(HTTPStatus.BAD_REQUEST, {"error": "请求格式不对"})
+                return
+
+            code = str(body.get("code", "")).strip()
+            payload = build_payload(code)
+            if not payload:
+                self.send_json(HTTPStatus.UNAUTHORIZED, {"error": "口令不对"})
+                return
+
+            self.send_json(HTTPStatus.OK, payload)
+            return
+
+        if self.path == "/api/admin/login":
+            try:
+                body = self.read_json_body(4096)
+            except Exception:
+                self.send_json(HTTPStatus.BAD_REQUEST, {"error": "请求格式不对"})
+                return
+            if str(body.get("code", "")).strip() != ADMIN_CODE:
+                self.send_json(HTTPStatus.UNAUTHORIZED, {"error": "管理员口令不对"})
+                return
+            self.send_json(HTTPStatus.OK, {"ok": True})
+            return
+
+        if self.path == "/api/admin/access-code":
+            if not self.require_admin():
+                return
+            try:
+                self.save_access_code(self.read_json_body())
+            except Exception:
+                self.send_json(HTTPStatus.BAD_REQUEST, {"error": "请求格式不对"})
+            return
+
+        if self.path == "/api/admin/access-code/delete":
+            if not self.require_admin():
+                return
+            try:
+                self.delete_access_code(self.read_json_body())
+            except Exception:
+                self.send_json(HTTPStatus.BAD_REQUEST, {"error": "请求格式不对"})
+            return
+
         if self.path != "/api/login":
             self.send_json(HTTPStatus.NOT_FOUND, {"error": "接口不存在"})
             return
-
-        length = int(self.headers.get("Content-Length", "0") or "0")
-        if length > 4096:
-            self.send_json(HTTPStatus.REQUEST_ENTITY_TOO_LARGE, {"error": "请求太大"})
-            return
-
-        try:
-            raw = self.rfile.read(length).decode("utf-8")
-            body = json.loads(raw or "{}")
-        except Exception:
-            self.send_json(HTTPStatus.BAD_REQUEST, {"error": "请求格式不对"})
-            return
-
-        code = str(body.get("code", "")).strip()
-        payload = build_payload(code)
-        if not payload:
-            self.send_json(HTTPStatus.UNAUTHORIZED, {"error": "口令不对"})
-            return
-
-        self.send_json(HTTPStatus.OK, payload)
 
     def do_GET(self):
         parsed = urlparse(self.path)
         request_path = unquote(parsed.path)
         if request_path == "/":
             request_path = "/tone_trainer-ponk.html"
+        if request_path == "/admin":
+            request_path = "/admin.html"
+        if request_path == "/api/admin/overview":
+            if not self.require_admin():
+                return
+            self.admin_overview()
+            return
 
         target = (ROOT / request_path.lstrip("/")).resolve()
         if (

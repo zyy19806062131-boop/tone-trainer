@@ -14,6 +14,20 @@ Then open:
 http://127.0.0.1:8765/tone_trainer-ponk.html
 ```
 
+Admin page:
+
+```text
+http://127.0.0.1:8765/admin
+```
+
+Default local admin code:
+
+```text
+admin2026
+```
+
+For deployment, set the `ADMIN_CODE` environment variable in your host dashboard.
+
 ## Edit Access Codes
 
 Edit:
@@ -61,4 +75,3 @@ The `id` is what access codes reference.
 Use a private GitHub repository if you want to keep access codes, training content, or embedded voice audio hidden from the public.
 
 GitHub Pages alone is not enough for protected login because it only serves static files. This project needs the Python backend in `server.py`, so deploy it to a backend host such as Render, Railway, Fly.io, or a VPS.
-
