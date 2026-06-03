@@ -30,6 +30,17 @@ For deployment, set the `ADMIN_CODE` environment variable in your host dashboard
 
 The admin page can manage access codes and sentence content. Newly added sentences can be practiced immediately; if no embedded voice audio exists for that sentence, the trainer falls back to browser speech synthesis.
 
+## Build Voice Audio
+
+HSK decks use female and male voices. YCT decks use the child voice.
+
+```bash
+python3 scripts/build_project_audio.py --deck hsk1
+python3 scripts/build_project_audio.py --deck yct1
+```
+
+Use `--force` to regenerate audio that already exists.
+
 ## Edit Access Codes
 
 Edit:

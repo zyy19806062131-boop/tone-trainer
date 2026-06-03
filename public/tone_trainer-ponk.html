@@ -346,12 +346,14 @@ const allDecks=[];
 let decks=[];
 let dIdx=0,sIdx=0,showEn=false,speedMode='n',voiceKey='f',hlTimers=[];
 let recStream=null,recorder=null,recChunks=[],selfAudioUrl='',selfAudio=null;
+const VOICE_LABELS={f:'女声',m:'男声',k:'儿童'};
 
 const gate=document.getElementById('gate'),app=document.getElementById('app');
 function applyAccess(payload){
   AUDIO=payload.audio||{};
   decks=payload.decks||[];
   dIdx=0;sIdx=0;
+  syncVoiceButtons();
   const label=document.getElementById('accessLabel');
   if(label)label.textContent=`${payload.label||'ACCESS GRANTED'} · ${decks.length} MODULE${decks.length>1?'S':''}`;
 }
@@ -379,6 +381,22 @@ document.getElementById('enter').addEventListener('click',tryEnter);
 document.getElementById('pw').addEventListener('keydown',e=>{if(e.key==='Enter')tryEnter();});
 
 function hasAudio(){return Object.keys(AUDIO).length>0;}
+function availableVoiceKeys(){
+  const keys=new Set();
+  Object.values(AUDIO).forEach(sentenceAudio=>Object.keys(sentenceAudio||{}).forEach(key=>keys.add(key)));
+  return [...keys].filter(key=>VOICE_LABELS[key]);
+}
+function syncVoiceButtons(){
+  const row=document.getElementById('voicePick');
+  const keys=availableVoiceKeys();
+  if(!keys.length){
+    row.innerHTML='<button class="on" data-v="f">女声</button><button data-v="m">男声</button><button data-v="k">儿童</button>';
+    voiceKey='f';
+    return;
+  }
+  if(!keys.includes(voiceKey))voiceKey=keys[0];
+  row.innerHTML=keys.map(key=>`<button class="${key===voiceKey?'on':''}" data-v="${key}">${VOICE_LABELS[key]}</button>`).join('');
+}
 const hasTTS='speechSynthesis' in window;
 let voices=[],chosen=null;
 function loadVoices(){
