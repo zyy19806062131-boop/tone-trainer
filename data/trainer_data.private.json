@@ -229,8 +229,1173 @@
     {
       "id": "hsk1",
       "name": "HSK1",
-      "full": false,
-      "sents": []
+      "full": true,
+      "sents": [
+        {
+          "id": "hsk1-001",
+          "zh": "你好",
+          "en": "Hello.",
+          "syl": [
+            {
+              "p": "ní",
+              "t": 2,
+              "s": "stress"
+            },
+            {
+              "p": "hǎo",
+              "t": 3,
+              "s": "stress"
+            }
+          ]
+        },
+        {
+          "id": "hsk1-002",
+          "zh": "你好吗",
+          "en": "How are you?",
+          "syl": [
+            {
+              "p": "nǐ",
+              "t": 5,
+              "s": "weak"
+            },
+            {
+              "p": "hǎo",
+              "t": 3,
+              "s": "stress"
+            },
+            {
+              "p": "ma",
+              "t": 0,
+              "s": "weak"
+            }
+          ]
+        },
+        {
+          "id": "hsk1-003",
+          "zh": "我很好",
+          "en": "I am very well.",
+          "syl": [
+            {
+              "p": "wǒ",
+              "t": 5,
+              "s": "weak"
+            },
+            {
+              "p": "hěn",
+              "t": 5
+            },
+            {
+              "p": "hǎo",
+              "t": 3,
+              "s": "stress"
+            }
+          ]
+        },
+        {
+          "id": "hsk1-004",
+          "zh": "你叫什么名字",
+          "en": "What is your name?",
+          "syl": [
+            {
+              "p": "nǐ",
+              "t": 5,
+              "s": "weak"
+            },
+            {
+              "p": "jiào",
+              "t": 4,
+              "s": "stress"
+            },
+            {
+              "p": "shén",
+              "t": 2,
+              "s": "stress"
+            },
+            {
+              "p": "me",
+              "t": 0,
+              "s": "weak"
+            },
+            {
+              "p": "míng",
+              "t": 2,
+              "s": "stress"
+            },
+            {
+              "p": "zi",
+              "t": 0,
+              "s": "weak"
+            }
+          ]
+        },
+        {
+          "id": "hsk1-005",
+          "zh": "我叫王明",
+          "en": "My name is Wang Ming.",
+          "syl": [
+            {
+              "p": "wǒ",
+              "t": 5,
+              "s": "weak"
+            },
+            {
+              "p": "jiào",
+              "t": 4,
+              "s": "stress"
+            },
+            {
+              "p": "wáng",
+              "t": 2,
+              "s": "stress"
+            },
+            {
+              "p": "míng",
+              "t": 2,
+              "s": "stress"
+            }
+          ]
+        },
+        {
+          "id": "hsk1-006",
+          "zh": "他是谁",
+          "en": "Who is he?",
+          "syl": [
+            {
+              "p": "tā",
+              "t": 1
+            },
+            {
+              "p": "shì",
+              "t": 4
+            },
+            {
+              "p": "shéi",
+              "t": 2,
+              "s": "stress"
+            }
+          ]
+        },
+        {
+          "id": "hsk1-007",
+          "zh": "她是我妈妈",
+          "en": "She is my mother.",
+          "syl": [
+            {
+              "p": "tā",
+              "t": 1
+            },
+            {
+              "p": "shì",
+              "t": 4
+            },
+            {
+              "p": "wǒ",
+              "t": 5,
+              "s": "weak"
+            },
+            {
+              "p": "mā",
+              "t": 1,
+              "s": "stress"
+            },
+            {
+              "p": "ma",
+              "t": 0,
+              "s": "weak"
+            }
+          ]
+        },
+        {
+          "id": "hsk1-008",
+          "zh": "这是我的书",
+          "en": "This is my book.",
+          "syl": [
+            {
+              "p": "zhè",
+              "t": 4,
+              "s": "stress"
+            },
+            {
+              "p": "shì",
+              "t": 4
+            },
+            {
+              "p": "wǒ",
+              "t": 5,
+              "s": "weak"
+            },
+            {
+              "p": "de",
+              "t": 0,
+              "s": "weak"
+            },
+            {
+              "p": "shū",
+              "t": 1,
+              "s": "stress"
+            }
+          ]
+        },
+        {
+          "id": "hsk1-009",
+          "zh": "那不是我的杯子",
+          "en": "That is not my cup.",
+          "syl": [
+            {
+              "p": "nà",
+              "t": 4,
+              "s": "stress"
+            },
+            {
+              "p": "bú",
+              "t": 2
+            },
+            {
+              "p": "shì",
+              "t": 4
+            },
+            {
+              "p": "wǒ",
+              "t": 5,
+              "s": "weak"
+            },
+            {
+              "p": "de",
+              "t": 0,
+              "s": "weak"
+            },
+            {
+              "p": "bēi",
+              "t": 1,
+              "s": "stress"
+            },
+            {
+              "p": "zi",
+              "t": 0,
+              "s": "weak"
+            }
+          ]
+        },
+        {
+          "id": "hsk1-010",
+          "zh": "你是哪国人",
+          "en": "Which country are you from?",
+          "syl": [
+            {
+              "p": "nǐ",
+              "t": 5,
+              "s": "weak"
+            },
+            {
+              "p": "shì",
+              "t": 4
+            },
+            {
+              "p": "nǎ",
+              "t": 3,
+              "s": "stress"
+            },
+            {
+              "p": "guó",
+              "t": 2,
+              "s": "stress"
+            },
+            {
+              "p": "rén",
+              "t": 2,
+              "s": "stress"
+            }
+          ]
+        },
+        {
+          "id": "hsk1-011",
+          "zh": "我是美国人",
+          "en": "I am American.",
+          "syl": [
+            {
+              "p": "wǒ",
+              "t": 5,
+              "s": "weak"
+            },
+            {
+              "p": "shì",
+              "t": 4
+            },
+            {
+              "p": "měi",
+              "t": 5,
+              "s": "stress"
+            },
+            {
+              "p": "guó",
+              "t": 2
+            },
+            {
+              "p": "rén",
+              "t": 2,
+              "s": "stress"
+            }
+          ]
+        },
+        {
+          "id": "hsk1-012",
+          "zh": "我会说汉语",
+          "en": "I can speak Chinese.",
+          "syl": [
+            {
+              "p": "wǒ",
+              "t": 5,
+              "s": "weak"
+            },
+            {
+              "p": "huì",
+              "t": 4,
+              "s": "stress"
+            },
+            {
+              "p": "shuō",
+              "t": 1
+            },
+            {
+              "p": "hàn",
+              "t": 4,
+              "s": "stress"
+            },
+            {
+              "p": "yǔ",
+              "t": 3
+            }
+          ]
+        },
+        {
+          "id": "hsk1-013",
+          "zh": "我会写汉字",
+          "en": "I can write Chinese characters.",
+          "syl": [
+            {
+              "p": "wǒ",
+              "t": 5,
+              "s": "weak"
+            },
+            {
+              "p": "huì",
+              "t": 4,
+              "s": "stress"
+            },
+            {
+              "p": "xiě",
+              "t": 3
+            },
+            {
+              "p": "hàn",
+              "t": 4,
+              "s": "stress"
+            },
+            {
+              "p": "zì",
+              "t": 4
+            }
+          ]
+        },
+        {
+          "id": "hsk1-014",
+          "zh": "你家有几口人",
+          "en": "How many people are in your family?",
+          "syl": [
+            {
+              "p": "nǐ",
+              "t": 5,
+              "s": "weak"
+            },
+            {
+              "p": "jiā",
+              "t": 1,
+              "s": "stress"
+            },
+            {
+              "p": "yǒu",
+              "t": 5
+            },
+            {
+              "p": "jǐ",
+              "t": 3,
+              "s": "stress"
+            },
+            {
+              "p": "kǒu",
+              "t": 5
+            },
+            {
+              "p": "rén",
+              "t": 2,
+              "s": "stress"
+            }
+          ]
+        },
+        {
+          "id": "hsk1-015",
+          "zh": "我家有三口人",
+          "en": "There are three people in my family.",
+          "syl": [
+            {
+              "p": "wǒ",
+              "t": 5,
+              "s": "weak"
+            },
+            {
+              "p": "jiā",
+              "t": 1,
+              "s": "stress"
+            },
+            {
+              "p": "yǒu",
+              "t": 5
+            },
+            {
+              "p": "sān",
+              "t": 1,
+              "s": "stress"
+            },
+            {
+              "p": "kǒu",
+              "t": 5
+            },
+            {
+              "p": "rén",
+              "t": 2,
+              "s": "stress"
+            }
+          ]
+        },
+        {
+          "id": "hsk1-016",
+          "zh": "今天星期几",
+          "en": "What day is today?",
+          "syl": [
+            {
+              "p": "jīn",
+              "t": 1
+            },
+            {
+              "p": "tiān",
+              "t": 1
+            },
+            {
+              "p": "xīng",
+              "t": 1,
+              "s": "stress"
+            },
+            {
+              "p": "qī",
+              "t": 1
+            },
+            {
+              "p": "jǐ",
+              "t": 3,
+              "s": "stress"
+            }
+          ]
+        },
+        {
+          "id": "hsk1-017",
+          "zh": "今天星期一",
+          "en": "Today is Monday.",
+          "syl": [
+            {
+              "p": "jīn",
+              "t": 1
+            },
+            {
+              "p": "tiān",
+              "t": 1
+            },
+            {
+              "p": "xīng",
+              "t": 1,
+              "s": "stress"
+            },
+            {
+              "p": "qī",
+              "t": 1
+            },
+            {
+              "p": "yī",
+              "t": 1,
+              "s": "stress"
+            }
+          ]
+        },
+        {
+          "id": "hsk1-018",
+          "zh": "现在几点",
+          "en": "What time is it now?",
+          "syl": [
+            {
+              "p": "xiàn",
+              "t": 4
+            },
+            {
+              "p": "zài",
+              "t": 4
+            },
+            {
+              "p": "jǐ",
+              "t": 3,
+              "s": "stress"
+            },
+            {
+              "p": "diǎn",
+              "t": 3,
+              "s": "stress"
+            }
+          ]
+        },
+        {
+          "id": "hsk1-019",
+          "zh": "现在八点半",
+          "en": "It is eight thirty now.",
+          "syl": [
+            {
+              "p": "xiàn",
+              "t": 4
+            },
+            {
+              "p": "zài",
+              "t": 4
+            },
+            {
+              "p": "bā",
+              "t": 1,
+              "s": "stress"
+            },
+            {
+              "p": "diǎn",
+              "t": 3
+            },
+            {
+              "p": "bàn",
+              "t": 4,
+              "s": "stress"
+            }
+          ]
+        },
+        {
+          "id": "hsk1-020",
+          "zh": "你想喝什么",
+          "en": "What would you like to drink?",
+          "syl": [
+            {
+              "p": "nǐ",
+              "t": 5,
+              "s": "weak"
+            },
+            {
+              "p": "xiǎng",
+              "t": 5,
+              "s": "stress"
+            },
+            {
+              "p": "hē",
+              "t": 1
+            },
+            {
+              "p": "shén",
+              "t": 2,
+              "s": "stress"
+            },
+            {
+              "p": "me",
+              "t": 0,
+              "s": "weak"
+            }
+          ]
+        },
+        {
+          "id": "hsk1-021",
+          "zh": "我想喝水",
+          "en": "I would like to drink water.",
+          "syl": [
+            {
+              "p": "wǒ",
+              "t": 5,
+              "s": "weak"
+            },
+            {
+              "p": "xiǎng",
+              "t": 5,
+              "s": "stress"
+            },
+            {
+              "p": "hē",
+              "t": 1
+            },
+            {
+              "p": "shuǐ",
+              "t": 3,
+              "s": "stress"
+            }
+          ]
+        },
+        {
+          "id": "hsk1-022",
+          "zh": "我喜欢喝茶",
+          "en": "I like drinking tea.",
+          "syl": [
+            {
+              "p": "wǒ",
+              "t": 5,
+              "s": "weak"
+            },
+            {
+              "p": "xǐ",
+              "t": 5,
+              "s": "stress"
+            },
+            {
+              "p": "huan",
+              "t": 0,
+              "s": "weak"
+            },
+            {
+              "p": "hē",
+              "t": 1
+            },
+            {
+              "p": "chá",
+              "t": 2,
+              "s": "stress"
+            }
+          ]
+        },
+        {
+          "id": "hsk1-023",
+          "zh": "这个多少钱",
+          "en": "How much is this?",
+          "syl": [
+            {
+              "p": "zhè",
+              "t": 4
+            },
+            {
+              "p": "ge",
+              "t": 0,
+              "s": "weak"
+            },
+            {
+              "p": "duō",
+              "t": 1,
+              "s": "stress"
+            },
+            {
+              "p": "shao",
+              "t": 0,
+              "s": "weak"
+            },
+            {
+              "p": "qián",
+              "t": 2,
+              "s": "stress"
+            }
+          ]
+        },
+        {
+          "id": "hsk1-024",
+          "zh": "太贵了",
+          "en": "It is too expensive.",
+          "syl": [
+            {
+              "p": "tài",
+              "t": 4,
+              "s": "stress"
+            },
+            {
+              "p": "guì",
+              "t": 4,
+              "s": "stress"
+            },
+            {
+              "p": "le",
+              "t": 0,
+              "s": "weak"
+            }
+          ]
+        },
+        {
+          "id": "hsk1-025",
+          "zh": "苹果多少钱",
+          "en": "How much are the apples?",
+          "syl": [
+            {
+              "p": "píng",
+              "t": 2,
+              "s": "stress"
+            },
+            {
+              "p": "guǒ",
+              "t": 3
+            },
+            {
+              "p": "duō",
+              "t": 1,
+              "s": "stress"
+            },
+            {
+              "p": "shao",
+              "t": 0,
+              "s": "weak"
+            },
+            {
+              "p": "qián",
+              "t": 2,
+              "s": "stress"
+            }
+          ]
+        },
+        {
+          "id": "hsk1-026",
+          "zh": "我买三个苹果",
+          "en": "I will buy three apples.",
+          "syl": [
+            {
+              "p": "wǒ",
+              "t": 5,
+              "s": "weak"
+            },
+            {
+              "p": "mǎi",
+              "t": 3,
+              "s": "stress"
+            },
+            {
+              "p": "sān",
+              "t": 1,
+              "s": "stress"
+            },
+            {
+              "p": "ge",
+              "t": 0,
+              "s": "weak"
+            },
+            {
+              "p": "píng",
+              "t": 2,
+              "s": "stress"
+            },
+            {
+              "p": "guǒ",
+              "t": 3
+            }
+          ]
+        },
+        {
+          "id": "hsk1-027",
+          "zh": "你在哪里工作",
+          "en": "Where do you work?",
+          "syl": [
+            {
+              "p": "nǐ",
+              "t": 5,
+              "s": "weak"
+            },
+            {
+              "p": "zài",
+              "t": 4
+            },
+            {
+              "p": "nǎ",
+              "t": 3,
+              "s": "stress"
+            },
+            {
+              "p": "lǐ",
+              "t": 3
+            },
+            {
+              "p": "gōng",
+              "t": 1,
+              "s": "stress"
+            },
+            {
+              "p": "zuò",
+              "t": 4
+            }
+          ]
+        },
+        {
+          "id": "hsk1-028",
+          "zh": "我在学校工作",
+          "en": "I work at a school.",
+          "syl": [
+            {
+              "p": "wǒ",
+              "t": 5,
+              "s": "weak"
+            },
+            {
+              "p": "zài",
+              "t": 4
+            },
+            {
+              "p": "xué",
+              "t": 2,
+              "s": "stress"
+            },
+            {
+              "p": "xiào",
+              "t": 4
+            },
+            {
+              "p": "gōng",
+              "t": 1,
+              "s": "stress"
+            },
+            {
+              "p": "zuò",
+              "t": 4
+            }
+          ]
+        },
+        {
+          "id": "hsk1-029",
+          "zh": "医院在哪里",
+          "en": "Where is the hospital?",
+          "syl": [
+            {
+              "p": "yī",
+              "t": 1
+            },
+            {
+              "p": "yuàn",
+              "t": 4,
+              "s": "stress"
+            },
+            {
+              "p": "zài",
+              "t": 4
+            },
+            {
+              "p": "nǎ",
+              "t": 3,
+              "s": "stress"
+            },
+            {
+              "p": "lǐ",
+              "t": 3
+            }
+          ]
+        },
+        {
+          "id": "hsk1-030",
+          "zh": "医院在前面",
+          "en": "The hospital is ahead.",
+          "syl": [
+            {
+              "p": "yī",
+              "t": 1
+            },
+            {
+              "p": "yuàn",
+              "t": 4,
+              "s": "stress"
+            },
+            {
+              "p": "zài",
+              "t": 4
+            },
+            {
+              "p": "qián",
+              "t": 2,
+              "s": "stress"
+            },
+            {
+              "p": "miàn",
+              "t": 4
+            }
+          ]
+        },
+        {
+          "id": "hsk1-031",
+          "zh": "我去商店",
+          "en": "I am going to the store.",
+          "syl": [
+            {
+              "p": "wǒ",
+              "t": 5,
+              "s": "weak"
+            },
+            {
+              "p": "qù",
+              "t": 4,
+              "s": "stress"
+            },
+            {
+              "p": "shāng",
+              "t": 1
+            },
+            {
+              "p": "diàn",
+              "t": 4,
+              "s": "stress"
+            }
+          ]
+        },
+        {
+          "id": "hsk1-032",
+          "zh": "你什么时候去学校",
+          "en": "When are you going to school?",
+          "syl": [
+            {
+              "p": "nǐ",
+              "t": 5,
+              "s": "weak"
+            },
+            {
+              "p": "shén",
+              "t": 2,
+              "s": "stress"
+            },
+            {
+              "p": "me",
+              "t": 0,
+              "s": "weak"
+            },
+            {
+              "p": "shí",
+              "t": 2
+            },
+            {
+              "p": "hou",
+              "t": 0,
+              "s": "weak"
+            },
+            {
+              "p": "qù",
+              "t": 4,
+              "s": "stress"
+            },
+            {
+              "p": "xué",
+              "t": 2,
+              "s": "stress"
+            },
+            {
+              "p": "xiào",
+              "t": 4
+            }
+          ]
+        },
+        {
+          "id": "hsk1-033",
+          "zh": "我明天去学校",
+          "en": "I am going to school tomorrow.",
+          "syl": [
+            {
+              "p": "wǒ",
+              "t": 5,
+              "s": "weak"
+            },
+            {
+              "p": "míng",
+              "t": 2,
+              "s": "stress"
+            },
+            {
+              "p": "tiān",
+              "t": 1
+            },
+            {
+              "p": "qù",
+              "t": 4
+            },
+            {
+              "p": "xué",
+              "t": 2,
+              "s": "stress"
+            },
+            {
+              "p": "xiào",
+              "t": 4
+            }
+          ]
+        },
+        {
+          "id": "hsk1-034",
+          "zh": "天气怎么样",
+          "en": "How is the weather?",
+          "syl": [
+            {
+              "p": "tiān",
+              "t": 1
+            },
+            {
+              "p": "qì",
+              "t": 4,
+              "s": "stress"
+            },
+            {
+              "p": "zěn",
+              "t": 5
+            },
+            {
+              "p": "me",
+              "t": 0,
+              "s": "weak"
+            },
+            {
+              "p": "yàng",
+              "t": 4,
+              "s": "stress"
+            }
+          ]
+        },
+        {
+          "id": "hsk1-035",
+          "zh": "今天很热",
+          "en": "It is hot today.",
+          "syl": [
+            {
+              "p": "jīn",
+              "t": 1
+            },
+            {
+              "p": "tiān",
+              "t": 1
+            },
+            {
+              "p": "hěn",
+              "t": 5
+            },
+            {
+              "p": "rè",
+              "t": 4,
+              "s": "stress"
+            }
+          ]
+        },
+        {
+          "id": "hsk1-036",
+          "zh": "下雨了",
+          "en": "It is raining.",
+          "syl": [
+            {
+              "p": "xià",
+              "t": 4,
+              "s": "stress"
+            },
+            {
+              "p": "yǔ",
+              "t": 3,
+              "s": "stress"
+            },
+            {
+              "p": "le",
+              "t": 0,
+              "s": "weak"
+            }
+          ]
+        },
+        {
+          "id": "hsk1-037",
+          "zh": "我不想去",
+          "en": "I do not want to go.",
+          "syl": [
+            {
+              "p": "wǒ",
+              "t": 5,
+              "s": "weak"
+            },
+            {
+              "p": "bù",
+              "t": 4
+            },
+            {
+              "p": "xiǎng",
+              "t": 5,
+              "s": "stress"
+            },
+            {
+              "p": "qù",
+              "t": 4,
+              "s": "stress"
+            }
+          ]
+        },
+        {
+          "id": "hsk1-038",
+          "zh": "请坐",
+          "en": "Please sit.",
+          "syl": [
+            {
+              "p": "qǐng",
+              "t": 3,
+              "s": "stress"
+            },
+            {
+              "p": "zuò",
+              "t": 4
+            }
+          ]
+        },
+        {
+          "id": "hsk1-039",
+          "zh": "谢谢你",
+          "en": "Thank you.",
+          "syl": [
+            {
+              "p": "xiè",
+              "t": 4,
+              "s": "stress"
+            },
+            {
+              "p": "xie",
+              "t": 0,
+              "s": "weak"
+            },
+            {
+              "p": "nǐ",
+              "t": 3
+            }
+          ]
+        },
+        {
+          "id": "hsk1-040",
+          "zh": "不客气",
+          "en": "You are welcome.",
+          "syl": [
+            {
+              "p": "bú",
+              "t": 2
+            },
+            {
+              "p": "kè",
+              "t": 4,
+              "s": "stress"
+            },
+            {
+              "p": "qi",
+              "t": 0,
+              "s": "weak"
+            }
+          ]
+        },
+        {
+          "id": "hsk1-041",
+          "zh": "再见",
+          "en": "Goodbye.",
+          "syl": [
+            {
+              "p": "zài",
+              "t": 4,
+              "s": "stress"
+            },
+            {
+              "p": "jiàn",
+              "t": 4,
+              "s": "stress"
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "hsk2",
