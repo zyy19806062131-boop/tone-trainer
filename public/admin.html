@@ -49,6 +49,10 @@ button.ghost{background:transparent}
 .deck{display:flex;justify-content:space-between;gap:12px;padding:12px;border:1px solid rgba(35,68,95,.75);border-radius:7px;background:rgba(18,38,59,.45)}
 .deck.on{border-color:var(--cyan);box-shadow:0 0 0 2px rgba(18,215,232,.12)}
 .deck b{font-family:var(--cjk)}
+.deck-meta{min-width:0}
+.deck-tools{display:flex;justify-content:flex-end;align-items:center;gap:8px;flex-wrap:wrap}
+.deck-tools .count{color:var(--muted);white-space:nowrap}
+.icon-btn{width:38px;height:38px;display:inline-grid;place-items:center;padding:0}
 .tag{display:inline-flex;align-items:center;border:1px solid rgba(244,211,94,.45);color:var(--yellow);border-radius:99px;padding:4px 8px;font-size:.76rem;white-space:nowrap}
 .form{display:grid;gap:12px}
 .form.two{grid-template-columns:1fr 1fr}
@@ -121,13 +125,32 @@ textarea:focus{border-color:var(--cyan);box-shadow:0 0 0 3px rgba(18,215,232,.12
       <section class="card">
         <div class="card-head">
           <h2>训练项目</h2>
-          <span class="tag">可管理句子</span>
+          <button class="primary mini" id="newProjectTop">新增项目</button>
         </div>
         <div class="body">
-          <p class="help">点击“管理句子”可以查看、添加、修改和删除这个项目里的句子。新增句子暂时没有真人音频，会先使用浏览器语音播放。</p>
+          <p class="help">可以新增、修改、删除或调整项目顺序。点击“管理句子”可以查看、添加、修改和删除这个项目里的句子。新增句子暂时没有真人音频，会先使用浏览器语音播放。</p>
           <div class="deck-list" id="deckList"></div>
         </div>
       </section>
+
+      <aside class="card">
+        <div class="card-head">
+          <h2 id="projectTitle">新增项目</h2>
+        </div>
+        <div class="body">
+          <div class="callout" id="projectHelp">创建新训练项目后，可以在左侧给口令勾选这个项目，再进入“管理句子”添加内容。</div>
+          <div class="form">
+            <label>Project ID <input id="projectId" type="text" placeholder="hsk1"></label>
+            <label>显示名称 <input id="projectName" type="text" placeholder="HSK1"></label>
+            <label class="check"><input id="projectFull" type="checkbox"> 内容已完整</label>
+            <div class="actions">
+              <button class="primary" id="saveProjectBtn">保存项目</button>
+              <button class="ghost" id="clearProjectBtn">清空</button>
+            </div>
+            <div class="err" id="projectErr"></div>
+          </div>
+        </div>
+      </aside>
 
       <section class="card span-all hidden" id="sentencePanel">
         <div class="card-head">
@@ -185,11 +208,18 @@ const sentencePinyinInput = document.getElementById('sentencePinyin');
 const sentenceTonesInput = document.getElementById('sentenceTones');
 const sentenceStressInput = document.getElementById('sentenceStress');
 const sentenceErr = document.getElementById('sentenceErr');
+const projectTitle = document.getElementById('projectTitle');
+const projectHelp = document.getElementById('projectHelp');
+const projectIdInput = document.getElementById('projectId');
+const projectNameInput = document.getElementById('projectName');
+const projectFullInput = document.getElementById('projectFull');
+const projectErr = document.getElementById('projectErr');
 let adminCode = sessionStorage.getItem('toneAdminCode') || '';
 let decks = [];
 let accessCodes = {};
 let selectedDeck = null;
 let originalSentenceId = '';
+let originalProjectId = '';
 
 function adminHeaders(){
   return {'Content-Type':'application/json','X-Admin-Code':adminCode};
@@ -204,23 +234,40 @@ function deckName(id){
   const deck = decks.find(d=>d.id===id);
   return deck ? deck.name : id;
 }
+function escapeHtml(value){
+  return String(value ?? '').replace(/[&<>"']/g, ch=>({
+    '&':'&amp;',
+    '<':'&lt;',
+    '>':'&gt;',
+    '"':'&quot;',
+    "'":'&#39;'
+  }[ch]));
+}
 function renderDecks(){
-  deckList.innerHTML = decks.map(d=>`<div class="deck ${selectedDeck&&selectedDeck.id===d.id?'on':''}">
-    <div><b>${d.name}</b><div class="muted">${d.id}</div></div>
-    <div class="actions"><span>${d.sentenceCount} 句</span><button data-deck="${d.id}">管理句子</button></div>
+  deckList.innerHTML = decks.map((d,i)=>`<div class="deck ${selectedDeck&&selectedDeck.id===d.id?'on':''}">
+    <div class="deck-meta"><b>${escapeHtml(d.name)}</b><div class="muted">${escapeHtml(d.id)}</div></div>
+    <div class="deck-tools">
+      <span class="count">${d.sentenceCount} 句</span>
+      <button class="icon-btn" title="上移" data-project-move="${escapeHtml(d.id)}" data-direction="up" ${i===0?'disabled':''}>↑</button>
+      <button class="icon-btn" title="下移" data-project-move="${escapeHtml(d.id)}" data-direction="down" ${i===decks.length-1?'disabled':''}>↓</button>
+      <button data-project-edit="${escapeHtml(d.id)}">编辑</button>
+      <button data-deck="${escapeHtml(d.id)}">管理句子</button>
+      <button class="danger" data-project-delete="${escapeHtml(d.id)}">删除</button>
+    </div>
   </div>`).join('');
-  deckChecks.innerHTML = decks.map(d=>`<label class="check"><input type="checkbox" value="${d.id}"> ${d.name}</label>`).join('');
+  deckChecks.innerHTML = decks.map(d=>`<label class="check"><input type="checkbox" value="${escapeHtml(d.id)}"> ${escapeHtml(d.name)}</label>`).join('');
+  syncDeckChecks();
 }
 function renderCodes(){
   codesTable.innerHTML = Object.entries(accessCodes).map(([code,profile])=>{
-    const projectText = profile.decks === 'all' ? '全部项目' : profile.decks.map(deckName).join('、');
+    const projectText = profile.decks === 'all' ? '全部项目' : (profile.decks || []).map(deckName).join('、') || '未分配项目';
     return `<tr>
-      <td><code>${code}</code></td>
-      <td>${profile.label || ''}</td>
-      <td>${projectText}</td>
+      <td><code>${escapeHtml(code)}</code></td>
+      <td>${escapeHtml(profile.label || '')}</td>
+      <td>${escapeHtml(projectText)}</td>
       <td class="actions">
-        <button data-edit="${code}">编辑</button>
-        <button class="danger" data-delete="${code}">删除</button>
+        <button data-edit="${escapeHtml(code)}">编辑</button>
+        <button class="danger" data-delete="${escapeHtml(code)}">删除</button>
       </td>
     </tr>`;
   }).join('');
@@ -229,6 +276,10 @@ async function loadOverview(){
   const payload = await jsonFetch('/api/admin/overview', {headers: adminHeaders()});
   decks = payload.decks || [];
   accessCodes = payload.accessCodes || {};
+  if(selectedDeck && !decks.some(d=>d.id===selectedDeck.id)){
+    selectedDeck = null;
+    renderSentences();
+  }
   renderDecks();
   renderCodes();
 }
@@ -244,6 +295,28 @@ function editCode(code){
   deckChecks.querySelectorAll('input').forEach(input=>input.checked = allowed.has(input.value));
   syncDeckChecks();
   codeInput.focus();
+}
+function editProject(deckId){
+  const deck = decks.find(d=>d.id===deckId);
+  if(!deck) return;
+  originalProjectId = deck.id;
+  projectTitle.textContent = '修改项目';
+  projectHelp.textContent = `正在修改 ${deck.name}。如果更改 Project ID，所有引用这个项目的口令会自动同步。`;
+  projectIdInput.value = deck.id;
+  projectNameInput.value = deck.name;
+  projectFullInput.checked = Boolean(deck.full);
+  projectErr.textContent = '';
+  projectIdInput.focus();
+}
+function clearProjectForm(){
+  originalProjectId = '';
+  projectTitle.textContent = '新增项目';
+  projectHelp.textContent = '创建新训练项目后，可以在左侧给口令勾选这个项目，再进入“管理句子”添加内容。';
+  projectIdInput.value = '';
+  projectNameInput.value = '';
+  projectFullInput.checked = false;
+  projectErr.textContent = '';
+  projectIdInput.focus();
 }
 function clearForm(){
   formTitle.textContent = '新增口令';
@@ -295,12 +368,12 @@ function renderSentences(){
   sentencePanel.classList.remove('hidden');
   sentenceTitle.textContent = `句子管理 · ${selectedDeck.name}`;
   sentencesTable.innerHTML = (selectedDeck.sents || []).map(s=>`<tr>
-    <td><code>${s.id}</code></td>
-    <td>${s.zh}</td>
-    <td>${s.en}</td>
+    <td><code>${escapeHtml(s.id)}</code></td>
+    <td>${escapeHtml(s.zh)}</td>
+    <td>${escapeHtml(s.en)}</td>
     <td class="actions">
-      <button data-sentence-edit="${s.id}">编辑</button>
-      <button class="danger" data-sentence-delete="${s.id}">删除</button>
+      <button data-sentence-edit="${escapeHtml(s.id)}">编辑</button>
+      <button class="danger" data-sentence-delete="${escapeHtml(s.id)}">删除</button>
     </td>
   </tr>`).join('');
 }
@@ -359,6 +432,59 @@ async function deleteSentence(sentenceId){
   clearSentenceForm();
   await loadOverview();
 }
+async function saveProject(){
+  projectErr.textContent = '保存中...';
+  const payload = await jsonFetch('/api/admin/deck', {
+    method:'POST',
+    headers: adminHeaders(),
+    body: JSON.stringify({
+      originalId: originalProjectId,
+      deck: {
+        id: projectIdInput.value.trim(),
+        name: projectNameInput.value.trim(),
+        full: projectFullInput.checked
+      }
+    })
+  });
+  decks = payload.decks || [];
+  accessCodes = payload.accessCodes || accessCodes;
+  if(selectedDeck && selectedDeck.id === originalProjectId && projectIdInput.value.trim() !== originalProjectId){
+    selectedDeck = null;
+    renderSentences();
+  }
+  renderDecks();
+  renderCodes();
+  projectErr.textContent = '已保存';
+  originalProjectId = projectIdInput.value.trim();
+}
+async function deleteProject(deckId){
+  const deck = decks.find(d=>d.id===deckId);
+  const name = deck ? deck.name : deckId;
+  if(!confirm(`删除项目「${name}」？项目里的句子和对应音频也会删除。`)) return;
+  const payload = await jsonFetch('/api/admin/deck/delete', {
+    method:'POST',
+    headers: adminHeaders(),
+    body: JSON.stringify({deckId})
+  });
+  decks = payload.decks || [];
+  accessCodes = payload.accessCodes || accessCodes;
+  if(selectedDeck && selectedDeck.id === deckId){
+    selectedDeck = null;
+    renderSentences();
+  }
+  if(originalProjectId === deckId) clearProjectForm();
+  renderDecks();
+  renderCodes();
+}
+async function moveProject(deckId, direction){
+  const payload = await jsonFetch('/api/admin/deck/reorder', {
+    method:'POST',
+    headers: adminHeaders(),
+    body: JSON.stringify({deckId, direction})
+  });
+  decks = payload.decks || [];
+  renderDecks();
+}
 async function saveCode(){
   const checked = [...deckChecks.querySelectorAll('input:checked')].map(input=>input.value);
   const body = {
@@ -412,10 +538,19 @@ document.getElementById('newCodeTop').addEventListener('click', clearForm);
 document.getElementById('newSentenceTop').addEventListener('click', clearSentenceForm);
 document.getElementById('clearSentenceBtn').addEventListener('click', clearSentenceForm);
 document.getElementById('saveSentenceBtn').addEventListener('click', ()=>saveSentence().catch(err=>sentenceErr.textContent=err.message));
+document.getElementById('newProjectTop').addEventListener('click', clearProjectForm);
+document.getElementById('clearProjectBtn').addEventListener('click', clearProjectForm);
+document.getElementById('saveProjectBtn').addEventListener('click', ()=>saveProject().catch(err=>projectErr.textContent=err.message));
 allDecksInput.addEventListener('change', syncDeckChecks);
 deckList.addEventListener('click', e=>{
-  const button = e.target.closest('[data-deck]');
-  if(button) loadDeck(button.dataset.deck).catch(err=>formErr.textContent=err.message);
+  const edit = e.target.closest('[data-project-edit]');
+  const del = e.target.closest('[data-project-delete]');
+  const move = e.target.closest('[data-project-move]');
+  const manage = e.target.closest('[data-deck]');
+  if(edit) editProject(edit.dataset.projectEdit);
+  if(del) deleteProject(del.dataset.projectDelete).catch(err=>projectErr.textContent=err.message);
+  if(move) moveProject(move.dataset.projectMove, move.dataset.direction).catch(err=>projectErr.textContent=err.message);
+  if(manage) loadDeck(manage.dataset.deck).catch(err=>formErr.textContent=err.message);
 });
 sentencesTable.addEventListener('click', e=>{
   const edit = e.target.closest('[data-sentence-edit]');

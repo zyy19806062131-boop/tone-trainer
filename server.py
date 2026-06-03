@@ -2,6 +2,7 @@
 import json
 import mimetypes
 import os
+import re
 from http import HTTPStatus
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
@@ -13,6 +14,7 @@ ROOT = (BASE_DIR / "public").resolve()
 DATA_PATH = BASE_DIR / "data" / "trainer_data.private.json"
 CODES_PATH = BASE_DIR / "data" / "access_codes.private.json"
 ADMIN_CODE = os.environ.get("ADMIN_CODE", "admin2026")
+DECK_ID_RE = re.compile(r"^[a-z0-9][a-z0-9-]*$")
 
 
 def load_json(path):
@@ -34,6 +36,7 @@ def deck_summaries():
         {
             "id": deck.get("id"),
             "name": deck.get("name"),
+            "full": bool(deck.get("full", False)),
             "sentenceCount": len(deck.get("sents", [])),
         }
         for deck in data.get("decks", [])
@@ -81,6 +84,18 @@ def validate_sentence(sentence):
     if len(clean_syl) != len(zh):
         raise ValueError("拼音数量需要和汉字数量一致")
     return {"id": sentence_id, "zh": zh, "en": en, "syl": clean_syl}
+
+
+def validate_deck(deck):
+    deck_id = str(deck.get("id", "")).strip()
+    name = str(deck.get("name", "")).strip()
+    if not deck_id:
+        raise ValueError("项目 ID 不能为空")
+    if not DECK_ID_RE.match(deck_id):
+        raise ValueError("项目 ID 只能用小写字母、数字和连字符，并且要以字母或数字开头")
+    if not name:
+        raise ValueError("项目名称不能为空")
+    return {"id": deck_id, "name": name, "full": bool(deck.get("full", False))}
 
 
 def build_payload(code):
@@ -201,6 +216,95 @@ class ToneTrainerHandler(BaseHTTPRequestHandler):
             return
         self.send_json(HTTPStatus.OK, {"deck": deck})
 
+    def save_deck(self, body):
+        original_id = str(body.get("originalId", "")).strip()
+        clean_deck = validate_deck(body.get("deck") or {})
+        data = load_json(DATA_PATH)
+        decks = data.setdefault("decks", [])
+        match_id = original_id or clean_deck["id"]
+        existing_index = next((i for i, item in enumerate(decks) if item.get("id") == match_id), None)
+        duplicate = next(
+            (item for item in decks if item.get("id") == clean_deck["id"] and item.get("id") != match_id),
+            None,
+        )
+        if duplicate:
+            self.send_json(HTTPStatus.BAD_REQUEST, {"error": "项目 ID 已存在"})
+            return
+
+        access_codes = load_json(CODES_PATH)
+        access_changed = False
+        if existing_index is None:
+            decks.append({**clean_deck, "sents": []})
+        else:
+            old_deck = decks[existing_index]
+            old_id = old_deck.get("id")
+            decks[existing_index] = {
+                **old_deck,
+                **clean_deck,
+                "sents": old_deck.get("sents", []),
+            }
+            if old_id != clean_deck["id"]:
+                for profile in access_codes.values():
+                    if isinstance(profile.get("decks"), list):
+                        profile["decks"] = [
+                            clean_deck["id"] if deck_id == old_id else deck_id
+                            for deck_id in profile.get("decks", [])
+                        ]
+                        access_changed = True
+
+        save_json(DATA_PATH, data)
+        if access_changed:
+            save_json(CODES_PATH, access_codes)
+        self.send_json(
+            HTTPStatus.OK,
+            {"ok": True, "decks": deck_summaries(), "accessCodes": load_json(CODES_PATH)},
+        )
+
+    def delete_deck(self, body):
+        deck_id = str(body.get("deckId", "")).strip()
+        data = load_json(DATA_PATH)
+        decks = data.setdefault("decks", [])
+        deck = find_deck(data, deck_id)
+        if not deck:
+            self.send_json(HTTPStatus.NOT_FOUND, {"error": "项目不存在"})
+            return
+
+        removed_sentence_ids = {item.get("id") for item in deck.get("sents", []) if item.get("id")}
+        data["decks"] = [item for item in decks if item.get("id") != deck_id]
+        audio = data.get("audio", {})
+        for sentence_id in removed_sentence_ids:
+            audio.pop(sentence_id, None)
+
+        access_codes = load_json(CODES_PATH)
+        for profile in access_codes.values():
+            if isinstance(profile.get("decks"), list):
+                profile["decks"] = [item for item in profile.get("decks", []) if item != deck_id]
+
+        save_json(DATA_PATH, data)
+        save_json(CODES_PATH, access_codes)
+        self.send_json(
+            HTTPStatus.OK,
+            {"ok": True, "decks": deck_summaries(), "accessCodes": access_codes},
+        )
+
+    def reorder_deck(self, body):
+        deck_id = str(body.get("deckId", "")).strip()
+        direction = str(body.get("direction", "")).strip()
+        data = load_json(DATA_PATH)
+        decks = data.setdefault("decks", [])
+        index = next((i for i, item in enumerate(decks) if item.get("id") == deck_id), None)
+        if index is None:
+            self.send_json(HTTPStatus.NOT_FOUND, {"error": "项目不存在"})
+            return
+        if direction not in {"up", "down"}:
+            self.send_json(HTTPStatus.BAD_REQUEST, {"error": "移动方向不对"})
+            return
+        new_index = index - 1 if direction == "up" else index + 1
+        if 0 <= new_index < len(decks):
+            decks[index], decks[new_index] = decks[new_index], decks[index]
+            save_json(DATA_PATH, data)
+        self.send_json(HTTPStatus.OK, {"ok": True, "decks": deck_summaries()})
+
     def save_sentence(self, body):
         deck_id = str(body.get("deckId", "")).strip()
         original_id = str(body.get("originalId", "")).strip()
@@ -296,6 +400,35 @@ class ToneTrainerHandler(BaseHTTPRequestHandler):
                 return
             try:
                 self.delete_access_code(self.read_json_body())
+            except Exception:
+                self.send_json(HTTPStatus.BAD_REQUEST, {"error": "请求格式不对"})
+            return
+
+        if self.path == "/api/admin/deck":
+            if not self.require_admin():
+                return
+            try:
+                self.save_deck(self.read_json_body(16384))
+            except ValueError as err:
+                self.send_json(HTTPStatus.BAD_REQUEST, {"error": str(err)})
+            except Exception:
+                self.send_json(HTTPStatus.BAD_REQUEST, {"error": "请求格式不对"})
+            return
+
+        if self.path == "/api/admin/deck/delete":
+            if not self.require_admin():
+                return
+            try:
+                self.delete_deck(self.read_json_body())
+            except Exception:
+                self.send_json(HTTPStatus.BAD_REQUEST, {"error": "请求格式不对"})
+            return
+
+        if self.path == "/api/admin/deck/reorder":
+            if not self.require_admin():
+                return
+            try:
+                self.reorder_deck(self.read_json_body())
             except Exception:
                 self.send_json(HTTPStatus.BAD_REQUEST, {"error": "请求格式不对"})
             return
