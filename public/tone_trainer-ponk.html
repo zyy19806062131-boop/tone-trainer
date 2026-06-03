@@ -415,7 +415,7 @@ function play(){
     au.play().catch(()=>{});
     return;
   }
-  if(hasTTS&&chosen){speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(s.zh);u.voice=chosen;u.lang=chosen.lang;u.rate=(speedMode==='s')?0.6:0.95;speechSynthesis.speak(u);}
+  if(hasTTS){speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(s.zh);if(chosen){u.voice=chosen;u.lang=chosen.lang;}else{u.lang='zh-CN';}u.rate=(speedMode==='s')?0.6:0.95;speechSynthesis.speak(u);}
   runHl(n,(speedMode==='s'?n*620:n*400));
 }
 

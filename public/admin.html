@@ -32,6 +32,7 @@ button.danger{border-color:rgba(255,59,125,.55);color:#ffd9e5;background:rgba(25
 button.ghost{background:transparent}
 .err{color:#ff95b6;min-height:1.2em;margin-top:10px}
 .grid{display:grid;grid-template-columns:1.2fr .8fr;gap:18px}
+.span-all{grid-column:1/-1}
 .card{border:1px solid var(--line);background:rgba(14,27,42,.84);border-radius:8px;overflow:hidden}
 .card h2{margin:0;font-size:1.05rem}
 .card-head{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:16px 18px;border-bottom:1px solid var(--line)}
@@ -46,12 +47,17 @@ button.ghost{background:transparent}
 .table code{color:var(--yellow)}
 .deck-list{display:grid;gap:10px}
 .deck{display:flex;justify-content:space-between;gap:12px;padding:12px;border:1px solid rgba(35,68,95,.75);border-radius:7px;background:rgba(18,38,59,.45)}
+.deck.on{border-color:var(--cyan);box-shadow:0 0 0 2px rgba(18,215,232,.12)}
 .deck b{font-family:var(--cjk)}
 .tag{display:inline-flex;align-items:center;border:1px solid rgba(244,211,94,.45);color:var(--yellow);border-radius:99px;padding:4px 8px;font-size:.76rem;white-space:nowrap}
 .form{display:grid;gap:12px}
+.form.two{grid-template-columns:1fr 1fr}
+.form .wide{grid-column:1/-1}
 .checks{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px}
 label.check{display:flex;gap:8px;align-items:center;padding:9px;border:1px solid rgba(35,68,95,.75);border-radius:6px;background:rgba(8,21,34,.65)}
 .actions{display:flex;gap:8px;flex-wrap:wrap}
+textarea{width:100%;min-height:72px;padding:11px 12px;border:1px solid var(--line);border-radius:6px;background:#081522;color:var(--ink);outline:none;resize:vertical}
+textarea:focus{border-color:var(--cyan);box-shadow:0 0 0 3px rgba(18,215,232,.12)}
 .hidden{display:none!important}
 @media(max-width:850px){.grid{grid-template-columns:1fr}header{display:block}.chip{display:inline-block;margin-top:12px}}
 </style>
@@ -115,11 +121,39 @@ label.check{display:flex;gap:8px;align-items:center;padding:9px;border:1px solid
       <section class="card">
         <div class="card-head">
           <h2>训练项目</h2>
-          <span class="tag">只读 · 下一步开放编辑</span>
+          <span class="tag">可管理句子</span>
         </div>
         <div class="body">
-          <p class="help">这里先显示已有项目和句子数量。项目内容编辑、新增句子、修改拼音声调会在下一版后台加入。</p>
+          <p class="help">点击“管理句子”可以查看、添加、修改和删除这个项目里的句子。新增句子暂时没有真人音频，会先使用浏览器语音播放。</p>
           <div class="deck-list" id="deckList"></div>
+        </div>
+      </section>
+
+      <section class="card span-all hidden" id="sentencePanel">
+        <div class="card-head">
+          <h2 id="sentenceTitle">句子管理</h2>
+          <button class="primary mini" id="newSentenceTop">新增句子</button>
+        </div>
+        <div class="body">
+          <p class="help">拼音、声调、重弱读都用空格分隔，数量必须和中文汉字数量一致。声调用 1-4，轻声用 0，半三声可用 5。重弱读可填 normal / stress / weak。</p>
+          <table class="table">
+            <thead><tr><th>ID</th><th>中文</th><th>English</th><th></th></tr></thead>
+            <tbody id="sentencesTable"></tbody>
+          </table>
+          <div class="callout" id="sentenceHelp">选择一个项目后，可以新增或编辑句子。</div>
+          <div class="form two">
+            <label>ID <input id="sentenceId" type="text" placeholder="cafe-9"></label>
+            <label>中文 <input id="sentenceZh" type="text" placeholder="我要一杯茶"></label>
+            <label class="wide">English <input id="sentenceEn" type="text" placeholder="I'd like a cup of tea."></label>
+            <label class="wide">Pinyin <textarea id="sentencePinyin" placeholder="wǒ yào yì bēi chá"></textarea></label>
+            <label>Tones <input id="sentenceTones" type="text" placeholder="5 4 4 1 2"></label>
+            <label>Stress / Weak <input id="sentenceStress" type="text" placeholder="weak weak normal normal stress"></label>
+            <div class="actions wide">
+              <button class="primary" id="saveSentenceBtn">保存句子</button>
+              <button class="ghost" id="clearSentenceBtn">清空</button>
+            </div>
+            <div class="err wide" id="sentenceErr"></div>
+          </div>
         </div>
       </section>
     </div>
@@ -140,9 +174,22 @@ const allDecksInput = document.getElementById('allDecks');
 const formErr = document.getElementById('formErr');
 const formTitle = document.getElementById('formTitle');
 const formHelp = document.getElementById('formHelp');
+const sentencePanel = document.getElementById('sentencePanel');
+const sentenceTitle = document.getElementById('sentenceTitle');
+const sentencesTable = document.getElementById('sentencesTable');
+const sentenceHelp = document.getElementById('sentenceHelp');
+const sentenceIdInput = document.getElementById('sentenceId');
+const sentenceZhInput = document.getElementById('sentenceZh');
+const sentenceEnInput = document.getElementById('sentenceEn');
+const sentencePinyinInput = document.getElementById('sentencePinyin');
+const sentenceTonesInput = document.getElementById('sentenceTones');
+const sentenceStressInput = document.getElementById('sentenceStress');
+const sentenceErr = document.getElementById('sentenceErr');
 let adminCode = sessionStorage.getItem('toneAdminCode') || '';
 let decks = [];
 let accessCodes = {};
+let selectedDeck = null;
+let originalSentenceId = '';
 
 function adminHeaders(){
   return {'Content-Type':'application/json','X-Admin-Code':adminCode};
@@ -158,7 +205,10 @@ function deckName(id){
   return deck ? deck.name : id;
 }
 function renderDecks(){
-  deckList.innerHTML = decks.map(d=>`<div class="deck"><div><b>${d.name}</b><div class="muted">${d.id}</div></div><span>${d.sentenceCount} 句</span></div>`).join('');
+  deckList.innerHTML = decks.map(d=>`<div class="deck ${selectedDeck&&selectedDeck.id===d.id?'on':''}">
+    <div><b>${d.name}</b><div class="muted">${d.id}</div></div>
+    <div class="actions"><span>${d.sentenceCount} 句</span><button data-deck="${d.id}">管理句子</button></div>
+  </div>`).join('');
   deckChecks.innerHTML = decks.map(d=>`<label class="check"><input type="checkbox" value="${d.id}"> ${d.name}</label>`).join('');
 }
 function renderCodes(){
@@ -208,6 +258,106 @@ function clearForm(){
 }
 function syncDeckChecks(){
   deckChecks.querySelectorAll('input').forEach(input=>input.disabled = allDecksInput.checked);
+}
+function stressWord(value){
+  const v = String(value || '').trim();
+  return v === 'stress' || v === 'weak' ? v : 'normal';
+}
+function sentenceToForm(sentence){
+  originalSentenceId = sentence.id || '';
+  sentenceHelp.textContent = originalSentenceId ? `正在修改 ${originalSentenceId}` : '正在新增句子';
+  sentenceIdInput.value = sentence.id || '';
+  sentenceZhInput.value = sentence.zh || '';
+  sentenceEnInput.value = sentence.en || '';
+  sentencePinyinInput.value = (sentence.syl || []).map(x=>x.p).join(' ');
+  sentenceTonesInput.value = (sentence.syl || []).map(x=>x.t).join(' ');
+  sentenceStressInput.value = (sentence.syl || []).map(x=>stressWord(x.s)).join(' ');
+  sentenceErr.textContent = '';
+  sentenceIdInput.focus();
+}
+function clearSentenceForm(){
+  originalSentenceId = '';
+  sentenceHelp.textContent = selectedDeck ? `正在给「${selectedDeck.name}」新增句子` : '选择一个项目后，可以新增或编辑句子。';
+  sentenceIdInput.value = '';
+  sentenceZhInput.value = '';
+  sentenceEnInput.value = '';
+  sentencePinyinInput.value = '';
+  sentenceTonesInput.value = '';
+  sentenceStressInput.value = '';
+  sentenceErr.textContent = '';
+  sentenceIdInput.focus();
+}
+function renderSentences(){
+  if(!selectedDeck){
+    sentencePanel.classList.add('hidden');
+    return;
+  }
+  sentencePanel.classList.remove('hidden');
+  sentenceTitle.textContent = `句子管理 · ${selectedDeck.name}`;
+  sentencesTable.innerHTML = (selectedDeck.sents || []).map(s=>`<tr>
+    <td><code>${s.id}</code></td>
+    <td>${s.zh}</td>
+    <td>${s.en}</td>
+    <td class="actions">
+      <button data-sentence-edit="${s.id}">编辑</button>
+      <button class="danger" data-sentence-delete="${s.id}">删除</button>
+    </td>
+  </tr>`).join('');
+}
+async function loadDeck(deckId){
+  const payload = await jsonFetch(`/api/admin/deck?id=${encodeURIComponent(deckId)}`, {headers: adminHeaders()});
+  selectedDeck = payload.deck;
+  renderDecks();
+  renderSentences();
+  clearSentenceForm();
+  sentencePanel.scrollIntoView({behavior:'smooth',block:'start'});
+}
+function buildSentenceFromForm(){
+  const pinyin = sentencePinyinInput.value.trim().split(/\s+/).filter(Boolean);
+  const tones = sentenceTonesInput.value.trim().split(/\s+/).filter(Boolean);
+  const stress = sentenceStressInput.value.trim() ? sentenceStressInput.value.trim().split(/\s+/) : [];
+  if(pinyin.length !== tones.length) throw new Error('拼音数量和声调数量需要一致');
+  const syl = pinyin.map((p,i)=>{
+    const s = stressWord(stress[i]);
+    const item = {p, t:Number(tones[i])};
+    if(s !== 'normal') item.s = s;
+    return item;
+  });
+  return {
+    id: sentenceIdInput.value.trim(),
+    zh: sentenceZhInput.value.trim(),
+    en: sentenceEnInput.value.trim(),
+    syl
+  };
+}
+async function saveSentence(){
+  if(!selectedDeck){sentenceErr.textContent='请先选择训练项目';return;}
+  sentenceErr.textContent = '保存中...';
+  const payload = await jsonFetch('/api/admin/sentence', {
+    method:'POST',
+    headers: adminHeaders(),
+    body: JSON.stringify({
+      deckId: selectedDeck.id,
+      originalId: originalSentenceId,
+      sentence: buildSentenceFromForm()
+    })
+  });
+  selectedDeck = payload.deck;
+  sentenceErr.textContent = '已保存';
+  renderSentences();
+  await loadOverview();
+}
+async function deleteSentence(sentenceId){
+  if(!selectedDeck || !confirm(`删除句子 ${sentenceId}？`)) return;
+  const payload = await jsonFetch('/api/admin/sentence/delete', {
+    method:'POST',
+    headers: adminHeaders(),
+    body: JSON.stringify({deckId:selectedDeck.id, sentenceId})
+  });
+  selectedDeck = payload.deck;
+  renderSentences();
+  clearSentenceForm();
+  await loadOverview();
 }
 async function saveCode(){
   const checked = [...deckChecks.querySelectorAll('input:checked')].map(input=>input.value);
@@ -259,7 +409,23 @@ adminCodeInput.addEventListener('keydown', e=>{if(e.key==='Enter')doLogin();});
 document.getElementById('saveBtn').addEventListener('click', ()=>saveCode().catch(err=>formErr.textContent=err.message));
 document.getElementById('clearBtn').addEventListener('click', clearForm);
 document.getElementById('newCodeTop').addEventListener('click', clearForm);
+document.getElementById('newSentenceTop').addEventListener('click', clearSentenceForm);
+document.getElementById('clearSentenceBtn').addEventListener('click', clearSentenceForm);
+document.getElementById('saveSentenceBtn').addEventListener('click', ()=>saveSentence().catch(err=>sentenceErr.textContent=err.message));
 allDecksInput.addEventListener('change', syncDeckChecks);
+deckList.addEventListener('click', e=>{
+  const button = e.target.closest('[data-deck]');
+  if(button) loadDeck(button.dataset.deck).catch(err=>formErr.textContent=err.message);
+});
+sentencesTable.addEventListener('click', e=>{
+  const edit = e.target.closest('[data-sentence-edit]');
+  const del = e.target.closest('[data-sentence-delete]');
+  if(edit){
+    const sentence = (selectedDeck.sents || []).find(s=>s.id===edit.dataset.sentenceEdit);
+    if(sentence) sentenceToForm(sentence);
+  }
+  if(del) deleteSentence(del.dataset.sentenceDelete).catch(err=>sentenceErr.textContent=err.message);
+});
 codesTable.addEventListener('click', e=>{
   const edit = e.target.closest('[data-edit]');
   const del = e.target.closest('[data-delete]');

@@ -5,7 +5,7 @@ import os
 from http import HTTPStatus
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
-from urllib.parse import unquote, urlparse
+from urllib.parse import parse_qs, unquote, urlparse
 
 
 BASE_DIR = Path(__file__).resolve().parent
@@ -38,6 +38,49 @@ def deck_summaries():
         }
         for deck in data.get("decks", [])
     ]
+
+
+def find_deck(data, deck_id):
+    for deck in data.get("decks", []):
+        if deck.get("id") == deck_id:
+            return deck
+    return None
+
+
+def validate_sentence(sentence):
+    sentence_id = str(sentence.get("id", "")).strip()
+    zh = str(sentence.get("zh", "")).strip()
+    en = str(sentence.get("en", "")).strip()
+    syl = sentence.get("syl")
+    if not sentence_id:
+        raise ValueError("句子 id 不能为空")
+    if not zh:
+        raise ValueError("中文不能为空")
+    if not en:
+        raise ValueError("英文不能为空")
+    if not isinstance(syl, list) or not syl:
+        raise ValueError("拼音/声调不能为空")
+
+    clean_syl = []
+    for item in syl:
+        pinyin = str(item.get("p", "")).strip()
+        try:
+            tone = int(item.get("t"))
+        except Exception as exc:
+            raise ValueError("声调必须是数字") from exc
+        stress = str(item.get("s", "")).strip()
+        if not pinyin:
+            raise ValueError("拼音不能为空")
+        if tone not in {0, 1, 2, 3, 4, 5}:
+            raise ValueError("声调只能是 0-5")
+        clean = {"p": pinyin, "t": tone}
+        if stress in {"stress", "weak"}:
+            clean["s"] = stress
+        clean_syl.append(clean)
+
+    if len(clean_syl) != len(zh):
+        raise ValueError("拼音数量需要和汉字数量一致")
+    return {"id": sentence_id, "zh": zh, "en": en, "syl": clean_syl}
 
 
 def build_payload(code):
@@ -150,6 +193,63 @@ class ToneTrainerHandler(BaseHTTPRequestHandler):
         save_json(CODES_PATH, access_codes)
         self.send_json(HTTPStatus.OK, {"ok": True, "accessCodes": access_codes})
 
+    def admin_deck(self, deck_id):
+        data = load_json(DATA_PATH)
+        deck = find_deck(data, deck_id)
+        if not deck:
+            self.send_json(HTTPStatus.NOT_FOUND, {"error": "项目不存在"})
+            return
+        self.send_json(HTTPStatus.OK, {"deck": deck})
+
+    def save_sentence(self, body):
+        deck_id = str(body.get("deckId", "")).strip()
+        original_id = str(body.get("originalId", "")).strip()
+        sentence = validate_sentence(body.get("sentence") or {})
+        data = load_json(DATA_PATH)
+        deck = find_deck(data, deck_id)
+        if not deck:
+            self.send_json(HTTPStatus.NOT_FOUND, {"error": "项目不存在"})
+            return
+
+        sentences = deck.setdefault("sents", [])
+        match_id = original_id or sentence["id"]
+        existing_index = next((i for i, item in enumerate(sentences) if item.get("id") == match_id), None)
+        duplicate = next(
+            (item for item in sentences if item.get("id") == sentence["id"] and item.get("id") != match_id),
+            None,
+        )
+        if duplicate:
+            self.send_json(HTTPStatus.BAD_REQUEST, {"error": "句子 id 已存在"})
+            return
+
+        if existing_index is None:
+            sentences.append(sentence)
+        else:
+            old_id = sentences[existing_index].get("id")
+            sentences[existing_index] = sentence
+            if old_id != sentence["id"] and old_id in data.get("audio", {}):
+                data.setdefault("audio", {})[sentence["id"]] = data.get("audio", {}).pop(old_id)
+
+        save_json(DATA_PATH, data)
+        self.send_json(HTTPStatus.OK, {"ok": True, "deck": deck})
+
+    def delete_sentence(self, body):
+        deck_id = str(body.get("deckId", "")).strip()
+        sentence_id = str(body.get("sentenceId", "")).strip()
+        data = load_json(DATA_PATH)
+        deck = find_deck(data, deck_id)
+        if not deck:
+            self.send_json(HTTPStatus.NOT_FOUND, {"error": "项目不存在"})
+            return
+        before = len(deck.get("sents", []))
+        deck["sents"] = [item for item in deck.get("sents", []) if item.get("id") != sentence_id]
+        if len(deck["sents"]) == before:
+            self.send_json(HTTPStatus.NOT_FOUND, {"error": "句子不存在"})
+            return
+        data.get("audio", {}).pop(sentence_id, None)
+        save_json(DATA_PATH, data)
+        self.send_json(HTTPStatus.OK, {"ok": True, "deck": deck})
+
     def do_POST(self):
         if self.path == "/api/login":
             try:
@@ -200,6 +300,26 @@ class ToneTrainerHandler(BaseHTTPRequestHandler):
                 self.send_json(HTTPStatus.BAD_REQUEST, {"error": "请求格式不对"})
             return
 
+        if self.path == "/api/admin/sentence":
+            if not self.require_admin():
+                return
+            try:
+                self.save_sentence(self.read_json_body(65536))
+            except ValueError as err:
+                self.send_json(HTTPStatus.BAD_REQUEST, {"error": str(err)})
+            except Exception:
+                self.send_json(HTTPStatus.BAD_REQUEST, {"error": "请求格式不对"})
+            return
+
+        if self.path == "/api/admin/sentence/delete":
+            if not self.require_admin():
+                return
+            try:
+                self.delete_sentence(self.read_json_body())
+            except Exception:
+                self.send_json(HTTPStatus.BAD_REQUEST, {"error": "请求格式不对"})
+            return
+
         if self.path != "/api/login":
             self.send_json(HTTPStatus.NOT_FOUND, {"error": "接口不存在"})
             return
@@ -215,6 +335,12 @@ class ToneTrainerHandler(BaseHTTPRequestHandler):
             if not self.require_admin():
                 return
             self.admin_overview()
+            return
+        if request_path == "/api/admin/deck":
+            if not self.require_admin():
+                return
+            deck_id = (parse_qs(parsed.query).get("id") or [""])[0]
+            self.admin_deck(deck_id)
             return
 
         target = (ROOT / request_path.lstrip("/")).resolve()

@@ -28,6 +28,8 @@ admin2026
 
 For deployment, set the `ADMIN_CODE` environment variable in your host dashboard.
 
+The admin page can manage access codes and sentence content. Newly added sentences can be practiced immediately; if no embedded voice audio exists for that sentence, the trainer falls back to browser speech synthesis.
+
 ## Edit Access Codes
 
 Edit:
