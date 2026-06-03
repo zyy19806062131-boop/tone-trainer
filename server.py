@@ -41,6 +41,8 @@ def deck_summaries():
             "id": deck.get("id"),
             "name": deck.get("name"),
             "full": bool(deck.get("full", False)),
+            "hidden": bool(deck.get("hidden", False)),
+            "units": deck.get("units", []),
             "sentenceCount": len(deck.get("sents", [])),
             "unitCount": len(deck.get("units", [])),
         }
@@ -66,13 +68,13 @@ def normalize_deck(deck):
         name = str(unit.get("name", "")).strip()
         if not unit_id or not name or unit_id in seen:
             continue
-        clean_units.append({"id": unit_id, "name": name})
+        clean_units.append({"id": unit_id, "name": name, "hidden": bool(unit.get("hidden", False))})
         seen.add(unit_id)
     if not clean_units:
-        clean_units = [{"id": DEFAULT_UNIT_ID, "name": DEFAULT_UNIT_NAME}]
+        clean_units = [{"id": DEFAULT_UNIT_ID, "name": DEFAULT_UNIT_NAME, "hidden": False}]
         seen = {DEFAULT_UNIT_ID}
     if DEFAULT_UNIT_ID not in seen:
-        clean_units.insert(0, {"id": DEFAULT_UNIT_ID, "name": DEFAULT_UNIT_NAME})
+        clean_units.insert(0, {"id": DEFAULT_UNIT_ID, "name": DEFAULT_UNIT_NAME, "hidden": False})
         seen.add(DEFAULT_UNIT_ID)
     deck["units"] = clean_units
     for sentence in deck.get("sents", []):
@@ -90,7 +92,7 @@ def validate_unit(unit):
         raise ValueError("二级项目 ID 只能用小写字母、数字和连字符，并且要以字母或数字开头")
     if not name:
         raise ValueError("二级项目名称不能为空")
-    return {"id": unit_id, "name": name}
+    return {"id": unit_id, "name": name, "hidden": bool(unit.get("hidden", False))}
 
 
 def validate_sentence(sentence):
@@ -138,7 +140,31 @@ def validate_deck(deck):
         raise ValueError("项目 ID 只能用小写字母、数字和连字符，并且要以字母或数字开头")
     if not name:
         raise ValueError("项目名称不能为空")
-    return {"id": deck_id, "name": name, "full": bool(deck.get("full", False))}
+    return {"id": deck_id, "name": name, "full": bool(deck.get("full", False)), "hidden": bool(deck.get("hidden", False))}
+
+
+def visible_deck_for_profile(deck, profile):
+    normalize_deck(deck)
+    if deck.get("hidden"):
+        return None
+    unit_rules = profile.get("units") if isinstance(profile.get("units"), dict) else {}
+    allowed_units = unit_rules.get(deck.get("id"))
+    visible_units = []
+    for unit in deck.get("units", []):
+        if unit.get("hidden"):
+            continue
+        if isinstance(allowed_units, list) and unit.get("id") not in allowed_units:
+            continue
+        visible_units.append(unit)
+    visible_unit_ids = {unit.get("id") for unit in visible_units}
+    visible_sents = [
+        sentence
+        for sentence in deck.get("sents", [])
+        if sentence.get("unitId", DEFAULT_UNIT_ID) in visible_unit_ids
+    ]
+    if not visible_units and not visible_sents:
+        return None
+    return {**deck, "units": visible_units, "sents": visible_sents}
 
 
 def build_payload(code):
@@ -155,8 +181,7 @@ def build_payload(code):
     else:
         allowed_set = set(allowed or [])
         decks = [deck for deck in all_decks if deck.get("id") in allowed_set]
-    for deck in decks:
-        normalize_deck(deck)
+    decks = [visible for deck in decks if (visible := visible_deck_for_profile(deck, profile))]
 
     allowed_sentence_ids = {
         sentence.get("id")
@@ -221,7 +246,13 @@ class ToneTrainerHandler(BaseHTTPRequestHandler):
         code = str(body.get("code", "")).strip()
         label = str(body.get("label", "")).strip()
         decks = body.get("decks")
-        deck_ids = {deck["id"] for deck in deck_summaries() if deck.get("id")}
+        units = body.get("units") if isinstance(body.get("units"), dict) else {}
+        summaries = deck_summaries()
+        deck_ids = {deck["id"] for deck in summaries if deck.get("id")}
+        unit_ids_by_deck = {
+            deck["id"]: {unit.get("id") for unit in deck.get("units", []) if unit.get("id")}
+            for deck in summaries
+        }
 
         if not code:
             self.send_json(HTTPStatus.BAD_REQUEST, {"error": "code 不能为空"})
@@ -237,9 +268,24 @@ class ToneTrainerHandler(BaseHTTPRequestHandler):
             if unknown:
                 self.send_json(HTTPStatus.BAD_REQUEST, {"error": "项目不存在: " + ", ".join(unknown)})
                 return
+        clean_units = {}
+        for deck_id, unit_ids in units.items():
+            if deck_id not in deck_ids:
+                self.send_json(HTTPStatus.BAD_REQUEST, {"error": "项目不存在: " + deck_id})
+                return
+            if not isinstance(unit_ids, list):
+                continue
+            unknown_units = [unit_id for unit_id in unit_ids if unit_id not in unit_ids_by_deck.get(deck_id, set())]
+            if unknown_units:
+                self.send_json(HTTPStatus.BAD_REQUEST, {"error": "二级项目不存在: " + ", ".join(unknown_units)})
+                return
+            clean_units[deck_id] = unit_ids
 
         access_codes = load_json(CODES_PATH)
-        access_codes[code] = {"label": label, "decks": decks}
+        profile = {"label": label, "decks": decks}
+        if clean_units:
+            profile["units"] = clean_units
+        access_codes[code] = profile
         save_json(CODES_PATH, access_codes)
         self.send_json(HTTPStatus.OK, {"ok": True, "accessCodes": access_codes})
 
@@ -280,7 +326,7 @@ class ToneTrainerHandler(BaseHTTPRequestHandler):
         access_codes = load_json(CODES_PATH)
         access_changed = False
         if existing_index is None:
-            decks.append({**clean_deck, "units": [{"id": DEFAULT_UNIT_ID, "name": DEFAULT_UNIT_NAME}], "sents": []})
+            decks.append({**clean_deck, "units": [{"id": DEFAULT_UNIT_ID, "name": DEFAULT_UNIT_NAME, "hidden": False}], "sents": []})
         else:
             old_deck = decks[existing_index]
             normalize_deck(old_deck)
@@ -298,6 +344,9 @@ class ToneTrainerHandler(BaseHTTPRequestHandler):
                             clean_deck["id"] if deck_id == old_id else deck_id
                             for deck_id in profile.get("decks", [])
                         ]
+                        access_changed = True
+                    if isinstance(profile.get("units"), dict) and old_id in profile["units"]:
+                        profile["units"][clean_deck["id"]] = profile["units"].pop(old_id)
                         access_changed = True
 
         save_json(DATA_PATH, data)
@@ -327,6 +376,8 @@ class ToneTrainerHandler(BaseHTTPRequestHandler):
         for profile in access_codes.values():
             if isinstance(profile.get("decks"), list):
                 profile["decks"] = [item for item in profile.get("decks", []) if item != deck_id]
+            if isinstance(profile.get("units"), dict):
+                profile["units"].pop(deck_id, None)
 
         save_json(DATA_PATH, data)
         save_json(CODES_PATH, access_codes)
@@ -379,6 +430,15 @@ class ToneTrainerHandler(BaseHTTPRequestHandler):
                 for sentence in deck.get("sents", []):
                     if sentence.get("unitId") == old_id:
                         sentence["unitId"] = clean_unit["id"]
+                access_codes = load_json(CODES_PATH)
+                for profile in access_codes.values():
+                    unit_rules = profile.get("units")
+                    if isinstance(unit_rules, dict) and isinstance(unit_rules.get(deck_id), list):
+                        unit_rules[deck_id] = [
+                            clean_unit["id"] if unit_id == old_id else unit_id
+                            for unit_id in unit_rules.get(deck_id, [])
+                        ]
+                save_json(CODES_PATH, access_codes)
         save_json(DATA_PATH, data)
         self.send_json(HTTPStatus.OK, {"ok": True, "deck": deck, "decks": deck_summaries()})
 
@@ -402,6 +462,12 @@ class ToneTrainerHandler(BaseHTTPRequestHandler):
         for sentence in deck.get("sents", []):
             if sentence.get("unitId") == unit_id:
                 sentence["unitId"] = DEFAULT_UNIT_ID
+        access_codes = load_json(CODES_PATH)
+        for profile in access_codes.values():
+            unit_rules = profile.get("units")
+            if isinstance(unit_rules, dict) and isinstance(unit_rules.get(deck_id), list):
+                unit_rules[deck_id] = [item for item in unit_rules.get(deck_id, []) if item != unit_id]
+        save_json(CODES_PATH, access_codes)
         save_json(DATA_PATH, data)
         self.send_json(HTTPStatus.OK, {"ok": True, "deck": deck, "decks": deck_summaries()})
 

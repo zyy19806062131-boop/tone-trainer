@@ -58,6 +58,9 @@ button.ghost{background:transparent}
 .unit-bar{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:18px}
 .unit-bar h3{margin:0 0 10px;font-size:.95rem}
 .unit-table .actions{justify-content:flex-end}
+.unit-access{display:grid;gap:10px}
+.unit-access-group{border:1px solid rgba(35,68,95,.75);border-radius:7px;padding:10px;background:rgba(8,21,34,.5)}
+.unit-access-group b{display:block;margin-bottom:8px}
 .tag{display:inline-flex;align-items:center;border:1px solid rgba(244,211,94,.45);color:var(--yellow);border-radius:99px;padding:4px 8px;font-size:.76rem;white-space:nowrap}
 .form{display:grid;gap:12px}
 .form.two{grid-template-columns:1fr 1fr}
@@ -118,6 +121,8 @@ textarea:focus{border-color:var(--cyan);box-shadow:0 0 0 3px rgba(18,215,232,.12
             <label>显示名称 <input id="labelInput" type="text" placeholder="STUDENT A"></label>
             <label class="check"><input id="allDecks" type="checkbox"> 允许全部项目</label>
             <div class="checks" id="deckChecks"></div>
+            <div class="callout">可选：在下面勾选每个 code 能看到的二级项目。不特别设置时，默认开放该项目下所有未隐藏的二级项目。</div>
+            <div class="unit-access" id="unitAccess"></div>
             <div class="actions">
               <button class="primary" id="saveBtn">保存口令</button>
               <button class="ghost" id="clearBtn">清空</button>
@@ -148,6 +153,7 @@ textarea:focus{border-color:var(--cyan);box-shadow:0 0 0 3px rgba(18,215,232,.12
             <label>Project ID <input id="projectId" type="text" placeholder="hsk1"></label>
             <label>显示名称 <input id="projectName" type="text" placeholder="HSK1"></label>
             <label class="check"><input id="projectFull" type="checkbox"> 内容已完整</label>
+            <label class="check"><input id="projectHidden" type="checkbox"> 对学生隐藏这个项目</label>
             <div class="actions">
               <button class="primary" id="saveProjectBtn">保存项目</button>
               <button class="ghost" id="clearProjectBtn">清空</button>
@@ -177,6 +183,7 @@ textarea:focus{border-color:var(--cyan);box-shadow:0 0 0 3px rgba(18,215,232,.12
               <div class="form">
                 <label>Unit ID <input id="unitId" type="text" placeholder="lesson-1"></label>
                 <label>显示名称 <input id="unitName" type="text" placeholder="Lesson 1"></label>
+                <label class="check"><input id="unitHidden" type="checkbox"> 对学生隐藏这个二级项目</label>
                 <div class="actions">
                   <button class="primary" id="saveUnitBtn">保存二级项目</button>
                   <button class="ghost" id="clearUnitBtn">清空</button>
@@ -217,6 +224,7 @@ const adminCodeInput = document.getElementById('adminCode');
 const loginErr = document.getElementById('loginErr');
 const codesTable = document.getElementById('codesTable');
 const deckChecks = document.getElementById('deckChecks');
+const unitAccess = document.getElementById('unitAccess');
 const deckList = document.getElementById('deckList');
 const codeInput = document.getElementById('codeInput');
 const labelInput = document.getElementById('labelInput');
@@ -240,12 +248,14 @@ const unitsTable = document.getElementById('unitsTable');
 const unitTitle = document.getElementById('unitTitle');
 const unitIdInput = document.getElementById('unitId');
 const unitNameInput = document.getElementById('unitName');
+const unitHiddenInput = document.getElementById('unitHidden');
 const unitErr = document.getElementById('unitErr');
 const projectTitle = document.getElementById('projectTitle');
 const projectHelp = document.getElementById('projectHelp');
 const projectIdInput = document.getElementById('projectId');
 const projectNameInput = document.getElementById('projectName');
 const projectFullInput = document.getElementById('projectFull');
+const projectHiddenInput = document.getElementById('projectHidden');
 const projectErr = document.getElementById('projectErr');
 let adminCode = sessionStorage.getItem('toneAdminCode') || '';
 let decks = [];
@@ -254,6 +264,7 @@ let selectedDeck = null;
 let originalSentenceId = '';
 let originalProjectId = '';
 let originalUnitId = '';
+let editingUnits = {};
 
 function adminHeaders(){
   return {'Content-Type':'application/json','X-Admin-Code':adminCode};
@@ -279,7 +290,7 @@ function escapeHtml(value){
 }
 function renderDecks(){
   deckList.innerHTML = decks.map((d,i)=>`<div class="deck ${selectedDeck&&selectedDeck.id===d.id?'on':''}">
-    <div class="deck-meta"><b>${escapeHtml(d.name)}</b><div class="muted">${escapeHtml(d.id)}</div></div>
+    <div class="deck-meta"><b>${escapeHtml(d.name)}</b><div class="muted">${escapeHtml(d.id)}${d.hidden?' · 已隐藏':''}</div></div>
     <div class="deck-tools">
       <span class="count">${d.sentenceCount} 句 · ${d.unitCount || 1} 单元</span>
       <button class="icon-btn" title="上移" data-project-move="${escapeHtml(d.id)}" data-direction="up" ${i===0?'disabled':''}>↑</button>
@@ -289,8 +300,26 @@ function renderDecks(){
       <button class="danger" data-project-delete="${escapeHtml(d.id)}">删除</button>
     </div>
   </div>`).join('');
-  deckChecks.innerHTML = decks.map(d=>`<label class="check"><input type="checkbox" value="${escapeHtml(d.id)}"> ${escapeHtml(d.name)}</label>`).join('');
+  deckChecks.innerHTML = decks.map(d=>`<label class="check"><input type="checkbox" value="${escapeHtml(d.id)}"> ${escapeHtml(d.name)}${d.hidden?'（隐藏）':''}</label>`).join('');
   syncDeckChecks();
+}
+function renderUnitAccess(){
+  const checkedDecks = allDecksInput.checked ? [] : [...deckChecks.querySelectorAll('input:checked')].map(input=>input.value);
+  if(!checkedDecks.length){
+    unitAccess.innerHTML = '<div class="muted">先勾选一个训练项目，才会显示它下面的二级项目权限。</div>';
+    return;
+  }
+  unitAccess.innerHTML = checkedDecks.map(deckId=>{
+    const deck = decks.find(d=>d.id===deckId);
+    if(!deck) return '';
+    const rule = editingUnits[deck.id];
+    const units = deck.units || [];
+    const checks = units.map(unit=>{
+      const checked = Array.isArray(rule) ? rule.includes(unit.id) : true;
+      return `<label class="check"><input type="checkbox" data-unit-deck="${escapeHtml(deck.id)}" value="${escapeHtml(unit.id)}" ${checked?'checked':''}> ${escapeHtml(unit.name)}${unit.hidden?'（隐藏）':''}</label>`;
+    }).join('');
+    return `<div class="unit-access-group"><b>${escapeHtml(deck.name)}</b><div class="checks">${checks}</div></div>`;
+  }).join('');
 }
 function renderCodes(){
   codesTable.innerHTML = Object.entries(accessCodes).map(([code,profile])=>{
@@ -325,6 +354,7 @@ function editCode(code){
   codeInput.value = code;
   labelInput.value = profile.label || '';
   allDecksInput.checked = profile.decks === 'all';
+  editingUnits = profile.units || {};
   const allowed = new Set(Array.isArray(profile.decks) ? profile.decks : []);
   deckChecks.querySelectorAll('input').forEach(input=>input.checked = allowed.has(input.value));
   syncDeckChecks();
@@ -339,6 +369,7 @@ function editProject(deckId){
   projectIdInput.value = deck.id;
   projectNameInput.value = deck.name;
   projectFullInput.checked = Boolean(deck.full);
+  projectHiddenInput.checked = Boolean(deck.hidden);
   projectErr.textContent = '';
   projectIdInput.focus();
 }
@@ -349,6 +380,7 @@ function clearProjectForm(){
   projectIdInput.value = '';
   projectNameInput.value = '';
   projectFullInput.checked = false;
+  projectHiddenInput.checked = false;
   projectErr.textContent = '';
   projectIdInput.focus();
 }
@@ -358,6 +390,7 @@ function clearForm(){
   codeInput.value = '';
   labelInput.value = '';
   allDecksInput.checked = false;
+  editingUnits = {};
   deckChecks.querySelectorAll('input').forEach(input=>input.checked = false);
   syncDeckChecks();
   formErr.textContent = '';
@@ -365,6 +398,7 @@ function clearForm(){
 }
 function syncDeckChecks(){
   deckChecks.querySelectorAll('input').forEach(input=>input.disabled = allDecksInput.checked);
+  renderUnitAccess();
 }
 function stressWord(value){
   const v = String(value || '').trim();
@@ -383,7 +417,7 @@ function renderUnits(){
   const units = selectedDeck.units || [];
   unitsTable.innerHTML = units.map((unit,i)=>`<tr>
     <td><code>${escapeHtml(unit.id)}</code></td>
-    <td>${escapeHtml(unit.name)}</td>
+    <td>${escapeHtml(unit.name)}${unit.hidden?' <span class="muted">已隐藏</span>':''}</td>
     <td class="actions">
       <button class="icon-btn" title="上移" data-unit-move="${escapeHtml(unit.id)}" data-direction="up" ${i===0?'disabled':''}>↑</button>
       <button class="icon-btn" title="下移" data-unit-move="${escapeHtml(unit.id)}" data-direction="down" ${i===units.length-1?'disabled':''}>↓</button>
@@ -400,6 +434,7 @@ function editUnit(unitId){
   unitTitle.textContent = '修改二级项目';
   unitIdInput.value = unit.id;
   unitNameInput.value = unit.name;
+  unitHiddenInput.checked = Boolean(unit.hidden);
   unitErr.textContent = '';
   unitIdInput.focus();
 }
@@ -408,6 +443,7 @@ function clearUnitForm(){
   unitTitle.textContent = '新增二级项目';
   unitIdInput.value = '';
   unitNameInput.value = '';
+  unitHiddenInput.checked = false;
   unitErr.textContent = '';
   unitIdInput.focus();
 }
@@ -521,7 +557,7 @@ async function saveUnit(){
     body: JSON.stringify({
       deckId: selectedDeck.id,
       originalId: originalUnitId,
-      unit: {id: unitIdInput.value.trim(), name: unitNameInput.value.trim()}
+      unit: {id: unitIdInput.value.trim(), name: unitNameInput.value.trim(), hidden: unitHiddenInput.checked}
     })
   });
   selectedDeck = payload.deck;
@@ -568,7 +604,8 @@ async function saveProject(){
       deck: {
         id: projectIdInput.value.trim(),
         name: projectNameInput.value.trim(),
-        full: projectFullInput.checked
+        full: projectFullInput.checked,
+        hidden: projectHiddenInput.checked
       }
     })
   });
@@ -613,10 +650,22 @@ async function moveProject(deckId, direction){
 }
 async function saveCode(){
   const checked = [...deckChecks.querySelectorAll('input:checked')].map(input=>input.value);
+  const unitRules = {};
+  for(const deckId of checked){
+    const deck = decks.find(d=>d.id===deckId);
+    const allUnitIds = (deck && deck.units ? deck.units : []).map(unit=>unit.id);
+    const selectedUnitIds = [...unitAccess.querySelectorAll('input[data-unit-deck]:checked')]
+      .filter(input=>input.dataset.unitDeck===deckId)
+      .map(input=>input.value);
+    if(allUnitIds.length && selectedUnitIds.length !== allUnitIds.length){
+      unitRules[deckId] = selectedUnitIds;
+    }
+  }
   const body = {
     code: codeInput.value.trim(),
     label: labelInput.value.trim(),
-    decks: allDecksInput.checked ? 'all' : checked
+    decks: allDecksInput.checked ? 'all' : checked,
+    units: allDecksInput.checked ? {} : unitRules
   };
   formErr.textContent = '保存中...';
   const payload = await jsonFetch('/api/admin/access-code', {
@@ -625,6 +674,7 @@ async function saveCode(){
     body: JSON.stringify(body)
   });
   accessCodes = payload.accessCodes || {};
+  editingUnits = accessCodes[body.code] && accessCodes[body.code].units ? accessCodes[body.code].units : {};
   renderCodes();
   formErr.textContent = '已保存';
 }
@@ -670,6 +720,7 @@ document.getElementById('newProjectTop').addEventListener('click', clearProjectF
 document.getElementById('clearProjectBtn').addEventListener('click', clearProjectForm);
 document.getElementById('saveProjectBtn').addEventListener('click', ()=>saveProject().catch(err=>projectErr.textContent=err.message));
 allDecksInput.addEventListener('change', syncDeckChecks);
+deckChecks.addEventListener('change', renderUnitAccess);
 deckList.addEventListener('click', e=>{
   const edit = e.target.closest('[data-project-edit]');
   const del = e.target.closest('[data-project-delete]');
