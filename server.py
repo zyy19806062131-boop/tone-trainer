@@ -24,7 +24,7 @@ DATABASE_URL = os.environ.get("DATABASE_URL", "").strip()
 DECK_ID_RE = re.compile(r"^[a-z0-9][a-z0-9-]*$")
 DEFAULT_UNIT_ID = "default"
 DEFAULT_UNIT_NAME = "全部"
-APP_DATA_VERSION = 2
+APP_DATA_VERSION = 3
 STATE_KEYS = {
     DATA_PATH.resolve(): "trainer_data",
     CODES_PATH.resolve(): "access_codes",
@@ -109,6 +109,7 @@ def apply_data_migrations(payload, seed_payload):
         return payload, False
 
     changed = False
+    seed_decks = {deck.get("id"): deck for deck in seed_payload.get("decks", [])}
     seed_sentences = {
         sentence.get("id"): sentence
         for deck in seed_payload.get("decks", [])
@@ -125,6 +126,27 @@ def apply_data_migrations(payload, seed_payload):
         if seed_audio:
             payload.setdefault("audio", {})["scene-speaking-007"] = seed_audio
             changed = True
+
+    seed_scene = seed_decks.get("scene-speaking")
+    scene = find_deck(payload, "scene-speaking")
+    if seed_scene and scene:
+        existing_unit_ids = {unit.get("id") for unit in scene.get("units", [])}
+        for unit in seed_scene.get("units", []):
+            if unit.get("id") == "hello-neighbor" and unit.get("id") not in existing_unit_ids:
+                scene.setdefault("units", []).append(unit)
+                changed = True
+
+        existing_sentence_ids = {sentence.get("id") for sentence in scene.get("sents", [])}
+        for sentence in seed_scene.get("sents", []):
+            sid = sentence.get("id")
+            if sid and sid.startswith("scene-speaking-") and sid >= "scene-speaking-016" and sid not in existing_sentence_ids:
+                scene.setdefault("sents", []).append(sentence)
+                changed = True
+            if sid and sid.startswith("scene-speaking-") and sid >= "scene-speaking-016":
+                seed_audio = seed_payload.get("audio", {}).get(sid)
+                if seed_audio and sid not in payload.setdefault("audio", {}):
+                    payload["audio"][sid] = seed_audio
+                    changed = True
 
     payload["_dataVersion"] = APP_DATA_VERSION
     return payload, True
