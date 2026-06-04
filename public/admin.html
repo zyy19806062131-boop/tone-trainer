@@ -435,10 +435,10 @@ function renderUnits(){
     <td><code>${escapeHtml(unit.id)}</code></td>
     <td>${escapeHtml(unit.name)} <span class="muted">${unit.access === 'paid' ? '付费' : '免费'}${unit.paymentUrl ? ' · 已填付款链接' : ''}${unit.hidden?' · 已隐藏':''}</span></td>
     <td class="actions">
-      <button class="icon-btn" title="上移" data-unit-move="${escapeHtml(unit.id)}" data-direction="up" ${i===0?'disabled':''}>↑</button>
-      <button class="icon-btn" title="下移" data-unit-move="${escapeHtml(unit.id)}" data-direction="down" ${i===units.length-1?'disabled':''}>↓</button>
-      <button data-unit-edit="${escapeHtml(unit.id)}">编辑</button>
-      <button class="danger" data-unit-delete="${escapeHtml(unit.id)}" ${unit.id==='default'?'disabled':''}>删除</button>
+      <button type="button" class="icon-btn" title="上移" data-unit-move="${escapeHtml(unit.id)}" data-direction="up" ${i===0?'disabled':''}>↑</button>
+      <button type="button" class="icon-btn" title="下移" data-unit-move="${escapeHtml(unit.id)}" data-direction="down" ${i===units.length-1?'disabled':''}>↓</button>
+      <button type="button" data-unit-edit="${escapeHtml(unit.id)}">编辑</button>
+      <button type="button" class="danger" data-unit-delete="${escapeHtml(unit.id)}" ${unit.id==='default'?'disabled':''}>删除</button>
     </td>
   </tr>`).join('');
   renderUnitSelect(sentenceUnitInput.value || (units[0] && units[0].id));
@@ -617,8 +617,9 @@ async function moveUnit(unitId, direction){
   });
   selectedDeck = payload.deck;
   decks = payload.decks || decks;
+  unitErr.textContent = '已调整顺序';
   renderDecks();
-  renderUnits();
+  renderSentences();
 }
 async function saveProject(){
   projectErr.textContent = '保存中...';
@@ -770,6 +771,7 @@ unitsTable.addEventListener('click', e=>{
   const edit = e.target.closest('[data-unit-edit]');
   const del = e.target.closest('[data-unit-delete]');
   const move = e.target.closest('[data-unit-move]');
+  if(edit || del || move) e.preventDefault();
   if(edit) editUnit(edit.dataset.unitEdit);
   if(del) deleteUnit(del.dataset.unitDelete).catch(err=>unitErr.textContent=err.message);
   if(move) moveUnit(move.dataset.unitMove, move.dataset.direction).catch(err=>unitErr.textContent=err.message);
