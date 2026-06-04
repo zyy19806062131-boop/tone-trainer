@@ -2,5 +2,11 @@
   "tone2026": {
     "label": "FULL ACCESS",
     "decks": "all"
+  },
+  "BABARA01": {
+    "label": "BABARA01",
+    "decks": [
+      "scene-speaking"
+    ]
   }
 }

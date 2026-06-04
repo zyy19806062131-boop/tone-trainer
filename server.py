@@ -3,10 +3,16 @@ import json
 import mimetypes
 import os
 import re
+import threading
 from http import HTTPStatus
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from urllib.parse import parse_qs, unquote, urlparse
+
+try:
+    import psycopg2
+except ImportError:  # Local JSON mode does not need PostgreSQL installed.
+    psycopg2 = None
 
 
 BASE_DIR = Path(__file__).resolve().parent
@@ -14,17 +20,104 @@ ROOT = (BASE_DIR / "public").resolve()
 DATA_PATH = BASE_DIR / "data" / "trainer_data.private.json"
 CODES_PATH = BASE_DIR / "data" / "access_codes.private.json"
 ADMIN_CODE = os.environ.get("ADMIN_CODE", "admin2026")
+DATABASE_URL = os.environ.get("DATABASE_URL", "").strip()
 DECK_ID_RE = re.compile(r"^[a-z0-9][a-z0-9-]*$")
 DEFAULT_UNIT_ID = "default"
 DEFAULT_UNIT_NAME = "全部"
+STATE_KEYS = {
+    DATA_PATH.resolve(): "trainer_data",
+    CODES_PATH.resolve(): "access_codes",
+}
+_DB_INIT_LOCK = threading.Lock()
+_DB_INITIALIZED = False
+
+
+def state_key_for_path(path):
+    return STATE_KEYS.get(Path(path).resolve())
+
+
+def db_enabled():
+    return bool(DATABASE_URL)
+
+
+def db_connect():
+    if not db_enabled():
+        return None
+    if psycopg2 is None:
+        raise RuntimeError("DATABASE_URL is set, but psycopg2 is not installed")
+    return psycopg2.connect(DATABASE_URL)
+
+
+def init_db():
+    global _DB_INITIALIZED
+    if not db_enabled() or _DB_INITIALIZED:
+        return
+    with _DB_INIT_LOCK:
+        if _DB_INITIALIZED:
+            return
+        with db_connect() as conn:
+            with conn.cursor() as cur:
+                cur.execute(
+                    """
+                    CREATE TABLE IF NOT EXISTS app_state (
+                        key TEXT PRIMARY KEY,
+                        payload JSONB NOT NULL,
+                        updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+                    )
+                    """
+                )
+                for path, key in STATE_KEYS.items():
+                    with path.open("r", encoding="utf-8") as f:
+                        seed_payload = json.load(f)
+                    cur.execute(
+                        """
+                        INSERT INTO app_state (key, payload)
+                        VALUES (%s, %s::jsonb)
+                        ON CONFLICT (key) DO NOTHING
+                        """,
+                        (key, json.dumps(seed_payload, ensure_ascii=False)),
+                    )
+            conn.commit()
+        _DB_INITIALIZED = True
+
+
+def normalize_db_payload(payload):
+    if isinstance(payload, (dict, list)):
+        return payload
+    return json.loads(payload)
 
 
 def load_json(path):
+    key = state_key_for_path(path)
+    if key and db_enabled():
+        init_db()
+        with db_connect() as conn:
+            with conn.cursor() as cur:
+                cur.execute("SELECT payload FROM app_state WHERE key = %s", (key,))
+                row = cur.fetchone()
+        if row:
+            return normalize_db_payload(row[0])
     with path.open("r", encoding="utf-8") as f:
         return json.load(f)
 
 
 def save_json(path, payload):
+    key = state_key_for_path(path)
+    if key and db_enabled():
+        init_db()
+        with db_connect() as conn:
+            with conn.cursor() as cur:
+                cur.execute(
+                    """
+                    INSERT INTO app_state (key, payload, updated_at)
+                    VALUES (%s, %s::jsonb, NOW())
+                    ON CONFLICT (key)
+                    DO UPDATE SET payload = EXCLUDED.payload, updated_at = NOW()
+                    """,
+                    (key, json.dumps(payload, ensure_ascii=False)),
+                )
+            conn.commit()
+        return
     temp_path = path.with_suffix(path.suffix + ".tmp")
     with temp_path.open("w", encoding="utf-8") as f:
         json.dump(payload, f, ensure_ascii=False, indent=2)
@@ -748,6 +841,8 @@ def main():
     port = int(os.environ.get("PORT", "8765"))
     host = os.environ.get("HOST", "127.0.0.1")
     server = ThreadingHTTPServer((host, port), ToneTrainerHandler)
+    storage = "PostgreSQL DATABASE_URL" if db_enabled() else "local JSON files"
+    print(f"Storage backend: {storage}")
     print(f"Tone trainer backend running at http://{host}:{port}/tone_trainer-ponk.html")
     server.serve_forever()
 
