@@ -63,18 +63,29 @@ def normalize_deck(deck):
         units = [{"id": DEFAULT_UNIT_ID, "name": DEFAULT_UNIT_NAME}]
     clean_units = []
     seen = set()
-    for unit in units:
+    for index, unit in enumerate(units):
         unit_id = str(unit.get("id", "")).strip()
         name = str(unit.get("name", "")).strip()
         if not unit_id or not name or unit_id in seen:
             continue
-        clean_units.append({"id": unit_id, "name": name, "hidden": bool(unit.get("hidden", False))})
+        access = str(unit.get("access", "")).strip()
+        if access not in {"free", "paid"}:
+            access = "free" if index == 0 else "paid"
+        clean_units.append(
+            {
+                "id": unit_id,
+                "name": name,
+                "hidden": bool(unit.get("hidden", False)),
+                "access": access,
+                "paymentUrl": str(unit.get("paymentUrl", "")).strip(),
+            }
+        )
         seen.add(unit_id)
     if not clean_units:
-        clean_units = [{"id": DEFAULT_UNIT_ID, "name": DEFAULT_UNIT_NAME, "hidden": False}]
+        clean_units = [{"id": DEFAULT_UNIT_ID, "name": DEFAULT_UNIT_NAME, "hidden": False, "access": "free", "paymentUrl": ""}]
         seen = {DEFAULT_UNIT_ID}
     if DEFAULT_UNIT_ID not in seen:
-        clean_units.insert(0, {"id": DEFAULT_UNIT_ID, "name": DEFAULT_UNIT_NAME, "hidden": False})
+        clean_units.insert(0, {"id": DEFAULT_UNIT_ID, "name": DEFAULT_UNIT_NAME, "hidden": False, "access": "free", "paymentUrl": ""})
         seen.add(DEFAULT_UNIT_ID)
     deck["units"] = clean_units
     for sentence in deck.get("sents", []):
@@ -92,7 +103,16 @@ def validate_unit(unit):
         raise ValueError("二级项目 ID 只能用小写字母、数字和连字符，并且要以字母或数字开头")
     if not name:
         raise ValueError("二级项目名称不能为空")
-    return {"id": unit_id, "name": name, "hidden": bool(unit.get("hidden", False))}
+    access = str(unit.get("access", "")).strip()
+    if access not in {"free", "paid"}:
+        access = "free"
+    return {
+        "id": unit_id,
+        "name": name,
+        "hidden": bool(unit.get("hidden", False)),
+        "access": access,
+        "paymentUrl": str(unit.get("paymentUrl", "")).strip(),
+    }
 
 
 def validate_sentence(sentence):
@@ -150,17 +170,20 @@ def visible_deck_for_profile(deck, profile):
     unit_rules = profile.get("units") if isinstance(profile.get("units"), dict) else {}
     allowed_units = unit_rules.get(deck.get("id"))
     visible_units = []
+    unlocked_unit_ids = set()
     for unit in deck.get("units", []):
         if unit.get("hidden"):
             continue
-        if isinstance(allowed_units, list) and unit.get("id") not in allowed_units:
-            continue
-        visible_units.append(unit)
-    visible_unit_ids = {unit.get("id") for unit in visible_units}
+        unlocked = not isinstance(allowed_units, list) or unit.get("id") in allowed_units
+        if unlocked:
+            unlocked_unit_ids.add(unit.get("id"))
+            visible_units.append(unit)
+        elif unit.get("access") == "paid":
+            visible_units.append({**unit, "locked": True})
     visible_sents = [
         sentence
         for sentence in deck.get("sents", [])
-        if sentence.get("unitId", DEFAULT_UNIT_ID) in visible_unit_ids
+        if sentence.get("unitId", DEFAULT_UNIT_ID) in unlocked_unit_ids
     ]
     if not visible_units and not visible_sents:
         return None

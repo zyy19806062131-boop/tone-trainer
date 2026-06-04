@@ -183,6 +183,8 @@ textarea:focus{border-color:var(--cyan);box-shadow:0 0 0 3px rgba(18,215,232,.12
               <div class="form">
                 <label>Unit ID <input id="unitId" type="text" placeholder="lesson-1"></label>
                 <label>显示名称 <input id="unitName" type="text" placeholder="Lesson 1"></label>
+                <label>开放方式 <select id="unitAccessMode"><option value="free">免费</option><option value="paid">付费</option></select></label>
+                <label>付款链接 <input id="unitPaymentUrl" type="text" placeholder="https://wise.com/pay/..."></label>
                 <label class="check"><input id="unitHidden" type="checkbox"> 对学生隐藏这个二级项目</label>
                 <div class="actions">
                   <button class="primary" id="saveUnitBtn">保存二级项目</button>
@@ -248,6 +250,8 @@ const unitsTable = document.getElementById('unitsTable');
 const unitTitle = document.getElementById('unitTitle');
 const unitIdInput = document.getElementById('unitId');
 const unitNameInput = document.getElementById('unitName');
+const unitAccessModeInput = document.getElementById('unitAccessMode');
+const unitPaymentUrlInput = document.getElementById('unitPaymentUrl');
 const unitHiddenInput = document.getElementById('unitHidden');
 const unitErr = document.getElementById('unitErr');
 const projectTitle = document.getElementById('projectTitle');
@@ -316,7 +320,8 @@ function renderUnitAccess(){
     const units = deck.units || [];
     const checks = units.map(unit=>{
       const checked = Array.isArray(rule) ? rule.includes(unit.id) : true;
-      return `<label class="check"><input type="checkbox" data-unit-deck="${escapeHtml(deck.id)}" value="${escapeHtml(unit.id)}" ${checked?'checked':''}> ${escapeHtml(unit.name)}${unit.hidden?'（隐藏）':''}</label>`;
+      const accessText = unit.access === 'paid' ? '付费' : '免费';
+      return `<label class="check"><input type="checkbox" data-unit-deck="${escapeHtml(deck.id)}" value="${escapeHtml(unit.id)}" ${checked?'checked':''}> ${escapeHtml(unit.name)} · ${accessText}${unit.hidden?'（隐藏）':''}</label>`;
     }).join('');
     return `<div class="unit-access-group"><b>${escapeHtml(deck.name)}</b><div class="checks">${checks}</div></div>`;
   }).join('');
@@ -417,7 +422,7 @@ function renderUnits(){
   const units = selectedDeck.units || [];
   unitsTable.innerHTML = units.map((unit,i)=>`<tr>
     <td><code>${escapeHtml(unit.id)}</code></td>
-    <td>${escapeHtml(unit.name)}${unit.hidden?' <span class="muted">已隐藏</span>':''}</td>
+    <td>${escapeHtml(unit.name)} <span class="muted">${unit.access === 'paid' ? '付费' : '免费'}${unit.paymentUrl ? ' · 已填付款链接' : ''}${unit.hidden?' · 已隐藏':''}</span></td>
     <td class="actions">
       <button class="icon-btn" title="上移" data-unit-move="${escapeHtml(unit.id)}" data-direction="up" ${i===0?'disabled':''}>↑</button>
       <button class="icon-btn" title="下移" data-unit-move="${escapeHtml(unit.id)}" data-direction="down" ${i===units.length-1?'disabled':''}>↓</button>
@@ -434,6 +439,8 @@ function editUnit(unitId){
   unitTitle.textContent = '修改二级项目';
   unitIdInput.value = unit.id;
   unitNameInput.value = unit.name;
+  unitAccessModeInput.value = unit.access || 'free';
+  unitPaymentUrlInput.value = unit.paymentUrl || '';
   unitHiddenInput.checked = Boolean(unit.hidden);
   unitErr.textContent = '';
   unitIdInput.focus();
@@ -443,6 +450,8 @@ function clearUnitForm(){
   unitTitle.textContent = '新增二级项目';
   unitIdInput.value = '';
   unitNameInput.value = '';
+  unitAccessModeInput.value = 'free';
+  unitPaymentUrlInput.value = '';
   unitHiddenInput.checked = false;
   unitErr.textContent = '';
   unitIdInput.focus();
@@ -557,7 +566,13 @@ async function saveUnit(){
     body: JSON.stringify({
       deckId: selectedDeck.id,
       originalId: originalUnitId,
-      unit: {id: unitIdInput.value.trim(), name: unitNameInput.value.trim(), hidden: unitHiddenInput.checked}
+      unit: {
+        id: unitIdInput.value.trim(),
+        name: unitNameInput.value.trim(),
+        hidden: unitHiddenInput.checked,
+        access: unitAccessModeInput.value,
+        paymentUrl: unitPaymentUrlInput.value.trim()
+      }
     })
   });
   selectedDeck = payload.deck;

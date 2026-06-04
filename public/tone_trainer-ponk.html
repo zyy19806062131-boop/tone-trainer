@@ -133,6 +133,7 @@ header{display:flex;justify-content:space-between;align-items:flex-start;gap:14p
 .unit-tab{font-family:var(--mono);border:1px solid rgba(141,245,255,.26);background:rgba(255,42,109,.04);border-radius:2px;padding:7px 12px;font-size:.68rem;letter-spacing:.08em;white-space:nowrap;color:var(--soft);flex:none;transition:.2s;text-transform:uppercase}
 .unit-tab:hover{border-color:var(--accent-2);color:var(--ink)}
 .unit-tab.on{border-color:var(--accent-2);color:#ffd7e4;background:rgba(255,42,109,.13);box-shadow:0 0 14px var(--glow-2)}
+.unit-tab.locked::after{content:" LOCK";color:var(--amber);margin-left:5px}
 .deck-note{font-family:var(--mono);font-size:.7rem;color:var(--soft);margin:8px 2px 0;letter-spacing:.08em}
 
 .stage{position:relative;background:var(--panel);border:1px solid var(--line);border-radius:3px;padding:32px 28px;margin-top:16px;
@@ -221,6 +222,10 @@ header{display:flex;justify-content:space-between;align-items:flex-start;gap:14p
 .item .py{font-family:var(--mono);font-size:.72rem;color:var(--accent);margin-top:2px}
 .item .mini{font-family:var(--mono);font-size:.7rem;color:var(--soft)}
 .empty-state{font-family:var(--mono);color:var(--soft);border:1px dashed var(--line-2);background:rgba(5,217,232,.035);padding:18px;text-align:center;grid-column:1/-1;letter-spacing:.08em;text-transform:uppercase}
+.locked-panel{grid-column:1/-1;text-align:center;border:1px solid rgba(245,217,10,.42);background:rgba(245,217,10,.06);padding:24px 18px;box-shadow:0 0 20px rgba(245,217,10,.08)}
+.locked-panel b{display:block;color:var(--amber);font-family:var(--mono);letter-spacing:.16em;text-transform:uppercase;margin-bottom:8px}
+.pay-link{display:inline-flex;margin-top:14px;border:1px solid var(--amber);color:var(--amber);text-decoration:none;padding:10px 16px;font-family:var(--mono);font-size:.76rem;letter-spacing:.12em;text-transform:uppercase;box-shadow:0 0 14px rgba(245,217,10,.18)}
+.pay-link:hover{background:rgba(245,217,10,.12)}
 .legend{margin-top:26px;font-size:.78rem;color:var(--soft);background:rgba(5,217,232,.04);border:1px solid var(--line-2);border-radius:2px;padding:15px 17px;line-height:1.75}
 .legend b{color:var(--accent)}
 @media(max-width:900px){.gate-shell{grid-template-columns:1fr}.gate-side{display:none}}
@@ -500,6 +505,7 @@ function currentSents(){
   const deck=decks[dIdx];
   if(!deck)return[];
   const unit=currentUnit();
+  if(unit.locked)return[];
   return (deck.sents||[]).filter(s=>(s.unitId||'default')===unit.id);
 }
 function switchSentence(index){
@@ -610,7 +616,7 @@ function renderUnitTabs(){
   const wrap=document.getElementById('unitTabs');
   const units=unitsForDeck(decks[dIdx]);
   if(uIdx>=units.length)uIdx=0;
-  wrap.innerHTML=units.map((unit,i)=>`<button class="unit-tab ${i===uIdx?'on':''}" data-i="${i}">${unit.name}</button>`).join('');
+  wrap.innerHTML=units.map((unit,i)=>`<button class="unit-tab ${i===uIdx?'on':''} ${unit.locked?'locked':''}" data-i="${i}">${unit.name}</button>`).join('');
   wrap.querySelectorAll('.unit-tab').forEach(b=>b.addEventListener('click',()=>{uIdx=+b.dataset.i;sIdx=0;renderSentence();renderList();renderDots();renderUnitTabs();}));
 }
 function renderDots(){
@@ -622,6 +628,17 @@ function renderSentence(){
   const sec=document.getElementById('sentence');sec.classList.add('swap');
   setTimeout(()=>{
     const s=currentSents()[sIdx];
+    const unit=currentUnit();
+    if(unit.locked){
+      document.getElementById('sPy').textContent='';
+      document.getElementById('sZh').textContent='内容待解锁';
+      document.getElementById('sEn').textContent='Pay to unlock this unit.';
+      const grid=document.getElementById('toneGrid');
+      grid.style.setProperty('--tone-count',1);
+      const link=unit.paymentUrl?`<a class="pay-link" href="${unit.paymentUrl}" target="_blank" rel="noopener">PAY WITH WISE</a>`:'<div class="muted">请联系老师获取付款链接</div>';
+      grid.innerHTML=`<div class="locked-panel"><b>locked unit</b><div>${unit.name}</div>${link}</div>`;
+      applyEn();sec.classList.remove('swap');return;
+    }
     if(!s){
       document.getElementById('sPy').textContent='';
       document.getElementById('sZh').textContent='No sentences yet';
@@ -643,7 +660,12 @@ function renderList(){
   const sents=currentSents();
   const meta=document.getElementById('listMeta');
   if(meta)meta.textContent=`${decks[dIdx].name} / ${currentUnit().name} · ${sents.length} sentences`;
-  l.innerHTML=sents.length?sents.map((s,i)=>`<div class="item ${i===sIdx?'on':''}" data-i="${i}"><div><div class="zh cn">${s.zh}</div><div class="py">${s.syl.map(x=>x.p).join(' ')}</div></div><div class="mini">${String(i+1).padStart(2,'0')}</div></div>`).join(''):'<div class="item"><div><div class="zh">No sentences yet</div><div class="py">Use Admin to add training content.</div></div><div class="mini">--</div></div>';
+  if(currentUnit().locked){
+    const pay=currentUnit().paymentUrl?'<div class="py">Open the Wise link to unlock this unit.</div>':'<div class="py">Contact your teacher to unlock this unit.</div>';
+    l.innerHTML=`<div class="item"><div><div class="zh">Locked unit</div>${pay}</div><div class="mini">$$</div></div>`;
+  }else{
+    l.innerHTML=sents.length?sents.map((s,i)=>`<div class="item ${i===sIdx?'on':''}" data-i="${i}"><div><div class="zh cn">${s.zh}</div><div class="py">${s.syl.map(x=>x.p).join(' ')}</div></div><div class="mini">${String(i+1).padStart(2,'0')}</div></div>`).join(''):'<div class="item"><div><div class="zh">No sentences yet</div><div class="py">Use Admin to add training content.</div></div><div class="mini">--</div></div>';
+  }
   l.querySelectorAll('.item[data-i]').forEach(it=>it.addEventListener('click',()=>switchSentence(+it.dataset.i)));
 }
 function setListOpen(open){
