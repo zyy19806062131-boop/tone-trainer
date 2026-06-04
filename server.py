@@ -24,7 +24,7 @@ DATABASE_URL = os.environ.get("DATABASE_URL", "").strip()
 DECK_ID_RE = re.compile(r"^[a-z0-9][a-z0-9-]*$")
 DEFAULT_UNIT_ID = "default"
 DEFAULT_UNIT_NAME = "全部"
-APP_DATA_VERSION = 5
+APP_DATA_VERSION = 6
 WISE_PAYMENT_URL = "https://wise.com/pay/me/6zq7wky"
 STATE_KEYS = {
     DATA_PATH.resolve(): "trainer_data",
@@ -173,6 +173,15 @@ def apply_data_migrations(payload, seed_payload):
                 if unit.get("paymentUrl") != WISE_PAYMENT_URL:
                     unit["paymentUrl"] = WISE_PAYMENT_URL
                     changed = True
+
+        preferred_unit_order = {"hello-neighbor": 0, "coffee-shop": 1}
+        original_unit_order = [unit.get("id") for unit in scene.get("units", [])]
+        scene["units"] = sorted(
+            scene.get("units", []),
+            key=lambda unit: preferred_unit_order.get(unit.get("id"), 99),
+        )
+        if [unit.get("id") for unit in scene.get("units", [])] != original_unit_order:
+            changed = True
 
         existing_sentence_ids = {sentence.get("id") for sentence in scene.get("sents", [])}
         for sentence in seed_scene.get("sents", []):
