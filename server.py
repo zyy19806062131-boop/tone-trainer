@@ -24,7 +24,8 @@ DATABASE_URL = os.environ.get("DATABASE_URL", "").strip()
 DECK_ID_RE = re.compile(r"^[a-z0-9][a-z0-9-]*$")
 DEFAULT_UNIT_ID = "default"
 DEFAULT_UNIT_NAME = "全部"
-APP_DATA_VERSION = 4
+APP_DATA_VERSION = 5
+WISE_PAYMENT_URL = "https://wise.com/pay/me/6zq7wky"
 STATE_KEYS = {
     DATA_PATH.resolve(): "trainer_data",
     CODES_PATH.resolve(): "access_codes",
@@ -92,6 +93,20 @@ def init_db():
                                     """,
                                     (json.dumps(migrated_payload, ensure_ascii=False), key),
                                 )
+                    if key == "access_codes":
+                        cur.execute("SELECT payload FROM app_state WHERE key = %s", (key,))
+                        row = cur.fetchone()
+                        if row:
+                            migrated_payload, migrated = apply_access_migrations(normalize_db_payload(row[0]))
+                            if migrated:
+                                cur.execute(
+                                    """
+                                    UPDATE app_state
+                                    SET payload = %s::jsonb, updated_at = NOW()
+                                    WHERE key = %s
+                                    """,
+                                    (json.dumps(migrated_payload, ensure_ascii=False), key),
+                                )
             conn.commit()
         _DB_INITIALIZED = True
 
@@ -141,12 +156,23 @@ def apply_data_migrations(payload, seed_payload):
                     None,
                 )
                 if target_unit:
-                    if target_unit.get("access") != "paid":
-                        target_unit["access"] = "paid"
+                    desired_access = "free"
+                    desired_payment_url = ""
+                    if target_unit.get("access") != desired_access:
+                        target_unit["access"] = desired_access
                         changed = True
-                    if target_unit.get("paymentUrl") != unit.get("paymentUrl"):
-                        target_unit["paymentUrl"] = unit.get("paymentUrl", "")
+                    if target_unit.get("paymentUrl") != desired_payment_url:
+                        target_unit["paymentUrl"] = desired_payment_url
                         changed = True
+
+        for unit in scene.get("units", []):
+            if unit.get("id") == "coffee-shop":
+                if unit.get("access") != "paid":
+                    unit["access"] = "paid"
+                    changed = True
+                if unit.get("paymentUrl") != WISE_PAYMENT_URL:
+                    unit["paymentUrl"] = WISE_PAYMENT_URL
+                    changed = True
 
         existing_sentence_ids = {sentence.get("id") for sentence in scene.get("sents", [])}
         for sentence in seed_scene.get("sents", []):
@@ -161,6 +187,23 @@ def apply_data_migrations(payload, seed_payload):
                     changed = True
 
     payload["_dataVersion"] = APP_DATA_VERSION
+    return payload, True
+
+
+def apply_access_migrations(payload):
+    if not isinstance(payload, dict):
+        return payload, False
+    profile = payload.get("BABARA01")
+    if not isinstance(profile, dict):
+        return payload, False
+    desired = {
+        "label": profile.get("label", "BABARA01"),
+        "decks": ["scene-speaking"],
+        "units": {"scene-speaking": ["hello-neighbor"]},
+    }
+    if profile == desired:
+        return payload, False
+    payload["BABARA01"] = desired
     return payload, True
 
 

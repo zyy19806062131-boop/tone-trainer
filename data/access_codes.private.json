@@ -7,6 +7,11 @@
     "label": "BABARA01",
     "decks": [
       "scene-speaking"
-    ]
+    ],
+    "units": {
+      "scene-speaking": [
+        "hello-neighbor"
+      ]
+    }
   }
 }
