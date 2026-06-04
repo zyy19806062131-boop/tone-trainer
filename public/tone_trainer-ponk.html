@@ -222,9 +222,13 @@ header{display:flex;justify-content:space-between;align-items:flex-start;gap:14p
 .item .py{font-family:var(--mono);font-size:.72rem;color:var(--accent);margin-top:2px}
 .item .mini{font-family:var(--mono);font-size:.7rem;color:var(--soft)}
 .empty-state{font-family:var(--mono);color:var(--soft);border:1px dashed var(--line-2);background:rgba(5,217,232,.035);padding:18px;text-align:center;grid-column:1/-1;letter-spacing:.08em;text-transform:uppercase}
-.locked-panel{grid-column:1/-1;text-align:center;border:1px solid rgba(245,217,10,.42);background:rgba(245,217,10,.06);padding:24px 18px;box-shadow:0 0 20px rgba(245,217,10,.08)}
+.locked-panel{grid-column:1/-1;text-align:left;border:1px solid rgba(245,217,10,.46);background:linear-gradient(135deg,rgba(245,217,10,.08),rgba(5,217,232,.035));padding:22px 20px;box-shadow:0 0 24px rgba(245,217,10,.1),inset 0 0 18px rgba(245,217,10,.04)}
 .locked-panel b{display:block;color:var(--amber);font-family:var(--mono);letter-spacing:.16em;text-transform:uppercase;margin-bottom:8px}
-.pay-link{display:inline-flex;margin-top:14px;border:1px solid var(--amber);color:var(--amber);text-decoration:none;padding:10px 16px;font-family:var(--mono);font-size:.76rem;letter-spacing:.12em;text-transform:uppercase;box-shadow:0 0 14px rgba(245,217,10,.18)}
+.locked-title{font-family:var(--cjk);font-size:1.35rem;color:var(--text);text-shadow:0 0 12px rgba(245,217,10,.22);margin-bottom:10px}
+.locked-copy{color:var(--soft);font-size:.86rem;line-height:1.65;margin:0 auto 12px;max-width:580px}
+.unlock-steps{display:grid;gap:7px;margin:13px 0 15px;font-family:var(--mono);font-size:.72rem;color:var(--soft);letter-spacing:.04em}
+.unlock-steps span{display:block;border-left:2px solid rgba(245,217,10,.55);padding-left:10px}
+.pay-link{display:inline-flex;align-items:center;justify-content:center;margin-top:6px;border:1px solid var(--amber);color:var(--amber);text-decoration:none;padding:11px 17px;font-family:var(--mono);font-size:.76rem;letter-spacing:.12em;text-transform:uppercase;box-shadow:0 0 14px rgba(245,217,10,.18)}
 .pay-link:hover{background:rgba(245,217,10,.12)}
 .legend{margin-top:26px;font-size:.78rem;color:var(--soft);background:rgba(5,217,232,.04);border:1px solid var(--line-2);border-radius:2px;padding:15px 17px;line-height:1.75}
 .legend b{color:var(--accent)}
@@ -374,6 +378,9 @@ const VOICE_LABELS={f:'女声',m:'男声',k:'儿童'};
 let listOpen=false;
 
 const gate=document.getElementById('gate'),app=document.getElementById('app');
+function escapeHtml(value){
+  return String(value ?? '').replace(/[&<>"']/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
+}
 function applyAccess(payload){
   AUDIO=payload.audio||{};
   decks=payload.decks||[];
@@ -632,11 +639,24 @@ function renderSentence(){
     if(unit.locked){
       document.getElementById('sPy').textContent='';
       document.getElementById('sZh').textContent='内容待解锁';
-      document.getElementById('sEn').textContent='Pay to unlock this unit.';
+      document.getElementById('sEn').textContent='Unlock this scene to continue.';
       const grid=document.getElementById('toneGrid');
       grid.style.setProperty('--tone-count',1);
-      const link=unit.paymentUrl?`<a class="pay-link" href="${unit.paymentUrl}" target="_blank" rel="noopener">PAY WITH WISE</a>`:'<div class="muted">请联系老师获取付款链接</div>';
-      grid.innerHTML=`<div class="locked-panel"><b>locked unit</b><div>${unit.name}</div>${link}</div>`;
+      const safeName=escapeHtml(unit.name);
+      const link=unit.paymentUrl
+        ? `<a class="pay-link" href="${escapeHtml(unit.paymentUrl)}" target="_blank" rel="noopener">PAY WITH WISE</a>`
+        : '<div class="muted">Contact your teacher for the payment link.</div>';
+      grid.innerHTML=`<div class="locked-panel">
+        <b>locked scene</b>
+        <div class="locked-title">${safeName}</div>
+        <p class="locked-copy">This scene is part of the paid practice pack. Pay with Wise, then send your student code to the teacher to activate access.</p>
+        <div class="unlock-steps">
+          <span>1 · Open the Wise payment link</span>
+          <span>2 · Complete payment</span>
+          <span>3 · Send your code to unlock this scene</span>
+        </div>
+        ${link}
+      </div>`;
       applyEn();sec.classList.remove('swap');return;
     }
     if(!s){
@@ -661,8 +681,8 @@ function renderList(){
   const meta=document.getElementById('listMeta');
   if(meta)meta.textContent=`${decks[dIdx].name} / ${currentUnit().name} · ${sents.length} sentences`;
   if(currentUnit().locked){
-    const pay=currentUnit().paymentUrl?'<div class="py">Open the Wise link to unlock this unit.</div>':'<div class="py">Contact your teacher to unlock this unit.</div>';
-    l.innerHTML=`<div class="item"><div><div class="zh">Locked unit</div>${pay}</div><div class="mini">$$</div></div>`;
+    const pay=currentUnit().paymentUrl?'<div class="py">Pay with Wise, then send your code to unlock.</div>':'<div class="py">Contact your teacher to unlock this scene.</div>';
+    l.innerHTML=`<div class="item"><div><div class="zh">Locked scene</div>${pay}</div><div class="mini">PAY</div></div>`;
   }else{
     l.innerHTML=sents.length?sents.map((s,i)=>`<div class="item ${i===sIdx?'on':''}" data-i="${i}"><div><div class="zh cn">${s.zh}</div><div class="py">${s.syl.map(x=>x.p).join(' ')}</div></div><div class="mini">${String(i+1).padStart(2,'0')}</div></div>`).join(''):'<div class="item"><div><div class="zh">No sentences yet</div><div class="py">Use Admin to add training content.</div></div><div class="mini">--</div></div>';
   }
