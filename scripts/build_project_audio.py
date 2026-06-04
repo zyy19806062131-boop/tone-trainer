@@ -93,7 +93,7 @@ async def build(deck_ids, force):
         voices = deck_voice_set(deck["id"])
         for sentence in deck.get("sents", []):
             sid = sentence["id"]
-            text = sentence["zh"]
+            text = sentence.get("spokenZh") or sentence["zh"]
             audio.setdefault(sid, {})
             for key, voice in voices.items():
                 if not force and key in audio[sid] and {"n", "s"} <= set(audio[sid][key]):

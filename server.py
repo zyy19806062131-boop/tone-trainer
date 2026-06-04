@@ -24,6 +24,7 @@ DATABASE_URL = os.environ.get("DATABASE_URL", "").strip()
 DECK_ID_RE = re.compile(r"^[a-z0-9][a-z0-9-]*$")
 DEFAULT_UNIT_ID = "default"
 DEFAULT_UNIT_NAME = "全部"
+APP_DATA_VERSION = 2
 STATE_KEYS = {
     DATA_PATH.resolve(): "trainer_data",
     CODES_PATH.resolve(): "access_codes",
@@ -77,6 +78,20 @@ def init_db():
                         """,
                         (key, json.dumps(seed_payload, ensure_ascii=False)),
                     )
+                    if key == "trainer_data":
+                        cur.execute("SELECT payload FROM app_state WHERE key = %s", (key,))
+                        row = cur.fetchone()
+                        if row:
+                            migrated_payload, migrated = apply_data_migrations(normalize_db_payload(row[0]), seed_payload)
+                            if migrated:
+                                cur.execute(
+                                    """
+                                    UPDATE app_state
+                                    SET payload = %s::jsonb, updated_at = NOW()
+                                    WHERE key = %s
+                                    """,
+                                    (json.dumps(migrated_payload, ensure_ascii=False), key),
+                                )
             conn.commit()
         _DB_INITIALIZED = True
 
@@ -85,6 +100,34 @@ def normalize_db_payload(payload):
     if isinstance(payload, (dict, list)):
         return payload
     return json.loads(payload)
+
+
+def apply_data_migrations(payload, seed_payload):
+    if not isinstance(payload, dict):
+        return payload, False
+    if int(payload.get("_dataVersion", 0) or 0) >= APP_DATA_VERSION:
+        return payload, False
+
+    changed = False
+    seed_sentences = {
+        sentence.get("id"): sentence
+        for deck in seed_payload.get("decks", [])
+        for sentence in deck.get("sents", [])
+    }
+    target_seed = seed_sentences.get("scene-speaking-007")
+    if target_seed:
+        for deck in payload.get("decks", []):
+            for sentence in deck.get("sents", []):
+                if sentence.get("id") == "scene-speaking-007":
+                    sentence["spokenZh"] = target_seed.get("spokenZh", "不要糖，加一点牛奶")
+                    changed = True
+        seed_audio = seed_payload.get("audio", {}).get("scene-speaking-007")
+        if seed_audio:
+            payload.setdefault("audio", {})["scene-speaking-007"] = seed_audio
+            changed = True
+
+    payload["_dataVersion"] = APP_DATA_VERSION
+    return payload, True
 
 
 def load_json(path):
@@ -238,7 +281,11 @@ def validate_sentence(sentence):
 
     if len(clean_syl) != len(zh):
         raise ValueError("拼音数量需要和汉字数量一致")
-    return {"id": sentence_id, "zh": zh, "en": en, "syl": clean_syl}
+    clean_sentence = {"id": sentence_id, "zh": zh, "en": en, "syl": clean_syl}
+    spoken_zh = str(sentence.get("spokenZh", "")).strip()
+    if spoken_zh:
+        clean_sentence["spokenZh"] = spoken_zh
+    return clean_sentence
 
 
 def validate_deck(deck):
