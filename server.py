@@ -185,15 +185,6 @@ def apply_data_migrations(payload, seed_payload):
                         target_unit["paymentUrl"] = WISE_PAYMENT_URL
                         changed = True
 
-        preferred_unit_order = {"hello-neighbor": 0, "coffee-shop": 1, "rental-home": 2}
-        original_unit_order = [unit.get("id") for unit in scene.get("units", [])]
-        scene["units"] = sorted(
-            scene.get("units", []),
-            key=lambda unit: preferred_unit_order.get(unit.get("id"), 99),
-        )
-        if [unit.get("id") for unit in scene.get("units", [])] != original_unit_order:
-            changed = True
-
         existing_sentence_ids = {sentence.get("id") for sentence in scene.get("sents", [])}
         for sentence in seed_scene.get("sents", []):
             sid = sentence.get("id")
