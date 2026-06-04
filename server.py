@@ -24,7 +24,7 @@ DATABASE_URL = os.environ.get("DATABASE_URL", "").strip()
 DECK_ID_RE = re.compile(r"^[a-z0-9][a-z0-9-]*$")
 DEFAULT_UNIT_ID = "default"
 DEFAULT_UNIT_NAME = "全部"
-APP_DATA_VERSION = 6
+APP_DATA_VERSION = 7
 WISE_PAYMENT_URL = "https://wise.com/pay/me/6zq7wky"
 STATE_KEYS = {
     DATA_PATH.resolve(): "trainer_data",
@@ -147,10 +147,12 @@ def apply_data_migrations(payload, seed_payload):
     if seed_scene and scene:
         existing_unit_ids = {unit.get("id") for unit in scene.get("units", [])}
         for unit in seed_scene.get("units", []):
-            if unit.get("id") == "hello-neighbor" and unit.get("id") not in existing_unit_ids:
+            unit_id = unit.get("id")
+            if unit_id in {"hello-neighbor", "coffee-shop", "rental-home"} and unit_id not in existing_unit_ids:
                 scene.setdefault("units", []).append(unit)
+                existing_unit_ids.add(unit_id)
                 changed = True
-            elif unit.get("id") == "hello-neighbor":
+            if unit_id == "hello-neighbor":
                 target_unit = next(
                     (item for item in scene.get("units", []) if item.get("id") == "hello-neighbor"),
                     None,
@@ -164,17 +166,20 @@ def apply_data_migrations(payload, seed_payload):
                     if target_unit.get("paymentUrl") != desired_payment_url:
                         target_unit["paymentUrl"] = desired_payment_url
                         changed = True
+            elif unit_id in {"coffee-shop", "rental-home"}:
+                target_unit = next(
+                    (item for item in scene.get("units", []) if item.get("id") == unit_id),
+                    None,
+                )
+                if target_unit:
+                    if target_unit.get("access") != "paid":
+                        target_unit["access"] = "paid"
+                        changed = True
+                    if target_unit.get("paymentUrl") != WISE_PAYMENT_URL:
+                        target_unit["paymentUrl"] = WISE_PAYMENT_URL
+                        changed = True
 
-        for unit in scene.get("units", []):
-            if unit.get("id") == "coffee-shop":
-                if unit.get("access") != "paid":
-                    unit["access"] = "paid"
-                    changed = True
-                if unit.get("paymentUrl") != WISE_PAYMENT_URL:
-                    unit["paymentUrl"] = WISE_PAYMENT_URL
-                    changed = True
-
-        preferred_unit_order = {"hello-neighbor": 0, "coffee-shop": 1}
+        preferred_unit_order = {"hello-neighbor": 0, "coffee-shop": 1, "rental-home": 2}
         original_unit_order = [unit.get("id") for unit in scene.get("units", [])]
         scene["units"] = sorted(
             scene.get("units", []),
