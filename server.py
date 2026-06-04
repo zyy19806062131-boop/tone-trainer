@@ -24,7 +24,7 @@ DATABASE_URL = os.environ.get("DATABASE_URL", "").strip()
 DECK_ID_RE = re.compile(r"^[a-z0-9][a-z0-9-]*$")
 DEFAULT_UNIT_ID = "default"
 DEFAULT_UNIT_NAME = "全部"
-APP_DATA_VERSION = 3
+APP_DATA_VERSION = 4
 STATE_KEYS = {
     DATA_PATH.resolve(): "trainer_data",
     CODES_PATH.resolve(): "access_codes",
@@ -135,6 +135,18 @@ def apply_data_migrations(payload, seed_payload):
             if unit.get("id") == "hello-neighbor" and unit.get("id") not in existing_unit_ids:
                 scene.setdefault("units", []).append(unit)
                 changed = True
+            elif unit.get("id") == "hello-neighbor":
+                target_unit = next(
+                    (item for item in scene.get("units", []) if item.get("id") == "hello-neighbor"),
+                    None,
+                )
+                if target_unit:
+                    if target_unit.get("access") != "paid":
+                        target_unit["access"] = "paid"
+                        changed = True
+                    if target_unit.get("paymentUrl") != unit.get("paymentUrl"):
+                        target_unit["paymentUrl"] = unit.get("paymentUrl", "")
+                        changed = True
 
         existing_sentence_ids = {sentence.get("id") for sentence in scene.get("sents", [])}
         for sentence in seed_scene.get("sents", []):
