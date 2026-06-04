@@ -319,7 +319,7 @@ function renderUnitAccess(){
     const rule = editingUnits[deck.id];
     const units = deck.units || [];
     const checks = units.map(unit=>{
-      const checked = Array.isArray(rule) ? rule.includes(unit.id) : true;
+      const checked = Array.isArray(rule) ? rule.includes(unit.id) : unit.access !== 'paid';
       const accessText = unit.access === 'paid' ? '付费' : '免费';
       return `<label class="check"><input type="checkbox" data-unit-deck="${escapeHtml(deck.id)}" value="${escapeHtml(unit.id)}" ${checked?'checked':''}> ${escapeHtml(unit.name)} · ${accessText}${unit.hidden?'（隐藏）':''}</label>`;
     }).join('');
@@ -683,7 +683,7 @@ async function saveCode(){
     const selectedUnitIds = [...unitAccess.querySelectorAll('input[data-unit-deck]:checked')]
       .filter(input=>input.dataset.unitDeck===deckId)
       .map(input=>input.value);
-    if(allUnitIds.length && selectedUnitIds.length !== allUnitIds.length){
+    if(allUnitIds.length){
       unitRules[deckId] = selectedUnitIds;
     }
   }

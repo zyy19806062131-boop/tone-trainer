@@ -24,7 +24,7 @@ DATABASE_URL = os.environ.get("DATABASE_URL", "").strip()
 DECK_ID_RE = re.compile(r"^[a-z0-9][a-z0-9-]*$")
 DEFAULT_UNIT_ID = "default"
 DEFAULT_UNIT_NAME = "全部"
-APP_DATA_VERSION = 7
+APP_DATA_VERSION = 8
 WISE_PAYMENT_URL = "https://wise.com/pay/me/6zq7wky"
 STATE_KEYS = {
     DATA_PATH.resolve(): "trainer_data",
@@ -158,6 +158,9 @@ def apply_data_migrations(payload, seed_payload):
                     None,
                 )
                 if target_unit:
+                    if target_unit.get("hidden"):
+                        target_unit["hidden"] = False
+                        changed = True
                     desired_access = "free"
                     desired_payment_url = ""
                     if target_unit.get("access") != desired_access:
@@ -172,6 +175,9 @@ def apply_data_migrations(payload, seed_payload):
                     None,
                 )
                 if target_unit:
+                    if target_unit.get("hidden"):
+                        target_unit["hidden"] = False
+                        changed = True
                     if target_unit.get("access") != "paid":
                         target_unit["access"] = "paid"
                         changed = True
@@ -395,6 +401,7 @@ def visible_deck_for_profile(deck, profile):
     normalize_deck(deck)
     if deck.get("hidden"):
         return None
+    full_access = profile.get("decks") == "all"
     unit_rules = profile.get("units") if isinstance(profile.get("units"), dict) else {}
     allowed_units = unit_rules.get(deck.get("id"))
     visible_units = []
@@ -402,7 +409,12 @@ def visible_deck_for_profile(deck, profile):
     for unit in deck.get("units", []):
         if unit.get("hidden"):
             continue
-        unlocked = not isinstance(allowed_units, list) or unit.get("id") in allowed_units
+        if full_access:
+            unlocked = True
+        elif isinstance(allowed_units, list):
+            unlocked = unit.get("id") in allowed_units
+        else:
+            unlocked = unit.get("access") != "paid"
         if unlocked:
             unlocked_unit_ids.add(unit.get("id"))
             visible_units.append(unit)
