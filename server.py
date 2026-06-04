@@ -84,9 +84,6 @@ def normalize_deck(deck):
     if not clean_units:
         clean_units = [{"id": DEFAULT_UNIT_ID, "name": DEFAULT_UNIT_NAME, "hidden": False, "access": "free", "paymentUrl": ""}]
         seen = {DEFAULT_UNIT_ID}
-    if DEFAULT_UNIT_ID not in seen:
-        clean_units.insert(0, {"id": DEFAULT_UNIT_ID, "name": DEFAULT_UNIT_NAME, "hidden": False, "access": "free", "paymentUrl": ""})
-        seen.add(DEFAULT_UNIT_ID)
     deck["units"] = clean_units
     for sentence in deck.get("sents", []):
         if sentence.get("unitId") not in seen:
@@ -482,9 +479,10 @@ class ToneTrainerHandler(BaseHTTPRequestHandler):
         if len(deck["units"]) == before:
             self.send_json(HTTPStatus.NOT_FOUND, {"error": "二级项目不存在"})
             return
+        fallback_unit_id = deck["units"][0]["id"] if deck["units"] else DEFAULT_UNIT_ID
         for sentence in deck.get("sents", []):
             if sentence.get("unitId") == unit_id:
-                sentence["unitId"] = DEFAULT_UNIT_ID
+                sentence["unitId"] = fallback_unit_id
         access_codes = load_json(CODES_PATH)
         for profile in access_codes.values():
             unit_rules = profile.get("units")
