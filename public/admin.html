@@ -61,7 +61,14 @@ button.ghost{background:transparent}
 .unit-access{display:grid;gap:10px}
 .unit-access-group{border:1px solid rgba(35,68,95,.75);border-radius:7px;padding:10px;background:rgba(8,21,34,.5)}
 .unit-access-group b{display:block;margin-bottom:8px}
+.preview{margin-top:14px;border:1px solid rgba(18,215,232,.22);border-radius:7px;background:rgba(8,21,34,.54);padding:12px;display:grid;gap:10px}
+.preview-title{display:flex;justify-content:space-between;gap:12px;align-items:center;color:#c9f8ff;font-weight:700}
+.preview-deck{border-top:1px solid rgba(35,68,95,.75);padding-top:10px}
+.preview-deck:first-of-type{border-top:0;padding-top:0}
+.preview-units{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
 .tag{display:inline-flex;align-items:center;border:1px solid rgba(244,211,94,.45);color:var(--yellow);border-radius:99px;padding:4px 8px;font-size:.76rem;white-space:nowrap}
+.tag.free{border-color:rgba(73,224,138,.5);color:var(--green)}
+.tag.locked{border-color:rgba(244,211,94,.5);color:var(--yellow)}
 .form{display:grid;gap:12px}
 .form.two{grid-template-columns:1fr 1fr}
 .form .wide{grid-column:1/-1}
@@ -107,6 +114,7 @@ textarea:focus{border-color:var(--cyan);box-shadow:0 0 0 3px rgba(18,215,232,.12
             <thead><tr><th>Code</th><th>Label</th><th>Projects</th><th></th></tr></thead>
             <tbody id="codesTable"></tbody>
           </table>
+          <div class="preview hidden" id="codePreview"></div>
         </div>
       </section>
 
@@ -225,6 +233,7 @@ const app = document.getElementById('app');
 const adminCodeInput = document.getElementById('adminCode');
 const loginErr = document.getElementById('loginErr');
 const codesTable = document.getElementById('codesTable');
+const codePreview = document.getElementById('codePreview');
 const deckChecks = document.getElementById('deckChecks');
 const unitAccess = document.getElementById('unitAccess');
 const deckList = document.getElementById('deckList');
@@ -326,6 +335,57 @@ function renderUnitAccess(){
     return `<div class="unit-access-group"><b>${escapeHtml(deck.name)}</b><div class="checks">${checks}</div></div>`;
   }).join('');
 }
+function visibleDecksForProfile(profile){
+  const fullAccess = profile.decks === 'all';
+  const allowedDecks = new Set(Array.isArray(profile.decks) ? profile.decks : []);
+  const unitRules = profile.units && typeof profile.units === 'object' ? profile.units : {};
+  return decks
+    .filter(deck=>!deck.hidden && (fullAccess || allowedDecks.has(deck.id)))
+    .map(deck=>{
+      const rule = unitRules[deck.id];
+      const units = (deck.units || []).filter(unit=>!unit.hidden).map(unit=>{
+        let unlocked = false;
+        if(fullAccess){
+          unlocked = true;
+        }else if(Array.isArray(rule)){
+          unlocked = rule.includes(unit.id);
+        }else{
+          unlocked = unit.access !== 'paid';
+        }
+        if(unlocked) return {...unit, locked:false};
+        if(unit.access === 'paid') return {...unit, locked:true};
+        return null;
+      }).filter(Boolean);
+      return {...deck, units};
+    })
+    .filter(deck=>deck.units.length);
+}
+function renderCodePreview(code){
+  const profile = accessCodes[code];
+  if(!profile) return;
+  const visibleDecks = visibleDecksForProfile(profile);
+  const deckHtml = visibleDecks.map(deck=>{
+    const units = deck.units.map(unit=>{
+      const cls = unit.locked ? 'locked' : 'free';
+      const state = unit.locked ? '付费锁定' : '可练习';
+      return `<span class="tag ${cls}">${escapeHtml(unit.name)} · ${state}</span>`;
+    }).join('');
+    return `<div class="preview-deck">
+      <b>${escapeHtml(deck.name)}</b>
+      <div class="muted">${escapeHtml(deck.id)} · ${deck.units.filter(unit=>!unit.locked).length} 个已开放单元</div>
+      <div class="preview-units">${units}</div>
+    </div>`;
+  }).join('') || '<div class="muted">这个 code 当前看不到任何项目。</div>';
+  codePreview.classList.remove('hidden');
+  codePreview.innerHTML = `<div class="preview-title">
+    <span>学生视角预览：${escapeHtml(code)}</span>
+    <button type="button" class="ghost" id="closePreviewBtn">关闭</button>
+  </div>${deckHtml}`;
+  document.getElementById('closePreviewBtn').addEventListener('click', ()=>{
+    codePreview.classList.add('hidden');
+    codePreview.innerHTML = '';
+  });
+}
 function renderCodes(){
   codesTable.innerHTML = Object.entries(accessCodes).map(([code,profile])=>{
     const projectText = profile.decks === 'all' ? '全部项目' : (profile.decks || []).map(deckId=>{
@@ -345,6 +405,7 @@ function renderCodes(){
       <td>${escapeHtml(profile.label || '')}</td>
       <td>${escapeHtml(projectText)}</td>
       <td class="actions">
+        <button data-preview="${escapeHtml(code)}">预览</button>
         <button data-edit="${escapeHtml(code)}">编辑</button>
         <button class="danger" data-delete="${escapeHtml(code)}">删除</button>
       </td>
@@ -779,6 +840,8 @@ unitsTable.addEventListener('click', e=>{
 codesTable.addEventListener('click', e=>{
   const edit = e.target.closest('[data-edit]');
   const del = e.target.closest('[data-delete]');
+  const preview = e.target.closest('[data-preview]');
+  if(preview) renderCodePreview(preview.dataset.preview);
   if(edit) editCode(edit.dataset.edit);
   if(del) deleteCode(del.dataset.delete).catch(err=>formErr.textContent=err.message);
 });
