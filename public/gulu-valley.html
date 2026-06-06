@@ -94,6 +94,23 @@ button{cursor:pointer}
   position:relative;
   min-height:680px;
   padding:10px clamp(12px,3vw,28px) 24px;
+  background-image:
+    linear-gradient(90deg,rgba(169,220,241,.12),rgba(255,246,216,.18)),
+    url("assets/gulu-valley-bg.png");
+  background-size:cover;
+  background-position:center center;
+  background-repeat:no-repeat;
+  isolation:isolate;
+}
+.world:before{
+  content:"";
+  position:absolute;
+  inset:0;
+  z-index:0;
+  background:
+    linear-gradient(180deg,rgba(255,255,255,.12),transparent 28%),
+    linear-gradient(90deg,transparent 0 45%,rgba(255,251,233,.18) 68%,rgba(255,251,233,.35));
+  pointer-events:none;
 }
 .cloud{position:absolute;background:#fff;border-radius:999px;opacity:.92;box-shadow:18px -6px 0 5px #fff,42px 2px 0 3px #fff,66px 7px 0 -3px #fff}
 .cloud.c1{left:9%;top:82px;width:70px;height:22px}
@@ -129,6 +146,7 @@ button{cursor:pointer}
   clip-path:polygon(47% 0,59% 0,82% 100%,20% 100%);
   border-radius:45% 45% 0 0;
 }
+.cloud,.sun,.mountains,.ground,.path,.house,.valley-panel:before,.valley-panel:after{display:none}
 .scene{
   position:relative;
   z-index:2;
@@ -185,7 +203,7 @@ button{cursor:pointer}
 .house .door:after{content:"";position:absolute;right:6px;top:22px;width:5px;height:5px;border-radius:50%;background:#e5c66d}
 .house .window{position:absolute;left:47px;top:92px;width:32px;height:29px;background:#fff0ab;border:4px solid #6d8f71;box-shadow:80px 0 0 -4px #fff0ab,80px 0 0 0 #6d8f71}
 .friend{
-  position:absolute;left:222px;bottom:166px;width:106px;height:126px;
+  position:absolute;left:28%;bottom:176px;width:106px;height:126px;
   animation:bob 2.4s ease-in-out infinite;
 }
 .friend .body{position:absolute;left:18px;top:38px;width:70px;height:77px;background:linear-gradient(#f3b06a,#e99352);border:5px solid #8b5a3e;border-radius:24px 24px 18px 18px;box-shadow:inset 0 -7px 0 rgba(113,64,39,.11)}
@@ -197,16 +215,21 @@ button{cursor:pointer}
 .friend .mouth{position:absolute;left:46px;top:49px;width:15px;height:8px;border-bottom:4px solid #3a342c;border-radius:0 0 12px 12px}
 @keyframes bob{50%{transform:translateY(-7px)}}
 .garden{
-  position:absolute;left:6%;right:2%;bottom:36px;
-  display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;
-  max-width:560px;
+  position:absolute;left:9%;right:auto;bottom:36px;
+  display:grid;grid-template-columns:repeat(5,86px);gap:10px;
+  max-width:min(560px,88vw);
+  padding:10px;
+  border-radius:10px;
+  background:rgba(255,246,216,.18);
+  backdrop-filter:blur(2px);
 }
 .plot{
-  height:82px;border-radius:7px;
+  height:64px;border-radius:7px;
   background:
     repeating-linear-gradient(0deg,transparent 0 12px,rgba(78,45,27,.18) 13px 17px),
     linear-gradient(#b47a4d,#94613e);
   box-shadow:0 5px 0 #6f4c35,inset 0 0 0 3px rgba(255,255,255,.09);
+  opacity:.94;
   position:relative;
   overflow:hidden;
 }
@@ -220,8 +243,9 @@ button{cursor:pointer}
   min-width:0;
   border:3px solid rgba(87,70,41,.18);
   border-radius:8px;
-  background:rgba(255,251,233,.96);
-  box-shadow:0 8px 0 rgba(107,85,49,.18),0 20px 34px rgba(65,78,47,.20);
+  background:rgba(255,251,233,.94);
+  box-shadow:0 8px 0 rgba(107,85,49,.18),0 24px 42px rgba(49,68,43,.24);
+  backdrop-filter:blur(5px);
   overflow:hidden;
 }
 .card-head{
