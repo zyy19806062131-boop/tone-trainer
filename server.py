@@ -24,7 +24,7 @@ DATABASE_URL = os.environ.get("DATABASE_URL", "").strip()
 DECK_ID_RE = re.compile(r"^[a-z0-9][a-z0-9-]*$")
 DEFAULT_UNIT_ID = "default"
 DEFAULT_UNIT_NAME = "全部"
-APP_DATA_VERSION = 10
+APP_DATA_VERSION = 11
 WISE_PAYMENT_URL = "https://wise.com/pay/me/6zq7wky"
 STATE_KEYS = {
     DATA_PATH.resolve(): "trainer_data",
@@ -130,6 +130,18 @@ def apply_data_migrations(payload, seed_payload):
         for deck in seed_payload.get("decks", [])
         for sentence in deck.get("sents", [])
     }
+    for deck_id in ("hsk1",):
+        seed_deck = seed_decks.get(deck_id)
+        target_deck = find_deck(payload, deck_id)
+        if not seed_deck or not target_deck:
+            continue
+        existing_sentence_ids = {sentence.get("id") for sentence in target_deck.get("sents", [])}
+        for sentence in seed_deck.get("sents", []):
+            sid = sentence.get("id")
+            if sid and sid.startswith("hsk1-") and sid not in existing_sentence_ids:
+                target_deck.setdefault("sents", []).append(sentence)
+                changed = True
+
     target_seed = seed_sentences.get("scene-speaking-007")
     if target_seed:
         for deck in payload.get("decks", []):
