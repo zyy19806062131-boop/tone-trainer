@@ -24,7 +24,7 @@ DATABASE_URL = os.environ.get("DATABASE_URL", "").strip()
 DECK_ID_RE = re.compile(r"^[a-z0-9][a-z0-9-]*$")
 DEFAULT_UNIT_ID = "default"
 DEFAULT_UNIT_NAME = "全部"
-APP_DATA_VERSION = 8
+APP_DATA_VERSION = 9
 WISE_PAYMENT_URL = "https://wise.com/pay/me/6zq7wky"
 STATE_KEYS = {
     DATA_PATH.resolve(): "trainer_data",
@@ -148,7 +148,7 @@ def apply_data_migrations(payload, seed_payload):
         existing_unit_ids = {unit.get("id") for unit in scene.get("units", [])}
         for unit in seed_scene.get("units", []):
             unit_id = unit.get("id")
-            if unit_id in {"hello-neighbor", "coffee-shop", "rental-home"} and unit_id not in existing_unit_ids:
+            if unit_id in {"hello-neighbor", "coffee-shop", "rental-home", "restaurant-culture"} and unit_id not in existing_unit_ids:
                 scene.setdefault("units", []).append(unit)
                 existing_unit_ids.add(unit_id)
                 changed = True
@@ -169,7 +169,7 @@ def apply_data_migrations(payload, seed_payload):
                     if target_unit.get("paymentUrl") != desired_payment_url:
                         target_unit["paymentUrl"] = desired_payment_url
                         changed = True
-            elif unit_id in {"coffee-shop", "rental-home"}:
+            elif unit_id in {"coffee-shop", "rental-home", "restaurant-culture"}:
                 target_unit = next(
                     (item for item in scene.get("units", []) if item.get("id") == unit_id),
                     None,
