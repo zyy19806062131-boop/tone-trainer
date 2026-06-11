@@ -24,7 +24,7 @@ DATABASE_URL = os.environ.get("DATABASE_URL", "").strip()
 DECK_ID_RE = re.compile(r"^[a-z0-9][a-z0-9-]*$")
 DEFAULT_UNIT_ID = "default"
 DEFAULT_UNIT_NAME = "全部"
-APP_DATA_VERSION = 9
+APP_DATA_VERSION = 10
 WISE_PAYMENT_URL = "https://wise.com/pay/me/6zq7wky"
 STATE_KEYS = {
     DATA_PATH.resolve(): "trainer_data",
