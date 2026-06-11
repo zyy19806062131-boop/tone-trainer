@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+import copy
 import json
 import mimetypes
 import os
@@ -24,7 +25,7 @@ DATABASE_URL = os.environ.get("DATABASE_URL", "").strip()
 DECK_ID_RE = re.compile(r"^[a-z0-9][a-z0-9-]*$")
 DEFAULT_UNIT_ID = "default"
 DEFAULT_UNIT_NAME = "全部"
-APP_DATA_VERSION = 13
+APP_DATA_VERSION = 14
 WISE_PAYMENT_URL = "https://wise.com/pay/me/6zq7wky"
 STATE_KEYS = {
     DATA_PATH.resolve(): "trainer_data",
@@ -130,6 +131,18 @@ def apply_data_migrations(payload, seed_payload):
         for deck in seed_payload.get("decks", [])
         for sentence in deck.get("sents", [])
     }
+    for deck_id in ("hsk2", "hsk3"):
+        seed_deck = seed_decks.get(deck_id)
+        target_deck = find_deck(payload, deck_id)
+        if not seed_deck:
+            continue
+        if target_deck:
+            target_deck.clear()
+            target_deck.update(copy.deepcopy(seed_deck))
+        else:
+            payload.setdefault("decks", []).append(copy.deepcopy(seed_deck))
+        changed = True
+
     for deck_id in ("hsk1",):
         seed_deck = seed_decks.get(deck_id)
         target_deck = find_deck(payload, deck_id)
