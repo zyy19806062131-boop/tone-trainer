@@ -26,7 +26,7 @@ DECK_ID_RE = re.compile(r"^[a-z0-9][a-z0-9-]*$")
 DEFAULT_UNIT_ID = "default"
 DEFAULT_UNIT_NAME = "全部"
 APP_DATA_VERSION = 14
-WISE_PAYMENT_URL = "https://wise.com/pay/me/6zq7wky"
+WISE_PAYMENT_URL = os.environ.get("WISE_PAYMENT_URL", "").strip()
 STATE_KEYS = {
     DATA_PATH.resolve(): "trainer_data",
     CODES_PATH.resolve(): "access_codes",
@@ -236,20 +236,7 @@ def apply_data_migrations(payload, seed_payload):
 
 
 def apply_access_migrations(payload):
-    if not isinstance(payload, dict):
-        return payload, False
-    profile = payload.get("BABARA01")
-    if not isinstance(profile, dict):
-        return payload, False
-    desired = {
-        "label": profile.get("label", "BABARA01"),
-        "decks": ["scene-speaking"],
-        "units": {"scene-speaking": ["hello-neighbor"]},
-    }
-    if profile == desired:
-        return payload, False
-    payload["BABARA01"] = desired
-    return payload, True
+    return payload, False
 
 
 def load_json(path):

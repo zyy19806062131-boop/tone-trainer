@@ -1,17 +1,6 @@
 {
-  "tone2026": {
-    "label": "FULL ACCESS",
+  "demo2026": {
+    "label": "DEMO",
     "decks": "all"
-  },
-  "BABARA01": {
-    "label": "BABARA01",
-    "decks": [
-      "scene-speaking"
-    ],
-    "units": {
-      "scene-speaking": [
-        "hello-neighbor"
-      ]
-    }
   }
 }

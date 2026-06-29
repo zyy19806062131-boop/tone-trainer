@@ -1,6 +1,7 @@
 # Mandarin Tone Trainer
 
 Cyberpunk Mandarin tone trainer with backend code-based access.
+This repository is open source and ships with demo content only.
 
 ## Run Locally
 
@@ -85,6 +86,6 @@ The `id` is what access codes reference.
 
 ## Important
 
-Use a private GitHub repository if you want to keep access codes, training content, or embedded voice audio hidden from the public.
+The committed data files are demo examples. Replace them locally if you want private access codes, custom training content, or embedded voice audio.
 
 GitHub Pages alone is not enough for protected login because it only serves static files. This project needs the Python backend in `server.py`, so deploy it to a backend host such as Render, Railway, Fly.io, or a VPS.
