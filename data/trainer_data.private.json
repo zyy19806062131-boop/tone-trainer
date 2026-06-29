@@ -2,8 +2,8 @@
   "audio": {},
   "decks": [
     {
-      "id": "demo",
-      "name": "开源示例",
+      "id": "sample",
+      "name": "示例项目",
       "full": false,
       "hidden": false,
       "units": [
@@ -24,7 +24,7 @@
       ],
       "sents": [
         {
-          "id": "demo-1",
+          "id": "sample-1",
           "unitId": "default",
           "zh": "你好",
           "en": "Hello.",
@@ -41,7 +41,7 @@
           "spokenZh": "你好"
         },
         {
-          "id": "demo-2",
+          "id": "sample-2",
           "unitId": "tones-1",
           "zh": "妈妈",
           "en": "Mom.",
@@ -60,7 +60,7 @@
           "spokenZh": "妈妈"
         },
         {
-          "id": "demo-3",
+          "id": "sample-3",
           "unitId": "tones-1",
           "zh": "吃饭",
           "en": "Eat a meal.",

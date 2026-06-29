@@ -1,7 +1,13 @@
 # Mandarin Tone Trainer
 
-Cyberpunk Mandarin tone trainer with backend code-based access.
-This repository is open source and ships with demo content only.
+Mandarin tone training app with a Python backend, code-based access control, optional PostgreSQL storage, and built-in support for browser fallback speech.
+
+## Features
+
+- Tone-by-tone sentence playback with embedded audio or browser TTS fallback
+- Admin UI for access codes, projects, units, and sentence content
+- Local JSON storage by default, with PostgreSQL support when `DATABASE_URL` is set
+- Audio generation helper for HSK and YCT decks
 
 ## Run Locally
 
@@ -9,7 +15,7 @@ This repository is open source and ships with demo content only.
 python3 server.py
 ```
 
-Then open:
+Open:
 
 ```text
 http://127.0.0.1:8765/tone_trainer-ponk.html
@@ -27,9 +33,17 @@ Default local admin code:
 admin2026
 ```
 
-For deployment, set the `ADMIN_CODE` environment variable in your host dashboard.
+Set `ADMIN_CODE` in your environment to change it in deployment.
 
-The admin page can manage access codes and sentence content. Newly added sentences can be practiced immediately; if no embedded voice audio exists for that sentence, the trainer falls back to browser speech synthesis.
+## Sample Access
+
+The repository includes a small sample project and a sample access code so the app runs out of the box after cloning.
+
+Sample code:
+
+```text
+sample2026
+```
 
 ## Build Voice Audio
 
@@ -40,52 +54,17 @@ python3 scripts/build_project_audio.py --deck hsk1
 python3 scripts/build_project_audio.py --deck yct1
 ```
 
-Use `--force` to regenerate audio that already exists.
+Use `--force` to regenerate existing audio.
 
-## Edit Access Codes
+## Data Files
 
-Edit:
+- `data/access_codes.private.json`: access code to project mapping
+- `data/trainer_data.private.json`: projects, units, sentences, and optional embedded audio
 
-```text
-data/access_codes.private.json
-```
+## Deployment
 
-Example:
+GitHub Pages is not enough for protected login because it only serves static files. Deploy `server.py` to a backend host such as Render, Railway, Fly.io, or a VPS.
 
-```json
-{
-  "studentA2026": {
-    "label": "STUDENT A",
-    "decks": ["cafe", "e1"]
-  }
-}
-```
+## License
 
-Use `"decks": "all"` to allow every project.
-
-## Edit Training Projects
-
-Edit:
-
-```text
-data/trainer_data.private.json
-```
-
-Each project is a deck:
-
-```json
-{
-  "id": "cafe",
-  "name": "咖啡生存口语",
-  "full": true,
-  "sents": []
-}
-```
-
-The `id` is what access codes reference.
-
-## Important
-
-The committed data files are demo examples. Replace them locally if you want private access codes, custom training content, or embedded voice audio.
-
-GitHub Pages alone is not enough for protected login because it only serves static files. This project needs the Python backend in `server.py`, so deploy it to a backend host such as Render, Railway, Fly.io, or a VPS.
+MIT. See [`LICENSE`](LICENSE).
