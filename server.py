@@ -3,6 +3,7 @@ import copy
 import json
 import mimetypes
 import os
+import secrets
 import re
 import threading
 from http import HTTPStatus
@@ -20,7 +21,19 @@ BASE_DIR = Path(__file__).resolve().parent
 ROOT = (BASE_DIR / "public").resolve()
 DATA_PATH = BASE_DIR / "data" / "trainer_data.private.json"
 CODES_PATH = BASE_DIR / "data" / "access_codes.private.json"
-ADMIN_CODE = os.environ.get("ADMIN_CODE", "admin2026")
+# 管理员口令：**必须**由环境变量 ADMIN_CODE 提供。
+# 2026-07-25：原来这里写死了兜底值，而本仓库是公开的 —— 实测线上管理后台
+# 就能用那个公开兜底值登进去（任何看过仓库的人都能进后台）。现改为：
+# 没设环境变量就随机生成一把，只打进服务器日志，绝不再有可猜的公开默认值。
+ADMIN_CODE = os.environ.get("ADMIN_CODE", "").strip()
+if not ADMIN_CODE:
+    ADMIN_CODE = secrets.token_urlsafe(18)
+    print(
+        "[warn] 未设置环境变量 ADMIN_CODE，已随机生成本次运行的管理员口令：\n"
+        f"       {ADMIN_CODE}\n"
+        "       重启后会变。请在部署平台（Render → Environment）设置 ADMIN_CODE 固定下来。",
+        flush=True,
+    )
 DATABASE_URL = os.environ.get("DATABASE_URL", "").strip()
 DECK_ID_RE = re.compile(r"^[a-z0-9][a-z0-9-]*$")
 DEFAULT_UNIT_ID = "default"
@@ -386,11 +399,26 @@ def validate_sentence(sentence):
         clean = {"p": pinyin, "t": tone}
         if stress in {"stress", "weak"}:
             clean["s"] = stress
+        sandhi = str(item.get("sd", "")).strip()
+        if sandhi:
+            clean["sd"] = sandhi
+        try:
+            actual = int(item.get("ta"))
+        except (TypeError, ValueError):
+            actual = None
+        if actual in {0, 1, 2, 3, 4, 5}:
+            clean["ta"] = actual
         clean_syl.append(clean)
 
-    if len(clean_syl) != len(zh):
+    han_count = sum(1 for c in zh if "一" <= c <= "鿿")
+    if len(clean_syl) != han_count:
         raise ValueError("拼音数量需要和汉字数量一致")
     clean_sentence = {"id": sentence_id, "zh": zh, "en": en, "syl": clean_syl}
+    ts = sentence.get("ts")
+    if (isinstance(ts, list) and len(ts) == len(clean_syl)
+            and all(isinstance(p, list) and len(p) == 2
+                    and all(isinstance(v, (int, float)) for v in p) for p in ts)):
+        clean_sentence["ts"] = ts
     spoken_zh = str(sentence.get("spokenZh", "")).strip()
     if spoken_zh:
         clean_sentence["spokenZh"] = spoken_zh

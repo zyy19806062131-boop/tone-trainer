@@ -1,0 +1,18 @@
+{
+  "audio": {},
+  "decks": [
+    {
+      "id": "sample-deck",
+      "name": "Sample Deck",
+      "units": [
+        {
+          "id": "lesson-01",
+          "name": "1 示例课",
+          "hidden": false,
+          "access": "free",
+          "paymentUrl": ""
+        }
+      ]
+    }
+  ]
+}

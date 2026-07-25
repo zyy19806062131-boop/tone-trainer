@@ -160,7 +160,10 @@ header{display:flex;justify-content:space-between;align-items:flex-start;gap:14p
 .sentence .en.hide{opacity:0;height:0;overflow:hidden}
 
 .contour-wrap{position:relative;margin:24px 0 8px;padding:4px 0 2px}
-.tone-grid{--tone-count:1;display:grid;grid-template-columns:repeat(auto-fit,minmax(54px,1fr));gap:8px;overflow:visible;padding:3px 1px 8px;max-width:100%}
+.tone-grid{--tone-count:1;display:flex;flex-wrap:wrap;justify-content:center;align-items:stretch;gap:8px;overflow:visible;padding:3px 1px 8px;max-width:100%}
+.tone-grid .tone-cell{flex:1 1 74px;max-width:118px;min-width:74px}
+.tone-punct{flex:0 0 auto;align-self:center;font-family:var(--cjk);font-size:1.5rem;color:var(--soft);opacity:.75;padding:0 2px}
+.tone-newline{flex-basis:100%;height:0}
 .tone-cell{position:relative;min-width:0;border:1px solid var(--line-2);border-radius:3px;background:rgba(5,217,232,.045);padding:8px 6px 7px;transition:border-color .2s,box-shadow .2s,background .2s,transform .2s;overflow:hidden}
 .tone-cell::before{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(5,217,232,.12),transparent 42%);opacity:.45;pointer-events:none}
 .tone-cell::after{content:"";position:absolute;top:4px;right:4px;width:10px;height:10px;border-top:1px solid var(--line);border-right:1px solid var(--line);opacity:.65}
@@ -175,11 +178,14 @@ header{display:flex;justify-content:space-between;align-items:flex-start;gap:14p
 .tone-cell.stress .tone-path,.tone-cell.stress .tone-dot{stroke:var(--accent-2);fill:var(--accent-2);filter:drop-shadow(0 0 9px var(--glow-2))}
 .tone-cell.active .tone-path,.tone-cell.active .tone-dot{stroke:var(--amber);fill:var(--amber);filter:drop-shadow(0 0 12px rgba(245,217,10,.85))}
 .tone-py{font-family:var(--mono);font-size:.68rem;color:var(--soft);letter-spacing:.02em;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tone-sd{position:absolute;top:3px;right:3px;font-family:var(--mono);font-size:.55rem;line-height:1;color:#ffb347;background:rgba(255,179,71,.12);border:1px solid rgba(255,179,71,.45);border-radius:2px;padding:1px 2px;letter-spacing:.02em}
+.tone-cell.sandhi{border-color:rgba(255,179,71,.5)}
 .tone-cell.stress .tone-py,.tone-cell.active .tone-py{color:var(--ink)}
 .tone-num{color:var(--accent);font-weight:700}
 
 .controls{display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap;margin-top:24px}
 .control-pack{display:inline-flex;align-items:center;gap:8px}
+.control-pack[hidden]{display:none}
 .control-label{font-family:var(--mono);font-size:.62rem;color:var(--soft);letter-spacing:.12em;text-transform:uppercase}
 .play{display:inline-flex;align-items:center;gap:10px;background:rgba(5,217,232,.08);color:var(--accent);border:1px solid var(--accent);border-radius:2px;padding:13px 28px;font-weight:600;font-size:.9rem;letter-spacing:.16em;text-transform:uppercase;transition:.18s;box-shadow:0 0 18px rgba(5,217,232,.25);text-shadow:0 0 8px var(--glow)}
 .play:hover{background:rgba(5,217,232,.18);box-shadow:0 0 28px var(--glow);transform:translateY(-2px)}.play:active{transform:translateY(0)}
@@ -207,7 +213,9 @@ header{display:flex;justify-content:space-between;align-items:flex-start;gap:14p
 .voice-row select{font-family:var(--mono);font-size:.78rem;padding:7px 12px;border:1px solid var(--line-2);border-radius:2px;background:var(--bg-2);color:var(--ink);max-width:240px}
 .tts-off{display:none;font-family:var(--mono);font-size:.74rem;color:var(--accent-2);text-align:center;margin-top:10px}
 
-.nav{display:flex;justify-content:space-between;align-items:center;margin-top:24px;gap:12px}
+.nav{display:flex;justify-content:center;align-items:center;margin-top:24px;gap:12px}
+.nav-side{font-family:var(--mono);background:rgba(5,217,232,.05);border:1px solid var(--line-2);border-radius:2px;padding:11px 16px;font-size:.8rem;letter-spacing:.06em;color:var(--soft);transition:.2s}
+.nav-side:hover{border-color:var(--accent);color:var(--accent);box-shadow:0 0 14px var(--glow)}
 .nav button{font-family:var(--mono);background:rgba(5,217,232,.05);border:1px solid var(--line-2);border-radius:2px;padding:9px 16px;font-size:.78rem;letter-spacing:.06em;color:var(--soft);transition:.2s}
 .nav button:hover{border-color:var(--accent);color:var(--accent);box-shadow:0 0 14px var(--glow)}
 .dots{display:flex;gap:7px;flex-wrap:wrap;justify-content:center}
@@ -244,7 +252,7 @@ header{display:flex;justify-content:space-between;align-items:flex-start;gap:14p
 .legend b{color:var(--accent)}
 @media(max-width:900px){.gate-shell{grid-template-columns:1fr}.gate-side{display:none}}
 @media(max-width:760px){.data-rail{display:none}.topline{margin-bottom:8px}.stage-hud{flex-wrap:wrap}}
-@media(max-width:520px){#app{padding-left:12px;padding-right:12px}.gate-card{padding:26px 18px 22px}.gate-orb{width:104px;height:104px}.gate-meta{grid-template-columns:1fr}.gate-form{flex-direction:column}.stage{padding:22px 14px}.stage-hud{font-size:.58rem}.controls{gap:9px}.control-pack{width:100%;justify-content:center}.rec-panel{align-items:stretch}.rec-title,.rec-status,.rec-preview{width:100%;text-align:center}.practice-panel{align-items:stretch}.practice-meta,.hard-btn{width:100%;text-align:center}.tone-grid{grid-template-columns:repeat(auto-fit,minmax(56px,1fr));gap:7px}.list-head{align-items:flex-start}.list-toggle{flex:none}.item{align-items:flex-start;padding:11px 12px}.sentence .py{font-size:.86rem;letter-spacing:.03em}.sentence .zh{font-size:clamp(1.45rem,9vw,2rem)}}
+@media(max-width:520px){#app{padding-left:12px;padding-right:12px}.gate-card{padding:26px 18px 22px}.gate-orb{width:104px;height:104px}.gate-meta{grid-template-columns:1fr}.gate-form{flex-direction:column}.stage{padding:22px 14px}.stage-hud{font-size:.58rem}.controls{gap:9px}.control-pack{width:100%;justify-content:center}.rec-panel{align-items:stretch}.rec-title,.rec-status,.rec-preview{width:100%;text-align:center}.practice-panel{align-items:stretch}.practice-meta,.hard-btn{width:100%;text-align:center}.tone-grid{gap:7px}.tone-grid .tone-cell{flex:1 1 64px;min-width:64px;max-width:104px}.list-head{align-items:flex-start}.list-toggle{flex:none}.item{align-items:flex-start;padding:11px 12px}.sentence .py{font-size:.86rem;letter-spacing:.03em}.sentence .zh{font-size:clamp(1.45rem,9vw,2rem)}}
 </style>
 </head>
 <body class="">
@@ -325,8 +333,10 @@ header{display:flex;justify-content:space-between;align-items:flex-start;gap:14p
     </div>
 
     <div class="controls">
+      <button class="nav-side" id="prev">◄ 上一句</button>
       <button class="play" id="play"><svg viewBox="0 0 10 10"><path d="M1 0 L9 5 L1 10 Z"/></svg><span>PLAY</span></button>
-      <div class="control-pack">
+      <button class="nav-side" id="next">下一句 ►</button>
+      <div class="control-pack" hidden>
         <span class="control-label">voice</span>
         <div class="seg" id="voicePick">
           <button class="on" data-v="f">女声</button>
@@ -358,9 +368,7 @@ header{display:flex;justify-content:space-between;align-items:flex-start;gap:14p
     <div class="tts-off" id="ttsOff">No Chinese voice on this device.</div>
 
     <div class="nav">
-      <button id="prev">◄ PREV</button>
       <div class="dots" id="dots"></div>
-      <button id="next">NEXT ►</button>
     </div>
     <div class="kbd">SPACE play · ◄ ► switch</div>
   </div>
@@ -469,6 +477,7 @@ function loadVoices(){
 if(hasTTS){speechSynthesis.onvoiceschanged=loadVoices;loadVoices();}
 
 function clearHl(){hlTimers.forEach(t=>clearTimeout(t));hlTimers=[];
+  if(typeof hlSync!=='undefined'&&hlSync){clearInterval(hlSync);hlSync=null;}
   document.querySelectorAll('.tone-cell.active').forEach(e=>e.classList.remove('active'));}
 function highlight(i){
   const cell=document.querySelector(`.tone-cell[data-i="${i}"]`);
@@ -481,6 +490,22 @@ function runHl(n,durMs){
     highlight(i);
     if(i===n-1)hlTimers.push(setTimeout(clearHl,step));
   },i*step));}
+}
+let hlSync=null;
+function runHlSynced(au,ts){
+  // 字随声亮: 按音频实时进度点亮字块;慢速版按 音频时长/正常clip时长 缩放
+  // 用 setInterval 不用 rAF: 后台/面板环境 rAF 会被冻结
+  clearHl();
+  const tsEnd=ts[ts.length-1][1]+0.12;   // ≈正常速clip总长(含尾部pad)
+  hlSync=setInterval(()=>{
+    if(au.ended||au.error){clearHl();return;}
+    const k=(au.duration&&isFinite(au.duration))?tsEnd/au.duration:1; // 慢速时 k≈0.7
+    const t=au.currentTime*k;
+    let idx=-1;
+    for(let i=0;i<ts.length;i++){if(t>=ts[i][0]-0.04)idx=i;else break;}
+    document.querySelectorAll('.tone-cell.active').forEach(e=>e.classList.remove('active'));
+    if(idx>=0)highlight(idx);
+  },50);
 }
 function audioNotice(msg){
   const el=document.getElementById('ttsOff');
@@ -501,17 +526,25 @@ function speakFallback(s,n,msg){
   }
   runHl(n,(speedMode==='s'?n*620:n*400));
 }
+let curAu=null;   // 当前播放的音频,防止连点PLAY声音叠加
 function play(){
   const s=currentSents()[sIdx];
   if(!s){audioNotice('This project has no sentences yet.');return;}
   markPracticed(s);
   const a=AUDIO[s.id];const n=s.syl.length;
   if(selfAudio){selfAudio.pause();selfAudio.currentTime=0;}
+  if(curAu){curAu.pause();curAu=null;}
+  if('speechSynthesis' in window)speechSynthesis.cancel();
   if(a&&a[voiceKey]&&a[voiceKey][speedMode]){
     const au=new Audio(a[voiceKey][speedMode]);
+    curAu=au;
     let failed=false;
     const fallback=()=>{if(failed)return;failed=true;speakFallback(s,n,'Audio playback failed. Using fallback voice.');};
-    au.addEventListener('loadedmetadata',()=>runHl(n,(au.duration||n*0.5)*1000));
+    au.addEventListener('loadedmetadata',()=>{
+      if(s.ts&&s.ts.length===n)runHlSynced(au,s.ts);   // 字级时间戳:字随声亮
+      else runHl(n,(au.duration||n*0.5)*1000);
+    });
+    au.addEventListener('ended',clearHl,{once:true});
     au.addEventListener('error',fallback,{once:true});
     au.play().then(()=>{document.getElementById('ttsOff').style.display='none';}).catch(fallback);
     return;
@@ -698,18 +731,41 @@ function toneShape(t){
   }
   return `<svg class="tone-shape" viewBox="0 0 60 46" aria-hidden="true">${guides}${mark}</svg>`;
 }
+const PUNCT_RE=/[，。？！；：、]/;
+const PUNCT_BREAK=/[，。？！；：]/;   // 长句在这些标点后断行(顿号不断)
+function pinyinWithPunct(s){
+  // 整句拼音按原句标点分隔: 走 zh 字符流,汉字取对应音节拼音,标点缀在前一个音节后
+  let out=[],i=0;
+  for(const c of Array.from(s.zh)){
+    if(c>='一'&&c<='鿿'){ if(s.syl[i])out.push(s.syl[i].p); i++; }
+    else if(PUNCT_RE.test(c)&&out.length){ out[out.length-1]+=c; }
+  }
+  return out.join(' ');
+}
 function drawContour(syl,zh){
   const grid=document.getElementById('toneGrid');
-  const chars=Array.from(zh);
-  grid.style.setProperty('--tone-count',syl.length);
-  grid.innerHTML=syl.map((s,i)=>{
-    const cls=s.s==='stress'?'stress':(s.s==='weak'?'weak':'');
-    return `<div class="tone-cell ${cls}" data-i="${i}">
-      <div class="tone-hanzi">${chars[i]||''}</div>
-      ${toneShape(s.t)}
-      <div class="tone-py">${s.p}<span class="tone-num"> / ${toneNumber(s.t)}</span></div>
-    </div>`;
-  }).join('');
+  const hanziCount=Array.from(zh).filter(c=>c>='一'&&c<='鿿').length;
+  const forceBreak=hanziCount>10;   // 长句在标点处断行
+  let html='',i=0;
+  for(const c of Array.from(zh)){
+    if(c>='一'&&c<='鿿'){
+      const s=syl[i]; if(!s){i++;continue;}
+      const cls=(s.s==='stress'?'stress':(s.s==='weak'?'weak':''))+(s.sd?' sandhi':'');
+      const sd=s.sd?`<div class="tone-sd">${s.sd.replace('-','→')}</div>`:'';
+      const shown=(s.ta!==undefined&&s.ta!==null)?s.ta:s.t; // 曲线画实读调(三三变调等)
+      html+=`<div class="tone-cell ${cls}" data-i="${i}">
+        ${sd}
+        <div class="tone-hanzi">${c}</div>
+        ${toneShape(shown)}
+        <div class="tone-py">${s.p}<span class="tone-num"> / ${toneNumber(s.t)}</span></div>
+      </div>`;
+      i++;
+    }else if(PUNCT_RE.test(c)){
+      html+=`<div class="tone-punct">${c}</div>`;
+      if(forceBreak&&PUNCT_BREAK.test(c))html+='<div class="tone-newline"></div>';
+    }
+  }
+  grid.innerHTML=html;
 }
 
 function renderTabs(){
@@ -731,6 +787,8 @@ function renderDots(){
   d.querySelectorAll('.dot').forEach(x=>x.addEventListener('click',()=>switchSentence(+x.dataset.i)));
 }
 function renderSentence(){
+  if(typeof curAu!=='undefined'&&curAu){curAu.pause();curAu=null;}  // 切句即停当前音频
+  clearHl();
   const sec=document.getElementById('sentence');sec.classList.add('swap');
   setTimeout(()=>{
     const s=currentSents()[sIdx];
@@ -767,7 +825,7 @@ function renderSentence(){
       grid.innerHTML='<div class="empty-state">Empty project</div>';
       renderPractice();applyEn();sec.classList.remove('swap');return;
     }
-    document.getElementById('sPy').textContent=s.syl.map(x=>x.p).join(' ');
+    document.getElementById('sPy').textContent=pinyinWithPunct(s);
     document.getElementById('sZh').textContent=s.zh;
     document.getElementById('sEn').textContent=s.en;
     drawContour(s.syl,s.zh);renderPractice();applyEn();sec.classList.remove('swap');

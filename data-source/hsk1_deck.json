@@ -1,0 +1,5983 @@
+{
+ "id": "hsk1",
+ "name": "HSK1",
+ "full": true,
+ "hidden": false,
+ "units": [
+  {
+   "id": "lesson-01",
+   "name": "1 你好",
+   "hidden": false,
+   "access": "free",
+   "paymentUrl": ""
+  },
+  {
+   "id": "lesson-02",
+   "name": "2 谢谢你",
+   "hidden": false,
+   "access": "paid",
+   "paymentUrl": ""
+  },
+  {
+   "id": "lesson-03",
+   "name": "3 你叫什么名字",
+   "hidden": false,
+   "access": "paid",
+   "paymentUrl": ""
+  },
+  {
+   "id": "lesson-04",
+   "name": "4 她是我的汉语老师",
+   "hidden": false,
+   "access": "paid",
+   "paymentUrl": ""
+  },
+  {
+   "id": "lesson-05",
+   "name": "5 她女儿今年二十岁",
+   "hidden": false,
+   "access": "paid",
+   "paymentUrl": ""
+  },
+  {
+   "id": "lesson-06",
+   "name": "6 我会说汉语",
+   "hidden": false,
+   "access": "paid",
+   "paymentUrl": ""
+  },
+  {
+   "id": "lesson-07",
+   "name": "7 今天几号",
+   "hidden": false,
+   "access": "paid",
+   "paymentUrl": ""
+  },
+  {
+   "id": "lesson-08",
+   "name": "8 我想喝茶",
+   "hidden": false,
+   "access": "paid",
+   "paymentUrl": ""
+  },
+  {
+   "id": "lesson-09",
+   "name": "9 你儿子在哪儿工作",
+   "hidden": false,
+   "access": "paid",
+   "paymentUrl": ""
+  },
+  {
+   "id": "lesson-10",
+   "name": "10 我能坐这儿吗",
+   "hidden": false,
+   "access": "paid",
+   "paymentUrl": ""
+  },
+  {
+   "id": "lesson-11",
+   "name": "11 现在几点",
+   "hidden": false,
+   "access": "paid",
+   "paymentUrl": ""
+  },
+  {
+   "id": "lesson-12",
+   "name": "12 明天天气怎么样",
+   "hidden": false,
+   "access": "paid",
+   "paymentUrl": ""
+  },
+  {
+   "id": "lesson-13",
+   "name": "13 他在学做中国菜呢",
+   "hidden": false,
+   "access": "paid",
+   "paymentUrl": ""
+  },
+  {
+   "id": "lesson-14",
+   "name": "14 她买了不少衣服",
+   "hidden": false,
+   "access": "paid",
+   "paymentUrl": ""
+  },
+  {
+   "id": "lesson-15",
+   "name": "15 我是坐飞机来的",
+   "hidden": false,
+   "access": "paid",
+   "paymentUrl": ""
+  }
+ ],
+ "sents": [
+  {
+   "id": "hsk1-lesson-01-01",
+   "unitId": "lesson-01",
+   "zh": "你好！",
+   "en": "Hello!",
+   "syl": [
+    {
+     "p": "nǐ",
+     "t": 3,
+     "sd": "3-2",
+     "ta": 2
+    },
+    {
+     "p": "hǎo",
+     "t": 3
+    }
+   ],
+   "spokenZh": "你好！"
+  },
+  {
+   "id": "hsk1-lesson-01-02",
+   "unitId": "lesson-01",
+   "zh": "您好！",
+   "en": "Hello!",
+   "syl": [
+    {
+     "p": "nín",
+     "t": 2
+    },
+    {
+     "p": "hǎo",
+     "t": 3
+    }
+   ],
+   "spokenZh": "您好！"
+  },
+  {
+   "id": "hsk1-lesson-01-03",
+   "unitId": "lesson-01",
+   "zh": "你们好！",
+   "en": "Hello!",
+   "syl": [
+    {
+     "p": "nǐ",
+     "t": 3
+    },
+    {
+     "p": "men",
+     "t": 0,
+     "s": "weak"
+    },
+    {
+     "p": "hǎo",
+     "t": 3
+    }
+   ],
+   "spokenZh": "你们好！"
+  },
+  {
+   "id": "hsk1-lesson-01-04",
+   "unitId": "lesson-01",
+   "zh": "对不起！",
+   "en": "I'm sorry!",
+   "syl": [
+    {
+     "p": "duì",
+     "t": 4
+    },
+    {
+     "p": "bu",
+     "t": 0,
+     "s": "weak"
+    },
+    {
+     "p": "qǐ",
+     "t": 3
+    }
+   ],
+   "spokenZh": "对不起！"
+  },
+  {
+   "id": "hsk1-lesson-01-05",
+   "unitId": "lesson-01",
+   "zh": "没关系！",
+   "en": "That's OK!",
+   "syl": [
+    {
+     "p": "méi",
+     "t": 2
+    },
+    {
+     "p": "guān",
+     "t": 1
+    },
+    {
+     "p": "xi",
+     "t": 0,
+     "s": "weak"
+    }
+   ],
+   "spokenZh": "没关系！"
+  },
+  {
+   "id": "hsk1-lesson-02-01",
+   "unitId": "lesson-02",
+   "zh": "谢谢！",
+   "en": "Thank you!",
+   "syl": [
+    {
+     "p": "xiè",
+     "t": 4
+    },
+    {
+     "p": "xie",
+     "t": 0,
+     "s": "weak"
+    }
+   ],
+   "spokenZh": "谢谢！"
+  },
+  {
+   "id": "hsk1-lesson-02-02",
+   "unitId": "lesson-02",
+   "zh": "不谢！",
+   "en": "Sure!",
+   "syl": [
+    {
+     "p": "bú",
+     "t": 2,
+     "sd": "4-2"
+    },
+    {
+     "p": "xiè",
+     "t": 4
+    }
+   ],
+   "spokenZh": "不谢！"
+  },
+  {
+   "id": "hsk1-lesson-02-03",
+   "unitId": "lesson-02",
+   "zh": "谢谢你！",
+   "en": "Thank you!",
+   "syl": [
+    {
+     "p": "xiè",
+     "t": 4
+    },
+    {
+     "p": "xie",
+     "t": 0,
+     "s": "weak"
+    },
+    {
+     "p": "nǐ",
+     "t": 3
+    }
+   ],
+   "spokenZh": "谢谢你！"
+  },
+  {
+   "id": "hsk1-lesson-02-04",
+   "unitId": "lesson-02",
+   "zh": "不客气！",
+   "en": "You're welcome!",
+   "syl": [
+    {
+     "p": "bú",
+     "t": 2,
+     "sd": "4-2"
+    },
+    {
+     "p": "kè",
+     "t": 4
+    },
+    {
+     "p": "qi",
+     "t": 0,
+     "s": "weak"
+    }
+   ],
+   "spokenZh": "不客气！"
+  },
+  {
+   "id": "hsk1-lesson-02-05",
+   "unitId": "lesson-02",
+   "zh": "再见！",
+   "en": "Goodbye!",
+   "syl": [
+    {
+     "p": "zài",
+     "t": 4
+    },
+    {
+     "p": "jiàn",
+     "t": 4
+    }
+   ],
+   "spokenZh": "再见！"
+  },
+  {
+   "id": "hsk1-lesson-03-01",
+   "unitId": "lesson-03",
+   "zh": "你叫什么名字？",
+   "en": "What's your name?",
+   "syl": [
+    {
+     "p": "nǐ",
+     "t": 3
+    },
+    {
+     "p": "jiào",
+     "t": 4
+    },
+    {
+     "p": "shén",
+     "t": 2
+    },
+    {
+     "p": "me",
+     "t": 0,
+     "s": "weak"
+    },
+    {
+     "p": "míng",
+     "t": 2
+    },
+    {
+     "p": "zi",
+     "t": 0,
+     "s": "weak"
+    }
+   ],
+   "spokenZh": "你叫什么名字？"
+  },
+  {
+   "id": "hsk1-lesson-03-02",
+   "unitId": "lesson-03",
+   "zh": "我叫李月。",
+   "en": "My name is Li Yue.",
+   "syl": [
+    {
+     "p": "wǒ",
+     "t": 3
+    },
+    {
+     "p": "jiào",
+     "t": 4
+    },
+    {
+     "p": "lǐ",
+     "t": 3
+    },
+    {
+     "p": "yuè",
+     "t": 4
+    }
+   ],
+   "spokenZh": "我叫李月。"
+  },
+  {
+   "id": "hsk1-lesson-03-03",
+   "unitId": "lesson-03",
+   "zh": "你是老师吗？",
+   "en": "Are you a teacher?",
+   "syl": [
+    {
+     "p": "nǐ",
+     "t": 3
+    },
+    {
+     "p": "shì",
+     "t": 4
+    },
+    {
+     "p": "lǎo",
+     "t": 3
+    },
+    {
+     "p": "shī",
+     "t": 1
+    },
+    {
+     "p": "ma",
+     "t": 0,
+     "s": "weak"
+    }
+   ],
+   "spokenZh": "你是老师吗？"
+  },
+  {
+   "id": "hsk1-lesson-03-04",
+   "unitId": "lesson-03",
+   "zh": "我不是老师，我是学生。",
+   "en": "No, I'm not. I'm a student.",
+   "syl": [
+    {
+     "p": "wǒ",
+     "t": 3
+    },
+    {
+     "p": "bú",
+     "t": 2,
+     "sd": "4-2"
+    },
+    {
+     "p": "shì",
+     "t": 4
+    },
+    {
+     "p": "lǎo",
+     "t": 3
+    },
+    {
+     "p": "shī",
+     "t": 1
+    },
+    {
+     "p": "wǒ",
+     "t": 3
+    },
+    {
+     "p": "shì",
+     "t": 4
+    },
+    {
+     "p": "xué",
+     "t": 2
+    },
+    {
+     "p": "sheng",
+     "t": 0,
+     "s": "weak"
+    }
+   ],
+   "spokenZh": "我不是老师，我是学生。"
+  },
+  {
+   "id": "hsk1-lesson-03-05",
+   "unitId": "lesson-03",
+   "zh": "你是中国人吗？",
+   "en": "Are you Chinese?",
+   "syl": [
+    {
+     "p": "nǐ",
+     "t": 3
+    },
+    {
+     "p": "shì",
+     "t": 4
+    },
+    {
+     "p": "zhōng",
+     "t": 1
+    },
+    {
+     "p": "guó",
+     "t": 2
+    },
+    {
+     "p": "rén",
+     "t": 2
+    },
+    {
+     "p": "ma",
+     "t": 0,
+     "s": "weak"
+    }
+   ],
+   "spokenZh": "你是中国人吗？"
+  },
+  {
+   "id": "hsk1-lesson-03-06",
+   "unitId": "lesson-03",
+   "zh": "我不是中国人，我是美国人。",
+   "en": "No, I'm not. I'm American.",
+   "syl": [
+    {
+     "p": "wǒ",
+     "t": 3
+    },
+    {
+     "p": "bú",
+     "t": 2,
+     "sd": "4-2"
+    },
+    {
+     "p": "shì",
+     "t": 4
+    },
+    {
+     "p": "zhōng",
+     "t": 1
+    },
+    {
+     "p": "guó",
+     "t": 2
+    },
+    {
+     "p": "rén",
+     "t": 2
+    },
+    {
+     "p": "wǒ",
+     "t": 3
+    },
+    {
+     "p": "shì",
+     "t": 4
+    },
+    {
+     "p": "měi",
+     "t": 3
+    },
+    {
+     "p": "guó",
+     "t": 2
+    },
+    {
+     "p": "rén",
+     "t": 2
+    }
+   ],
+   "spokenZh": "我不是中国人，我是美国人。"
+  },
+  {
+   "id": "hsk1-lesson-04-01",
+   "unitId": "lesson-04",
+   "zh": "她是谁？",
+   "en": "Who is she?",
+   "syl": [
+    {
+     "p": "tā",
+     "t": 1
+    },
+    {
+     "p": "shì",
+     "t": 4
+    },
+    {
+     "p": "shéi",
+     "t": 2
+    }
+   ],
+   "spokenZh": "她是谁？"
+  },
+  {
+   "id": "hsk1-lesson-04-02",
+   "unitId": "lesson-04",
+   "zh": "她是我的汉语老师，她叫李月。",
+   "en": "She is my Chinese teacher. Her name is Li Yue.",
+   "syl": [
+    {
+     "p": "tā",
+     "t": 1
+    },
+    {
+     "p": "shì",
+     "t": 4
+    },
+    {
+     "p": "wǒ",
+     "t": 3
+    },
+    {
+     "p": "de",
+     "t": 0,
+     "s": "weak"
+    },
+    {
+     "p": "hàn",
+     "t": 4
+    },
+    {
+     "p": "yǔ",
+     "t": 3
+    },
+    {
+     "p": "lǎo",
+     "t": 3
+    },
+    {
+     "p": "shī",
+     "t": 1
+    },
+    {
+     "p": "tā",
+     "t": 1
+    },
+    {
+     "p": "jiào",
+     "t": 4
+    },
+    {
+     "p": "lǐ",
+     "t": 3
+    },
+    {
+     "p": "yuè",
+     "t": 4
+    }
+   ],
+   "spokenZh": "她是我的汉语老师，她叫李月。"
+  },
+  {
+   "id": "hsk1-lesson-04-03",
+   "unitId": "lesson-04",
+   "zh": "你是哪国人？",
+   "en": "Which country are you from?",
+   "syl": [
+    {
+     "p": "nǐ",
+     "t": 3
+    },
+    {
+     "p": "shì",
+     "t": 4
+    },
+    {
+     "p": "nǎ",
+     "t": 3
+    },
+    {
+     "p": "guó",
+     "t": 2
+    },
+    {
+     "p": "rén",
+     "t": 2
+    }
+   ],
+   "spokenZh": "你是哪国人？"
+  },
+  {
+   "id": "hsk1-lesson-04-04",
+   "unitId": "lesson-04",
+   "zh": "我是美国人。你呢？",
+   "en": "I'm American. What about you?",
+   "syl": [
+    {
+     "p": "wǒ",
+     "t": 3
+    },
+    {
+     "p": "shì",
+     "t": 4
+    },
+    {
+     "p": "měi",
+     "t": 3
+    },
+    {
+     "p": "guó",
+     "t": 2
+    },
+    {
+     "p": "rén",
+     "t": 2
+    },
+    {
+     "p": "nǐ",
+     "t": 3
+    },
+    {
+     "p": "ne",
+     "t": 0,
+     "s": "weak"
+    }
+   ],
+   "spokenZh": "我是美国人。你呢？"
+  },
+  {
+   "id": "hsk1-lesson-04-05",
+   "unitId": "lesson-04",
+   "zh": "我是中国人。",
+   "en": "I'm Chinese.",
+   "syl": [
+    {
+     "p": "wǒ",
+     "t": 3
+    },
+    {
+     "p": "shì",
+     "t": 4
+    },
+    {
+     "p": "zhōng",
+     "t": 1
+    },
+    {
+     "p": "guó",
+     "t": 2
+    },
+    {
+     "p": "rén",
+     "t": 2
+    }
+   ],
+   "spokenZh": "我是中国人。"
+  },
+  {
+   "id": "hsk1-lesson-04-06",
+   "unitId": "lesson-04",
+   "zh": "他是谁？",
+   "en": "Who is he?",
+   "syl": [
+    {
+     "p": "tā",
+     "t": 1
+    },
+    {
+     "p": "shì",
+     "t": 4
+    },
+    {
+     "p": "shéi",
+     "t": 2
+    }
+   ],
+   "spokenZh": "他是谁？"
+  },
+  {
+   "id": "hsk1-lesson-04-07",
+   "unitId": "lesson-04",
+   "zh": "他是我同学。",
+   "en": "He is my classmate.",
+   "syl": [
+    {
+     "p": "tā",
+     "t": 1
+    },
+    {
+     "p": "shì",
+     "t": 4
+    },
+    {
+     "p": "wǒ",
+     "t": 3
+    },
+    {
+     "p": "tóng",
+     "t": 2
+    },
+    {
+     "p": "xué",
+     "t": 2
+    }
+   ],
+   "spokenZh": "他是我同学。"
+  },
+  {
+   "id": "hsk1-lesson-04-08",
+   "unitId": "lesson-04",
+   "zh": "她呢？她是你同学吗？",
+   "en": "What about her? Is she your classmate?",
+   "syl": [
+    {
+     "p": "tā",
+     "t": 1
+    },
+    {
+     "p": "ne",
+     "t": 0,
+     "s": "weak"
+    },
+    {
+     "p": "tā",
+     "t": 1
+    },
+    {
+     "p": "shì",
+     "t": 4
+    },
+    {
+     "p": "nǐ",
+     "t": 3
+    },
+    {
+     "p": "tóng",
+     "t": 2
+    },
+    {
+     "p": "xué",
+     "t": 2
+    },
+    {
+     "p": "ma",
+     "t": 0,
+     "s": "weak"
+    }
+   ],
+   "spokenZh": "她呢？她是你同学吗？"
+  },
+  {
+   "id": "hsk1-lesson-04-09",
+   "unitId": "lesson-04",
+   "zh": "她不是我同学，她是我朋友。",
+   "en": "No, she isn't. She is my friend.",
+   "syl": [
+    {
+     "p": "tā",
+     "t": 1
+    },
+    {
+     "p": "bú",
+     "t": 2,
+     "sd": "4-2"
+    },
+    {
+     "p": "shì",
+     "t": 4
+    },
+    {
+     "p": "wǒ",
+     "t": 3
+    },
+    {
+     "p": "tóng",
+     "t": 2
+    },
+    {
+     "p": "xué",
+     "t": 2
+    },
+    {
+     "p": "tā",
+     "t": 1
+    },
+    {
+     "p": "shì",
+     "t": 4
+    },
+    {
+     "p": "wǒ",
+     "t": 3
+    },
+    {
+     "p": "péng",
+     "t": 2
+    },
+    {
+     "p": "you",
+     "t": 0,
+     "s": "weak"
+    }
+   ],
+   "spokenZh": "她不是我同学，她是我朋友。"
+  },
+  {
+   "id": "hsk1-lesson-05-01",
+   "unitId": "lesson-05",
+   "zh": "你家有几口人？",
+   "en": "How many people are there in your family?",
+   "syl": [
+    {
+     "p": "nǐ",
+     "t": 3
+    },
+    {
+     "p": "jiā",
+     "t": 1
+    },
+    {
+     "p": "yǒu",
+     "t": 3
+    },
+    {
+     "p": "jǐ",
+     "t": 3,
+     "sd": "3-2",
+     "ta": 2
+    },
+    {
+     "p": "kǒu",
+     "t": 3
+    },
+    {
+     "p": "rén",
+     "t": 2
+    }
+   ],
+   "spokenZh": "你家有几口人？"
+  },
+  {
+   "id": "hsk1-lesson-05-02",
+   "unitId": "lesson-05",
+   "zh": "我家有三口人。",
+   "en": "There are three.",
+   "syl": [
+    {
+     "p": "wǒ",
+     "t": 3
+    },
+    {
+     "p": "jiā",
+     "t": 1
+    },
+    {
+     "p": "yǒu",
+     "t": 3
+    },
+    {
+     "p": "sān",
+     "t": 1
+    },
+    {
+     "p": "kǒu",
+     "t": 3
+    },
+    {
+     "p": "rén",
+     "t": 2
+    }
+   ],
+   "spokenZh": "我家有三口人。"
+  },
+  {
+   "id": "hsk1-lesson-05-03",
+   "unitId": "lesson-05",
+   "zh": "你女儿几岁了？",
+   "en": "How old is your daughter?",
+   "syl": [
+    {
+     "p": "nǐ",
+     "t": 3
+    },
+    {
+     "p": "nǚ",
+     "t": 3
+    },
+    {
+     "p": "er",
+     "t": 2
+    },
+    {
+     "p": "jǐ",
+     "t": 3
+    },
+    {
+     "p": "suì",
+     "t": 4
+    },
+    {
+     "p": "le",
+     "t": 0,
+     "s": "weak"
+    }
+   ],
+   "spokenZh": "你女儿几岁了？"
+  },
+  {
+   "id": "hsk1-lesson-05-04",
+   "unitId": "lesson-05",
+   "zh": "她今年四岁了。",
+   "en": "She is four years old.",
+   "syl": [
+    {
+     "p": "tā",
+     "t": 1
+    },
+    {
+     "p": "jīn",
+     "t": 1
+    },
+    {
+     "p": "nián",
+     "t": 2
+    },
+    {
+     "p": "sì",
+     "t": 4
+    },
+    {
+     "p": "suì",
+     "t": 4
+    },
+    {
+     "p": "le",
+     "t": 0,
+     "s": "weak"
+    }
+   ],
+   "spokenZh": "她今年四岁了。"
+  },
+  {
+   "id": "hsk1-lesson-05-05",
+   "unitId": "lesson-05",
+   "zh": "李老师多大了？",
+   "en": "How old is Professor Li?",
+   "syl": [
+    {
+     "p": "lǐ",
+     "t": 3,
+     "sd": "3-2",
+     "ta": 2
+    },
+    {
+     "p": "lǎo",
+     "t": 3
+    },
+    {
+     "p": "shī",
+     "t": 1
+    },
+    {
+     "p": "duō",
+     "t": 1
+    },
+    {
+     "p": "dà",
+     "t": 4
+    },
+    {
+     "p": "le",
+     "t": 0,
+     "s": "weak"
+    }
+   ],
+   "spokenZh": "李老师多大了？"
+  },
+  {
+   "id": "hsk1-lesson-05-06",
+   "unitId": "lesson-05",
+   "zh": "她今年五十岁了。",
+   "en": "She is 50 years old.",
+   "syl": [
+    {
+     "p": "tā",
+     "t": 1
+    },
+    {
+     "p": "jīn",
+     "t": 1
+    },
+    {
+     "p": "nián",
+     "t": 2
+    },
+    {
+     "p": "wǔ",
+     "t": 3
+    },
+    {
+     "p": "shí",
+     "t": 2
+    },
+    {
+     "p": "suì",
+     "t": 4
+    },
+    {
+     "p": "le",
+     "t": 0,
+     "s": "weak"
+    }
+   ],
+   "spokenZh": "她今年五十岁了。"
+  },
+  {
+   "id": "hsk1-lesson-05-07",
+   "unitId": "lesson-05",
+   "zh": "她女儿呢？",
+   "en": "What about her daughter?",
+   "syl": [
+    {
+     "p": "tā",
+     "t": 1
+    },
+    {
+     "p": "nǚ",
+     "t": 3
+    },
+    {
+     "p": "er",
+     "t": 2
+    },
+    {
+     "p": "ne",
+     "t": 0,
+     "s": "weak"
+    }
+   ],
+   "spokenZh": "她女儿呢？"
+  },
+  {
+   "id": "hsk1-lesson-05-08",
+   "unitId": "lesson-05",
+   "zh": "她女儿今年二十岁。",
+   "en": "Her daughter is 20.",
+   "syl": [
+    {
+     "p": "tā",
+     "t": 1
+    },
+    {
+     "p": "nǚ",
+     "t": 3
+    },
+    {
+     "p": "er",
+     "t": 2
+    },
+    {
+     "p": "jīn",
+     "t": 1
+    },
+    {
+     "p": "nián",
+     "t": 2
+    },
+    {
+     "p": "èr",
+     "t": 4
+    },
+    {
+     "p": "shí",
+     "t": 2
+    },
+    {
+     "p": "suì",
+     "t": 4
+    }
+   ],
+   "spokenZh": "她女儿今年二十岁。"
+  },
+  {
+   "id": "hsk1-lesson-06-01",
+   "unitId": "lesson-06",
+   "zh": "你会说汉语吗？",
+   "en": "Can you speak Chinese?",
+   "syl": [
+    {
+     "p": "nǐ",
+     "t": 3
+    },
+    {
+     "p": "huì",
+     "t": 4
+    },
+    {
+     "p": "shuō",
+     "t": 1
+    },
+    {
+     "p": "hàn",
+     "t": 4
+    },
+    {
+     "p": "yǔ",
+     "t": 3
+    },
+    {
+     "p": "ma",
+     "t": 0,
+     "s": "weak"
+    }
+   ],
+   "spokenZh": "你会说汉语吗？"
+  },
+  {
+   "id": "hsk1-lesson-06-02",
+   "unitId": "lesson-06",
+   "zh": "我会说汉语。",
+   "en": "Yes, I can.",
+   "syl": [
+    {
+     "p": "wǒ",
+     "t": 3
+    },
+    {
+     "p": "huì",
+     "t": 4
+    },
+    {
+     "p": "shuō",
+     "t": 1
+    },
+    {
+     "p": "hàn",
+     "t": 4
+    },
+    {
+     "p": "yǔ",
+     "t": 3
+    }
+   ],
+   "spokenZh": "我会说汉语。"
+  },
+  {
+   "id": "hsk1-lesson-06-03",
+   "unitId": "lesson-06",
+   "zh": "你妈妈会说汉语吗？",
+   "en": "Can your mother speak Chinese?",
+   "syl": [
+    {
+     "p": "nǐ",
+     "t": 3
+    },
+    {
+     "p": "mā",
+     "t": 1
+    },
+    {
+     "p": "ma",
+     "t": 0,
+     "s": "weak"
+    },
+    {
+     "p": "huì",
+     "t": 4
+    },
+    {
+     "p": "shuō",
+     "t": 1
+    },
+    {
+     "p": "hàn",
+     "t": 4
+    },
+    {
+     "p": "yǔ",
+     "t": 3
+    },
+    {
+     "p": "ma",
+     "t": 0,
+     "s": "weak"
+    }
+   ],
+   "spokenZh": "你妈妈会说汉语吗？"
+  },
+  {
+   "id": "hsk1-lesson-06-04",
+   "unitId": "lesson-06",
+   "zh": "她不会说。",
+   "en": "No, she can't.",
+   "syl": [
+    {
+     "p": "tā",
+     "t": 1
+    },
+    {
+     "p": "bú",
+     "t": 2,
+     "sd": "4-2"
+    },
+    {
+     "p": "huì",
+     "t": 4
+    },
+    {
+     "p": "shuō",
+     "t": 1
+    }
+   ],
+   "spokenZh": "她不会说。"
+  },
+  {
+   "id": "hsk1-lesson-06-05",
+   "unitId": "lesson-06",
+   "zh": "中国菜好吃吗？",
+   "en": "Is Chinese food delicious?",
+   "syl": [
+    {
+     "p": "zhōng",
+     "t": 1
+    },
+    {
+     "p": "guó",
+     "t": 2
+    },
+    {
+     "p": "cài",
+     "t": 4
+    },
+    {
+     "p": "hǎo",
+     "t": 3
+    },
+    {
+     "p": "chī",
+     "t": 1
+    },
+    {
+     "p": "ma",
+     "t": 0,
+     "s": "weak"
+    }
+   ],
+   "spokenZh": "中国菜好吃吗？"
+  },
+  {
+   "id": "hsk1-lesson-06-06",
+   "unitId": "lesson-06",
+   "zh": "中国菜很好吃。",
+   "en": "Yes, quite delicious.",
+   "syl": [
+    {
+     "p": "zhōng",
+     "t": 1
+    },
+    {
+     "p": "guó",
+     "t": 2
+    },
+    {
+     "p": "cài",
+     "t": 4
+    },
+    {
+     "p": "hěn",
+     "t": 3
+    },
+    {
+     "p": "hǎo",
+     "t": 3
+    },
+    {
+     "p": "chī",
+     "t": 1
+    }
+   ],
+   "spokenZh": "中国菜很好吃。"
+  },
+  {
+   "id": "hsk1-lesson-06-07",
+   "unitId": "lesson-06",
+   "zh": "你会做中国菜吗？",
+   "en": "Can you cook Chinese food?",
+   "syl": [
+    {
+     "p": "nǐ",
+     "t": 3
+    },
+    {
+     "p": "huì",
+     "t": 4
+    },
+    {
+     "p": "zuò",
+     "t": 4
+    },
+    {
+     "p": "zhōng",
+     "t": 1
+    },
+    {
+     "p": "guó",
+     "t": 2
+    },
+    {
+     "p": "cài",
+     "t": 4
+    },
+    {
+     "p": "ma",
+     "t": 0,
+     "s": "weak"
+    }
+   ],
+   "spokenZh": "你会做中国菜吗？"
+  },
+  {
+   "id": "hsk1-lesson-06-08",
+   "unitId": "lesson-06",
+   "zh": "我不会做。",
+   "en": "No, I can't.",
+   "syl": [
+    {
+     "p": "wǒ",
+     "t": 3
+    },
+    {
+     "p": "bú",
+     "t": 2,
+     "sd": "4-2"
+    },
+    {
+     "p": "huì",
+     "t": 4
+    },
+    {
+     "p": "zuò",
+     "t": 4
+    }
+   ],
+   "spokenZh": "我不会做。"
+  },
+  {
+   "id": "hsk1-lesson-06-09",
+   "unitId": "lesson-06",
+   "zh": "你会写汉字吗？",
+   "en": "Can you write Chinese characters?",
+   "syl": [
+    {
+     "p": "nǐ",
+     "t": 3
+    },
+    {
+     "p": "huì",
+     "t": 4
+    },
+    {
+     "p": "xiě",
+     "t": 3
+    },
+    {
+     "p": "hàn",
+     "t": 4
+    },
+    {
+     "p": "zì",
+     "t": 4
+    },
+    {
+     "p": "ma",
+     "t": 0,
+     "s": "weak"
+    }
+   ],
+   "spokenZh": "你会写汉字吗？"
+  },
+  {
+   "id": "hsk1-lesson-06-10",
+   "unitId": "lesson-06",
+   "zh": "我会写。",
+   "en": "Yes, I can.",
+   "syl": [
+    {
+     "p": "wǒ",
+     "t": 3
+    },
+    {
+     "p": "huì",
+     "t": 4
+    },
+    {
+     "p": "xiě",
+     "t": 3
+    }
+   ],
+   "spokenZh": "我会写。"
+  },
+  {
+   "id": "hsk1-lesson-06-11",
+   "unitId": "lesson-06",
+   "zh": "这个字怎么写？",
+   "en": "How do you write this character?",
+   "syl": [
+    {
+     "p": "zhè",
+     "t": 4
+    },
+    {
+     "p": "ge",
+     "t": 0,
+     "s": "weak"
+    },
+    {
+     "p": "zì",
+     "t": 4
+    },
+    {
+     "p": "zěn",
+     "t": 3
+    },
+    {
+     "p": "me",
+     "t": 0,
+     "s": "weak"
+    },
+    {
+     "p": "xiě",
+     "t": 3
+    }
+   ],
+   "spokenZh": "这个字怎么写？"
+  },
+  {
+   "id": "hsk1-lesson-06-12",
+   "unitId": "lesson-06",
+   "zh": "对不起，这个字我会读，不会写。",
+   "en": "Sorry. I can read it, but I don't know how to write it.",
+   "syl": [
+    {
+     "p": "duì",
+     "t": 4
+    },
+    {
+     "p": "bu",
+     "t": 0,
+     "s": "weak"
+    },
+    {
+     "p": "qǐ",
+     "t": 3
+    },
+    {
+     "p": "zhè",
+     "t": 4
+    },
+    {
+     "p": "ge",
+     "t": 0,
+     "s": "weak"
+    },
+    {
+     "p": "zì",
+     "t": 4
+    },
+    {
+     "p": "wǒ",
+     "t": 3
+    },
+    {
+     "p": "huì",
+     "t": 4
+    },
+    {
+     "p": "dú",
+     "t": 2
+    },
+    {
+     "p": "bú",
+     "t": 2,
+     "sd": "4-2"
+    },
+    {
+     "p": "huì",
+     "t": 4
+    },
+    {
+     "p": "xiě",
+     "t": 3
+    }
+   ],
+   "spokenZh": "对不起，这个字我会读，不会写。"
+  },
+  {
+   "id": "hsk1-lesson-07-01",
+   "unitId": "lesson-07",
+   "zh": "请问，今天几号？",
+   "en": "Excuse me, what's the date today?",
+   "syl": [
+    {
+     "p": "qǐng",
+     "t": 3
+    },
+    {
+     "p": "wèn",
+     "t": 4
+    },
+    {
+     "p": "jīn",
+     "t": 1
+    },
+    {
+     "p": "tiān",
+     "t": 1
+    },
+    {
+     "p": "jǐ",
+     "t": 3
+    },
+    {
+     "p": "hào",
+     "t": 4
+    }
+   ],
+   "spokenZh": "请问，今天几号？"
+  },
+  {
+   "id": "hsk1-lesson-07-02",
+   "unitId": "lesson-07",
+   "zh": "今天九月一号。",
+   "en": "It's September 1st.",
+   "syl": [
+    {
+     "p": "jīn",
+     "t": 1
+    },
+    {
+     "p": "tiān",
+     "t": 1
+    },
+    {
+     "p": "jiǔ",
+     "t": 3
+    },
+    {
+     "p": "yuè",
+     "t": 4
+    },
+    {
+     "p": "yī",
+     "t": 1
+    },
+    {
+     "p": "hào",
+     "t": 4
+    }
+   ],
+   "spokenZh": "今天九月一号。"
+  },
+  {
+   "id": "hsk1-lesson-07-03",
+   "unitId": "lesson-07",
+   "zh": "今天星期几？",
+   "en": "What day is it today?",
+   "syl": [
+    {
+     "p": "jīn",
+     "t": 1
+    },
+    {
+     "p": "tiān",
+     "t": 1
+    },
+    {
+     "p": "xīng",
+     "t": 1
+    },
+    {
+     "p": "qī",
+     "t": 1
+    },
+    {
+     "p": "jǐ",
+     "t": 3
+    }
+   ],
+   "spokenZh": "今天星期几？"
+  },
+  {
+   "id": "hsk1-lesson-07-04",
+   "unitId": "lesson-07",
+   "zh": "星期三。",
+   "en": "It's Wednesday.",
+   "syl": [
+    {
+     "p": "xīng",
+     "t": 1
+    },
+    {
+     "p": "qī",
+     "t": 1
+    },
+    {
+     "p": "sān",
+     "t": 1
+    }
+   ],
+   "spokenZh": "星期三。"
+  },
+  {
+   "id": "hsk1-lesson-07-05",
+   "unitId": "lesson-07",
+   "zh": "昨天是几月几号？",
+   "en": "What was the date yesterday?",
+   "syl": [
+    {
+     "p": "zuó",
+     "t": 2
+    },
+    {
+     "p": "tiān",
+     "t": 1
+    },
+    {
+     "p": "shì",
+     "t": 4
+    },
+    {
+     "p": "jǐ",
+     "t": 3
+    },
+    {
+     "p": "yuè",
+     "t": 4
+    },
+    {
+     "p": "jǐ",
+     "t": 3
+    },
+    {
+     "p": "hào",
+     "t": 4
+    }
+   ],
+   "spokenZh": "昨天是几月几号？"
+  },
+  {
+   "id": "hsk1-lesson-07-06",
+   "unitId": "lesson-07",
+   "zh": "昨天是八月三十一号，星期二。",
+   "en": "It was Tuesday, August 31st.",
+   "syl": [
+    {
+     "p": "zuó",
+     "t": 2
+    },
+    {
+     "p": "tiān",
+     "t": 1
+    },
+    {
+     "p": "shì",
+     "t": 4
+    },
+    {
+     "p": "bā",
+     "t": 1
+    },
+    {
+     "p": "yuè",
+     "t": 4
+    },
+    {
+     "p": "sān",
+     "t": 1
+    },
+    {
+     "p": "shí",
+     "t": 2
+    },
+    {
+     "p": "yī",
+     "t": 1
+    },
+    {
+     "p": "hào",
+     "t": 4
+    },
+    {
+     "p": "xīng",
+     "t": 1
+    },
+    {
+     "p": "qī",
+     "t": 1
+    },
+    {
+     "p": "èr",
+     "t": 4
+    }
+   ],
+   "spokenZh": "昨天是八月三十一号，星期二。"
+  },
+  {
+   "id": "hsk1-lesson-07-07",
+   "unitId": "lesson-07",
+   "zh": "明天呢？",
+   "en": "What about tomorrow?",
+   "syl": [
+    {
+     "p": "míng",
+     "t": 2
+    },
+    {
+     "p": "tiān",
+     "t": 1
+    },
+    {
+     "p": "ne",
+     "t": 0,
+     "s": "weak"
+    }
+   ],
+   "spokenZh": "明天呢？"
+  },
+  {
+   "id": "hsk1-lesson-07-08",
+   "unitId": "lesson-07",
+   "zh": "明天是九月二号，星期四。",
+   "en": "It's Thursday, September 2nd.",
+   "syl": [
+    {
+     "p": "míng",
+     "t": 2
+    },
+    {
+     "p": "tiān",
+     "t": 1
+    },
+    {
+     "p": "shì",
+     "t": 4
+    },
+    {
+     "p": "jiǔ",
+     "t": 3
+    },
+    {
+     "p": "yuè",
+     "t": 4
+    },
+    {
+     "p": "èr",
+     "t": 4
+    },
+    {
+     "p": "hào",
+     "t": 4
+    },
+    {
+     "p": "xīng",
+     "t": 1
+    },
+    {
+     "p": "qī",
+     "t": 1
+    },
+    {
+     "p": "sì",
+     "t": 4
+    }
+   ],
+   "spokenZh": "明天是九月二号，星期四。"
+  },
+  {
+   "id": "hsk1-lesson-07-09",
+   "unitId": "lesson-07",
+   "zh": "明天星期六，你去学校吗？",
+   "en": "Tomorrow is Saturday. Will you go to school?",
+   "syl": [
+    {
+     "p": "míng",
+     "t": 2
+    },
+    {
+     "p": "tiān",
+     "t": 1
+    },
+    {
+     "p": "xīng",
+     "t": 1
+    },
+    {
+     "p": "qī",
+     "t": 1
+    },
+    {
+     "p": "liù",
+     "t": 4
+    },
+    {
+     "p": "nǐ",
+     "t": 3
+    },
+    {
+     "p": "qù",
+     "t": 4
+    },
+    {
+     "p": "xué",
+     "t": 2
+    },
+    {
+     "p": "xiào",
+     "t": 4
+    },
+    {
+     "p": "ma",
+     "t": 0,
+     "s": "weak"
+    }
+   ],
+   "spokenZh": "明天星期六，你去学校吗？"
+  },
+  {
+   "id": "hsk1-lesson-07-10",
+   "unitId": "lesson-07",
+   "zh": "我去学校。",
+   "en": "Yes, I will.",
+   "syl": [
+    {
+     "p": "wǒ",
+     "t": 3
+    },
+    {
+     "p": "qù",
+     "t": 4
+    },
+    {
+     "p": "xué",
+     "t": 2
+    },
+    {
+     "p": "xiào",
+     "t": 4
+    }
+   ],
+   "spokenZh": "我去学校。"
+  },
+  {
+   "id": "hsk1-lesson-07-11",
+   "unitId": "lesson-07",
+   "zh": "你去学校做什么？",
+   "en": "What are you going to do there?",
+   "syl": [
+    {
+     "p": "nǐ",
+     "t": 3
+    },
+    {
+     "p": "qù",
+     "t": 4
+    },
+    {
+     "p": "xué",
+     "t": 2
+    },
+    {
+     "p": "xiào",
+     "t": 4
+    },
+    {
+     "p": "zuò",
+     "t": 4
+    },
+    {
+     "p": "shén",
+     "t": 2
+    },
+    {
+     "p": "me",
+     "t": 0,
+     "s": "weak"
+    }
+   ],
+   "spokenZh": "你去学校做什么？"
+  },
+  {
+   "id": "hsk1-lesson-07-12",
+   "unitId": "lesson-07",
+   "zh": "我去学校看书。",
+   "en": "I'm going there to do some reading.",
+   "syl": [
+    {
+     "p": "wǒ",
+     "t": 3
+    },
+    {
+     "p": "qù",
+     "t": 4
+    },
+    {
+     "p": "xué",
+     "t": 2
+    },
+    {
+     "p": "xiào",
+     "t": 4
+    },
+    {
+     "p": "kàn",
+     "t": 4
+    },
+    {
+     "p": "shū",
+     "t": 1
+    }
+   ],
+   "spokenZh": "我去学校看书。"
+  },
+  {
+   "id": "hsk1-lesson-08-01",
+   "unitId": "lesson-08",
+   "zh": "你想喝什么？",
+   "en": "What would you like to drink?",
+   "syl": [
+    {
+     "p": "nǐ",
+     "t": 3,
+     "sd": "3-2",
+     "ta": 2
+    },
+    {
+     "p": "xiǎng",
+     "t": 3
+    },
+    {
+     "p": "hē",
+     "t": 1
+    },
+    {
+     "p": "shén",
+     "t": 2
+    },
+    {
+     "p": "me",
+     "t": 0,
+     "s": "weak"
+    }
+   ],
+   "spokenZh": "你想喝什么？"
+  },
+  {
+   "id": "hsk1-lesson-08-02",
+   "unitId": "lesson-08",
+   "zh": "我想喝茶。",
+   "en": "I'd like some tea.",
+   "syl": [
+    {
+     "p": "wǒ",
+     "t": 3,
+     "sd": "3-2",
+     "ta": 2
+    },
+    {
+     "p": "xiǎng",
+     "t": 3
+    },
+    {
+     "p": "hē",
+     "t": 1
+    },
+    {
+     "p": "chá",
+     "t": 2
+    }
+   ],
+   "spokenZh": "我想喝茶。"
+  },
+  {
+   "id": "hsk1-lesson-08-03",
+   "unitId": "lesson-08",
+   "zh": "你想吃什么？",
+   "en": "What would you like to eat?",
+   "syl": [
+    {
+     "p": "nǐ",
+     "t": 3,
+     "sd": "3-2",
+     "ta": 2
+    },
+    {
+     "p": "xiǎng",
+     "t": 3
+    },
+    {
+     "p": "chī",
+     "t": 1
+    },
+    {
+     "p": "shén",
+     "t": 2
+    },
+    {
+     "p": "me",
+     "t": 0,
+     "s": "weak"
+    }
+   ],
+   "spokenZh": "你想吃什么？"
+  },
+  {
+   "id": "hsk1-lesson-08-04",
+   "unitId": "lesson-08",
+   "zh": "我想吃米饭。",
+   "en": "I'd like rice.",
+   "syl": [
+    {
+     "p": "wǒ",
+     "t": 3,
+     "sd": "3-2",
+     "ta": 2
+    },
+    {
+     "p": "xiǎng",
+     "t": 3
+    },
+    {
+     "p": "chī",
+     "t": 1
+    },
+    {
+     "p": "mǐ",
+     "t": 3
+    },
+    {
+     "p": "fàn",
+     "t": 4
+    }
+   ],
+   "spokenZh": "我想吃米饭。"
+  },
+  {
+   "id": "hsk1-lesson-08-05",
+   "unitId": "lesson-08",
+   "zh": "下午你想做什么？",
+   "en": "What would you like to do this afternoon?",
+   "syl": [
+    {
+     "p": "xià",
+     "t": 4
+    },
+    {
+     "p": "wǔ",
+     "t": 3
+    },
+    {
+     "p": "nǐ",
+     "t": 3,
+     "sd": "3-2",
+     "ta": 2
+    },
+    {
+     "p": "xiǎng",
+     "t": 3
+    },
+    {
+     "p": "zuò",
+     "t": 4
+    },
+    {
+     "p": "shén",
+     "t": 2
+    },
+    {
+     "p": "me",
+     "t": 0,
+     "s": "weak"
+    }
+   ],
+   "spokenZh": "下午你想做什么？"
+  },
+  {
+   "id": "hsk1-lesson-08-06",
+   "unitId": "lesson-08",
+   "zh": "下午我想去商店。",
+   "en": "I'd like to go shopping.",
+   "syl": [
+    {
+     "p": "xià",
+     "t": 4
+    },
+    {
+     "p": "wǔ",
+     "t": 3
+    },
+    {
+     "p": "wǒ",
+     "t": 3,
+     "sd": "3-2",
+     "ta": 2
+    },
+    {
+     "p": "xiǎng",
+     "t": 3
+    },
+    {
+     "p": "qù",
+     "t": 4
+    },
+    {
+     "p": "shāng",
+     "t": 1
+    },
+    {
+     "p": "diàn",
+     "t": 4
+    }
+   ],
+   "spokenZh": "下午我想去商店。"
+  },
+  {
+   "id": "hsk1-lesson-08-07",
+   "unitId": "lesson-08",
+   "zh": "你想买什么？",
+   "en": "What do you want to buy?",
+   "syl": [
+    {
+     "p": "nǐ",
+     "t": 3
+    },
+    {
+     "p": "xiǎng",
+     "t": 3,
+     "sd": "3-2",
+     "ta": 2
+    },
+    {
+     "p": "mǎi",
+     "t": 3
+    },
+    {
+     "p": "shén",
+     "t": 2
+    },
+    {
+     "p": "me",
+     "t": 0,
+     "s": "weak"
+    }
+   ],
+   "spokenZh": "你想买什么？"
+  },
+  {
+   "id": "hsk1-lesson-08-08",
+   "unitId": "lesson-08",
+   "zh": "我想买一个杯子。",
+   "en": "I want to buy a cup.",
+   "syl": [
+    {
+     "p": "wǒ",
+     "t": 3
+    },
+    {
+     "p": "xiǎng",
+     "t": 3,
+     "sd": "3-2",
+     "ta": 2
+    },
+    {
+     "p": "mǎi",
+     "t": 3
+    },
+    {
+     "p": "yí",
+     "t": 2,
+     "sd": "1-2"
+    },
+    {
+     "p": "ge",
+     "t": 0,
+     "s": "weak"
+    },
+    {
+     "p": "bēi",
+     "t": 1
+    },
+    {
+     "p": "zi",
+     "t": 0,
+     "s": "weak"
+    }
+   ],
+   "spokenZh": "我想买一个杯子。"
+  },
+  {
+   "id": "hsk1-lesson-08-09",
+   "unitId": "lesson-08",
+   "zh": "你好！这个杯子多少钱？",
+   "en": "Hello! How much is this cup?",
+   "syl": [
+    {
+     "p": "nǐ",
+     "t": 3,
+     "sd": "3-2",
+     "ta": 2
+    },
+    {
+     "p": "hǎo",
+     "t": 3
+    },
+    {
+     "p": "zhè",
+     "t": 4
+    },
+    {
+     "p": "ge",
+     "t": 0,
+     "s": "weak"
+    },
+    {
+     "p": "bēi",
+     "t": 1
+    },
+    {
+     "p": "zi",
+     "t": 0,
+     "s": "weak"
+    },
+    {
+     "p": "duō",
+     "t": 1
+    },
+    {
+     "p": "shao",
+     "t": 0,
+     "s": "weak"
+    },
+    {
+     "p": "qián",
+     "t": 2
+    }
+   ],
+   "spokenZh": "你好！这个杯子多少钱？"
+  },
+  {
+   "id": "hsk1-lesson-08-10",
+   "unitId": "lesson-08",
+   "zh": "二十八块。",
+   "en": "28 yuan.",
+   "syl": [
+    {
+     "p": "èr",
+     "t": 4
+    },
+    {
+     "p": "shí",
+     "t": 2
+    },
+    {
+     "p": "bā",
+     "t": 1
+    },
+    {
+     "p": "kuài",
+     "t": 4
+    }
+   ],
+   "spokenZh": "二十八块。"
+  },
+  {
+   "id": "hsk1-lesson-08-11",
+   "unitId": "lesson-08",
+   "zh": "那个杯子多少钱？",
+   "en": "What about that one?",
+   "syl": [
+    {
+     "p": "nà",
+     "t": 4
+    },
+    {
+     "p": "ge",
+     "t": 0,
+     "s": "weak"
+    },
+    {
+     "p": "bēi",
+     "t": 1
+    },
+    {
+     "p": "zi",
+     "t": 0,
+     "s": "weak"
+    },
+    {
+     "p": "duō",
+     "t": 1
+    },
+    {
+     "p": "shao",
+     "t": 0,
+     "s": "weak"
+    },
+    {
+     "p": "qián",
+     "t": 2
+    }
+   ],
+   "spokenZh": "那个杯子多少钱？"
+  },
+  {
+   "id": "hsk1-lesson-08-12",
+   "unitId": "lesson-08",
+   "zh": "那个杯子十八块钱。",
+   "en": "That one is 18 yuan.",
+   "syl": [
+    {
+     "p": "nà",
+     "t": 4
+    },
+    {
+     "p": "ge",
+     "t": 0,
+     "s": "weak"
+    },
+    {
+     "p": "bēi",
+     "t": 1
+    },
+    {
+     "p": "zi",
+     "t": 0,
+     "s": "weak"
+    },
+    {
+     "p": "shí",
+     "t": 2
+    },
+    {
+     "p": "bā",
+     "t": 1
+    },
+    {
+     "p": "kuài",
+     "t": 4
+    },
+    {
+     "p": "qián",
+     "t": 2
+    }
+   ],
+   "spokenZh": "那个杯子十八块钱。"
+  },
+  {
+   "id": "hsk1-lesson-09-01",
+   "unitId": "lesson-09",
+   "zh": "小猫在哪儿？",
+   "en": "Where is the kitty?",
+   "syl": [
+    {
+     "p": "xiǎo",
+     "t": 3
+    },
+    {
+     "p": "māo",
+     "t": 1
+    },
+    {
+     "p": "zài",
+     "t": 4
+    },
+    {
+     "p": "nǎ",
+     "t": 3
+    },
+    {
+     "p": "er",
+     "t": 0,
+     "s": "weak"
+    }
+   ],
+   "spokenZh": "小猫在哪儿？"
+  },
+  {
+   "id": "hsk1-lesson-09-02",
+   "unitId": "lesson-09",
+   "zh": "小猫在那儿。",
+   "en": "The kitty is over there.",
+   "syl": [
+    {
+     "p": "xiǎo",
+     "t": 3
+    },
+    {
+     "p": "māo",
+     "t": 1
+    },
+    {
+     "p": "zài",
+     "t": 4
+    },
+    {
+     "p": "nà",
+     "t": 4
+    },
+    {
+     "p": "er",
+     "t": 0,
+     "s": "weak"
+    }
+   ],
+   "spokenZh": "小猫在那儿。"
+  },
+  {
+   "id": "hsk1-lesson-09-03",
+   "unitId": "lesson-09",
+   "zh": "小狗在哪儿？",
+   "en": "Where is the puppy?",
+   "syl": [
+    {
+     "p": "xiǎo",
+     "t": 3,
+     "sd": "3-2",
+     "ta": 2
+    },
+    {
+     "p": "gǒu",
+     "t": 3
+    },
+    {
+     "p": "zài",
+     "t": 4
+    },
+    {
+     "p": "nǎ",
+     "t": 3
+    },
+    {
+     "p": "er",
+     "t": 0,
+     "s": "weak"
+    }
+   ],
+   "spokenZh": "小狗在哪儿？"
+  },
+  {
+   "id": "hsk1-lesson-09-04",
+   "unitId": "lesson-09",
+   "zh": "小狗在椅子下面。",
+   "en": "The puppy is under the chair.",
+   "syl": [
+    {
+     "p": "xiǎo",
+     "t": 3,
+     "sd": "3-2",
+     "ta": 2
+    },
+    {
+     "p": "gǒu",
+     "t": 3
+    },
+    {
+     "p": "zài",
+     "t": 4
+    },
+    {
+     "p": "yǐ",
+     "t": 3
+    },
+    {
+     "p": "zi",
+     "t": 0,
+     "s": "weak"
+    },
+    {
+     "p": "xià",
+     "t": 4
+    },
+    {
+     "p": "miàn",
+     "t": 4
+    }
+   ],
+   "spokenZh": "小狗在椅子下面。"
+  },
+  {
+   "id": "hsk1-lesson-09-05",
+   "unitId": "lesson-09",
+   "zh": "你在哪儿工作？",
+   "en": "Where do you work?",
+   "syl": [
+    {
+     "p": "nǐ",
+     "t": 3
+    },
+    {
+     "p": "zài",
+     "t": 4
+    },
+    {
+     "p": "nǎ",
+     "t": 3
+    },
+    {
+     "p": "er",
+     "t": 0,
+     "s": "weak"
+    },
+    {
+     "p": "gōng",
+     "t": 1
+    },
+    {
+     "p": "zuò",
+     "t": 4
+    }
+   ],
+   "spokenZh": "你在哪儿工作？"
+  },
+  {
+   "id": "hsk1-lesson-09-06",
+   "unitId": "lesson-09",
+   "zh": "我在学校工作。",
+   "en": "I work in a school.",
+   "syl": [
+    {
+     "p": "wǒ",
+     "t": 3
+    },
+    {
+     "p": "zài",
+     "t": 4
+    },
+    {
+     "p": "xué",
+     "t": 2
+    },
+    {
+     "p": "xiào",
+     "t": 4
+    },
+    {
+     "p": "gōng",
+     "t": 1
+    },
+    {
+     "p": "zuò",
+     "t": 4
+    }
+   ],
+   "spokenZh": "我在学校工作。"
+  },
+  {
+   "id": "hsk1-lesson-09-07",
+   "unitId": "lesson-09",
+   "zh": "你儿子在哪儿工作？",
+   "en": "Where does your son work?",
+   "syl": [
+    {
+     "p": "nǐ",
+     "t": 3
+    },
+    {
+     "p": "er",
+     "t": 2
+    },
+    {
+     "p": "zi",
+     "t": 0,
+     "s": "weak"
+    },
+    {
+     "p": "zài",
+     "t": 4
+    },
+    {
+     "p": "nǎ",
+     "t": 3
+    },
+    {
+     "p": "er",
+     "t": 0,
+     "s": "weak"
+    },
+    {
+     "p": "gōng",
+     "t": 1
+    },
+    {
+     "p": "zuò",
+     "t": 4
+    }
+   ],
+   "spokenZh": "你儿子在哪儿工作？"
+  },
+  {
+   "id": "hsk1-lesson-09-08",
+   "unitId": "lesson-09",
+   "zh": "我儿子在医院工作，他是医生。",
+   "en": "My son works in a hospital. He is a doctor.",
+   "syl": [
+    {
+     "p": "wǒ",
+     "t": 3
+    },
+    {
+     "p": "er",
+     "t": 2
+    },
+    {
+     "p": "zi",
+     "t": 0,
+     "s": "weak"
+    },
+    {
+     "p": "zài",
+     "t": 4
+    },
+    {
+     "p": "yī",
+     "t": 1
+    },
+    {
+     "p": "yuàn",
+     "t": 4
+    },
+    {
+     "p": "gōng",
+     "t": 1
+    },
+    {
+     "p": "zuò",
+     "t": 4
+    },
+    {
+     "p": "tā",
+     "t": 1
+    },
+    {
+     "p": "shì",
+     "t": 4
+    },
+    {
+     "p": "yī",
+     "t": 1
+    },
+    {
+     "p": "shēng",
+     "t": 1
+    }
+   ],
+   "spokenZh": "我儿子在医院工作，他是医生。"
+  },
+  {
+   "id": "hsk1-lesson-09-09",
+   "unitId": "lesson-09",
+   "zh": "你爸爸在家吗？",
+   "en": "Is your father at home?",
+   "syl": [
+    {
+     "p": "nǐ",
+     "t": 3
+    },
+    {
+     "p": "bà",
+     "t": 4
+    },
+    {
+     "p": "ba",
+     "t": 0,
+     "s": "weak"
+    },
+    {
+     "p": "zài",
+     "t": 4
+    },
+    {
+     "p": "jiā",
+     "t": 1
+    },
+    {
+     "p": "ma",
+     "t": 0,
+     "s": "weak"
+    }
+   ],
+   "spokenZh": "你爸爸在家吗？"
+  },
+  {
+   "id": "hsk1-lesson-09-10",
+   "unitId": "lesson-09",
+   "zh": "不在家。",
+   "en": "No, he isn't.",
+   "syl": [
+    {
+     "p": "bú",
+     "t": 2,
+     "sd": "4-2"
+    },
+    {
+     "p": "zài",
+     "t": 4
+    },
+    {
+     "p": "jiā",
+     "t": 1
+    }
+   ],
+   "spokenZh": "不在家。"
+  },
+  {
+   "id": "hsk1-lesson-09-11",
+   "unitId": "lesson-09",
+   "zh": "他在哪儿呢？",
+   "en": "Where is he?",
+   "syl": [
+    {
+     "p": "tā",
+     "t": 1
+    },
+    {
+     "p": "zài",
+     "t": 4
+    },
+    {
+     "p": "nǎ",
+     "t": 3
+    },
+    {
+     "p": "er",
+     "t": 0,
+     "s": "weak"
+    },
+    {
+     "p": "ne",
+     "t": 0,
+     "s": "weak"
+    }
+   ],
+   "spokenZh": "他在哪儿呢？"
+  },
+  {
+   "id": "hsk1-lesson-09-12",
+   "unitId": "lesson-09",
+   "zh": "他在医院。",
+   "en": "He is in the hospital.",
+   "syl": [
+    {
+     "p": "tā",
+     "t": 1
+    },
+    {
+     "p": "zài",
+     "t": 4
+    },
+    {
+     "p": "yī",
+     "t": 1
+    },
+    {
+     "p": "yuàn",
+     "t": 4
+    }
+   ],
+   "spokenZh": "他在医院。"
+  },
+  {
+   "id": "hsk1-lesson-10-01",
+   "unitId": "lesson-10",
+   "zh": "桌子上有什么？",
+   "en": "What are there on the desk?",
+   "syl": [
+    {
+     "p": "zhuō",
+     "t": 1
+    },
+    {
+     "p": "zi",
+     "t": 0,
+     "s": "weak"
+    },
+    {
+     "p": "shang",
+     "t": 0,
+     "s": "weak"
+    },
+    {
+     "p": "yǒu",
+     "t": 3
+    },
+    {
+     "p": "shén",
+     "t": 2
+    },
+    {
+     "p": "me",
+     "t": 0,
+     "s": "weak"
+    }
+   ],
+   "spokenZh": "桌子上有什么？"
+  },
+  {
+   "id": "hsk1-lesson-10-02",
+   "unitId": "lesson-10",
+   "zh": "桌子上有一个电脑和一本书。",
+   "en": "There is a computer and a book.",
+   "syl": [
+    {
+     "p": "zhuō",
+     "t": 1
+    },
+    {
+     "p": "zi",
+     "t": 0,
+     "s": "weak"
+    },
+    {
+     "p": "shang",
+     "t": 0,
+     "s": "weak"
+    },
+    {
+     "p": "yǒu",
+     "t": 3
+    },
+    {
+     "p": "yí",
+     "t": 2,
+     "sd": "1-2"
+    },
+    {
+     "p": "ge",
+     "t": 0,
+     "s": "weak"
+    },
+    {
+     "p": "diàn",
+     "t": 4
+    },
+    {
+     "p": "nǎo",
+     "t": 3
+    },
+    {
+     "p": "hé",
+     "t": 2
+    },
+    {
+     "p": "yì",
+     "t": 4,
+     "sd": "1-4"
+    },
+    {
+     "p": "běn",
+     "t": 3
+    },
+    {
+     "p": "shū",
+     "t": 1
+    }
+   ],
+   "spokenZh": "桌子上有一个电脑和一本书。"
+  },
+  {
+   "id": "hsk1-lesson-10-03",
+   "unitId": "lesson-10",
+   "zh": "杯子在哪儿？",
+   "en": "Where is the cup?",
+   "syl": [
+    {
+     "p": "bēi",
+     "t": 1
+    },
+    {
+     "p": "zi",
+     "t": 0,
+     "s": "weak"
+    },
+    {
+     "p": "zài",
+     "t": 4
+    },
+    {
+     "p": "nǎ",
+     "t": 3
+    },
+    {
+     "p": "er",
+     "t": 0,
+     "s": "weak"
+    }
+   ],
+   "spokenZh": "杯子在哪儿？"
+  },
+  {
+   "id": "hsk1-lesson-10-04",
+   "unitId": "lesson-10",
+   "zh": "杯子在桌子里。",
+   "en": "It's in the desk.",
+   "syl": [
+    {
+     "p": "bēi",
+     "t": 1
+    },
+    {
+     "p": "zi",
+     "t": 0,
+     "s": "weak"
+    },
+    {
+     "p": "zài",
+     "t": 4
+    },
+    {
+     "p": "zhuō",
+     "t": 1
+    },
+    {
+     "p": "zi",
+     "t": 0,
+     "s": "weak"
+    },
+    {
+     "p": "li",
+     "t": 0,
+     "s": "weak"
+    }
+   ],
+   "spokenZh": "杯子在桌子里。"
+  },
+  {
+   "id": "hsk1-lesson-10-05",
+   "unitId": "lesson-10",
+   "zh": "前面那个人叫什么名字？",
+   "en": "Who is the person in the front?",
+   "syl": [
+    {
+     "p": "qián",
+     "t": 2
+    },
+    {
+     "p": "miàn",
+     "t": 4
+    },
+    {
+     "p": "nà",
+     "t": 4
+    },
+    {
+     "p": "ge",
+     "t": 0,
+     "s": "weak"
+    },
+    {
+     "p": "rén",
+     "t": 2
+    },
+    {
+     "p": "jiào",
+     "t": 4
+    },
+    {
+     "p": "shén",
+     "t": 2
+    },
+    {
+     "p": "me",
+     "t": 0,
+     "s": "weak"
+    },
+    {
+     "p": "míng",
+     "t": 2
+    },
+    {
+     "p": "zi",
+     "t": 0,
+     "s": "weak"
+    }
+   ],
+   "spokenZh": "前面那个人叫什么名字？"
+  },
+  {
+   "id": "hsk1-lesson-10-06",
+   "unitId": "lesson-10",
+   "zh": "她叫王方，在医院工作。",
+   "en": "She is Wang Fang. She works in a hospital.",
+   "syl": [
+    {
+     "p": "tā",
+     "t": 1
+    },
+    {
+     "p": "jiào",
+     "t": 4
+    },
+    {
+     "p": "wáng",
+     "t": 2
+    },
+    {
+     "p": "fāng",
+     "t": 1
+    },
+    {
+     "p": "zài",
+     "t": 4
+    },
+    {
+     "p": "yī",
+     "t": 1
+    },
+    {
+     "p": "yuàn",
+     "t": 4
+    },
+    {
+     "p": "gōng",
+     "t": 1
+    },
+    {
+     "p": "zuò",
+     "t": 4
+    }
+   ],
+   "spokenZh": "她叫王方，在医院工作。"
+  },
+  {
+   "id": "hsk1-lesson-10-07",
+   "unitId": "lesson-10",
+   "zh": "后面那个人呢？他叫什么名字？",
+   "en": "What about the person at the back? What's his name?",
+   "syl": [
+    {
+     "p": "hòu",
+     "t": 4
+    },
+    {
+     "p": "miàn",
+     "t": 4
+    },
+    {
+     "p": "nà",
+     "t": 4
+    },
+    {
+     "p": "ge",
+     "t": 0,
+     "s": "weak"
+    },
+    {
+     "p": "rén",
+     "t": 2
+    },
+    {
+     "p": "ne",
+     "t": 0,
+     "s": "weak"
+    },
+    {
+     "p": "tā",
+     "t": 1
+    },
+    {
+     "p": "jiào",
+     "t": 4
+    },
+    {
+     "p": "shén",
+     "t": 2
+    },
+    {
+     "p": "me",
+     "t": 0,
+     "s": "weak"
+    },
+    {
+     "p": "míng",
+     "t": 2
+    },
+    {
+     "p": "zi",
+     "t": 0,
+     "s": "weak"
+    }
+   ],
+   "spokenZh": "后面那个人呢？他叫什么名字？"
+  },
+  {
+   "id": "hsk1-lesson-10-08",
+   "unitId": "lesson-10",
+   "zh": "他叫谢朋，在商店工作。",
+   "en": "He is Xie Peng. He works in a store.",
+   "syl": [
+    {
+     "p": "tā",
+     "t": 1
+    },
+    {
+     "p": "jiào",
+     "t": 4
+    },
+    {
+     "p": "xiè",
+     "t": 4
+    },
+    {
+     "p": "péng",
+     "t": 2
+    },
+    {
+     "p": "zài",
+     "t": 4
+    },
+    {
+     "p": "shāng",
+     "t": 1
+    },
+    {
+     "p": "diàn",
+     "t": 4
+    },
+    {
+     "p": "gōng",
+     "t": 1
+    },
+    {
+     "p": "zuò",
+     "t": 4
+    }
+   ],
+   "spokenZh": "他叫谢朋，在商店工作。"
+  },
+  {
+   "id": "hsk1-lesson-10-09",
+   "unitId": "lesson-10",
+   "zh": "这儿有人吗？",
+   "en": "Is this seat taken?",
+   "syl": [
+    {
+     "p": "zhè",
+     "t": 4
+    },
+    {
+     "p": "er",
+     "t": 0,
+     "s": "weak"
+    },
+    {
+     "p": "yǒu",
+     "t": 3
+    },
+    {
+     "p": "rén",
+     "t": 2
+    },
+    {
+     "p": "ma",
+     "t": 0,
+     "s": "weak"
+    }
+   ],
+   "spokenZh": "这儿有人吗？"
+  },
+  {
+   "id": "hsk1-lesson-10-10",
+   "unitId": "lesson-10",
+   "zh": "没有。",
+   "en": "No, it isn't.",
+   "syl": [
+    {
+     "p": "méi",
+     "t": 2
+    },
+    {
+     "p": "yǒu",
+     "t": 3
+    }
+   ],
+   "spokenZh": "没有。"
+  },
+  {
+   "id": "hsk1-lesson-10-11",
+   "unitId": "lesson-10",
+   "zh": "我能坐这儿吗？",
+   "en": "Can I sit here?",
+   "syl": [
+    {
+     "p": "wǒ",
+     "t": 3
+    },
+    {
+     "p": "néng",
+     "t": 2
+    },
+    {
+     "p": "zuò",
+     "t": 4
+    },
+    {
+     "p": "zhè",
+     "t": 4
+    },
+    {
+     "p": "er",
+     "t": 0,
+     "s": "weak"
+    },
+    {
+     "p": "ma",
+     "t": 0,
+     "s": "weak"
+    }
+   ],
+   "spokenZh": "我能坐这儿吗？"
+  },
+  {
+   "id": "hsk1-lesson-10-12",
+   "unitId": "lesson-10",
+   "zh": "请坐。",
+   "en": "Yes, please.",
+   "syl": [
+    {
+     "p": "qǐng",
+     "t": 3
+    },
+    {
+     "p": "zuò",
+     "t": 4
+    }
+   ],
+   "spokenZh": "请坐。"
+  },
+  {
+   "id": "hsk1-lesson-11-01",
+   "unitId": "lesson-11",
+   "zh": "现在几点？",
+   "en": "What's the time now?",
+   "syl": [
+    {
+     "p": "xiàn",
+     "t": 4
+    },
+    {
+     "p": "zài",
+     "t": 4
+    },
+    {
+     "p": "jǐ",
+     "t": 3,
+     "sd": "3-2",
+     "ta": 2
+    },
+    {
+     "p": "diǎn",
+     "t": 3
+    }
+   ],
+   "spokenZh": "现在几点？"
+  },
+  {
+   "id": "hsk1-lesson-11-02",
+   "unitId": "lesson-11",
+   "zh": "现在十点十分。",
+   "en": "It's ten past ten.",
+   "syl": [
+    {
+     "p": "xiàn",
+     "t": 4
+    },
+    {
+     "p": "zài",
+     "t": 4
+    },
+    {
+     "p": "shí",
+     "t": 2
+    },
+    {
+     "p": "diǎn",
+     "t": 3
+    },
+    {
+     "p": "shí",
+     "t": 2
+    },
+    {
+     "p": "fēn",
+     "t": 1
+    }
+   ],
+   "spokenZh": "现在十点十分。"
+  },
+  {
+   "id": "hsk1-lesson-11-03",
+   "unitId": "lesson-11",
+   "zh": "中午几点吃饭？",
+   "en": "When shall we have our lunch?",
+   "syl": [
+    {
+     "p": "zhōng",
+     "t": 1
+    },
+    {
+     "p": "wǔ",
+     "t": 3
+    },
+    {
+     "p": "jǐ",
+     "t": 3,
+     "sd": "3-2",
+     "ta": 2
+    },
+    {
+     "p": "diǎn",
+     "t": 3
+    },
+    {
+     "p": "chī",
+     "t": 1
+    },
+    {
+     "p": "fàn",
+     "t": 4
+    }
+   ],
+   "spokenZh": "中午几点吃饭？"
+  },
+  {
+   "id": "hsk1-lesson-11-04",
+   "unitId": "lesson-11",
+   "zh": "十二点吃饭。",
+   "en": "At twelve o'clock.",
+   "syl": [
+    {
+     "p": "shí",
+     "t": 2
+    },
+    {
+     "p": "èr",
+     "t": 4
+    },
+    {
+     "p": "diǎn",
+     "t": 3
+    },
+    {
+     "p": "chī",
+     "t": 1
+    },
+    {
+     "p": "fàn",
+     "t": 4
+    }
+   ],
+   "spokenZh": "十二点吃饭。"
+  },
+  {
+   "id": "hsk1-lesson-11-05",
+   "unitId": "lesson-11",
+   "zh": "爸爸什么时候回家？",
+   "en": "When is father coming home?",
+   "syl": [
+    {
+     "p": "bà",
+     "t": 4
+    },
+    {
+     "p": "ba",
+     "t": 0,
+     "s": "weak"
+    },
+    {
+     "p": "shén",
+     "t": 2
+    },
+    {
+     "p": "me",
+     "t": 0,
+     "s": "weak"
+    },
+    {
+     "p": "shí",
+     "t": 2
+    },
+    {
+     "p": "hou",
+     "t": 0,
+     "s": "weak"
+    },
+    {
+     "p": "huí",
+     "t": 2
+    },
+    {
+     "p": "jiā",
+     "t": 1
+    }
+   ],
+   "spokenZh": "爸爸什么时候回家？"
+  },
+  {
+   "id": "hsk1-lesson-11-06",
+   "unitId": "lesson-11",
+   "zh": "下午五点。",
+   "en": "At five o'clock in the afternoon.",
+   "syl": [
+    {
+     "p": "xià",
+     "t": 4
+    },
+    {
+     "p": "wǔ",
+     "t": 3
+    },
+    {
+     "p": "wǔ",
+     "t": 3,
+     "sd": "3-2",
+     "ta": 2
+    },
+    {
+     "p": "diǎn",
+     "t": 3
+    }
+   ],
+   "spokenZh": "下午五点。"
+  },
+  {
+   "id": "hsk1-lesson-11-07",
+   "unitId": "lesson-11",
+   "zh": "我们什么时候去看电影？",
+   "en": "When are we going to see the movie?",
+   "syl": [
+    {
+     "p": "wǒ",
+     "t": 3
+    },
+    {
+     "p": "men",
+     "t": 0,
+     "s": "weak"
+    },
+    {
+     "p": "shén",
+     "t": 2
+    },
+    {
+     "p": "me",
+     "t": 0,
+     "s": "weak"
+    },
+    {
+     "p": "shí",
+     "t": 2
+    },
+    {
+     "p": "hou",
+     "t": 0,
+     "s": "weak"
+    },
+    {
+     "p": "qù",
+     "t": 4
+    },
+    {
+     "p": "kàn",
+     "t": 4
+    },
+    {
+     "p": "diàn",
+     "t": 4
+    },
+    {
+     "p": "yǐng",
+     "t": 3
+    }
+   ],
+   "spokenZh": "我们什么时候去看电影？"
+  },
+  {
+   "id": "hsk1-lesson-11-08",
+   "unitId": "lesson-11",
+   "zh": "六点三十分。",
+   "en": "At half past six.",
+   "syl": [
+    {
+     "p": "liù",
+     "t": 4
+    },
+    {
+     "p": "diǎn",
+     "t": 3
+    },
+    {
+     "p": "sān",
+     "t": 1
+    },
+    {
+     "p": "shí",
+     "t": 2
+    },
+    {
+     "p": "fēn",
+     "t": 1
+    }
+   ],
+   "spokenZh": "六点三十分。"
+  },
+  {
+   "id": "hsk1-lesson-11-09",
+   "unitId": "lesson-11",
+   "zh": "我星期一去北京。",
+   "en": "I'll go to Beijing next Monday.",
+   "syl": [
+    {
+     "p": "wǒ",
+     "t": 3
+    },
+    {
+     "p": "xīng",
+     "t": 1
+    },
+    {
+     "p": "qī",
+     "t": 1
+    },
+    {
+     "p": "yī",
+     "t": 1
+    },
+    {
+     "p": "qù",
+     "t": 4
+    },
+    {
+     "p": "běi",
+     "t": 3
+    },
+    {
+     "p": "jīng",
+     "t": 1
+    }
+   ],
+   "spokenZh": "我星期一去北京。"
+  },
+  {
+   "id": "hsk1-lesson-11-10",
+   "unitId": "lesson-11",
+   "zh": "你想在北京住几天？",
+   "en": "How long will you stay in Beijing?",
+   "syl": [
+    {
+     "p": "nǐ",
+     "t": 3,
+     "sd": "3-2",
+     "ta": 2
+    },
+    {
+     "p": "xiǎng",
+     "t": 3
+    },
+    {
+     "p": "zài",
+     "t": 4
+    },
+    {
+     "p": "běi",
+     "t": 3
+    },
+    {
+     "p": "jīng",
+     "t": 1
+    },
+    {
+     "p": "zhù",
+     "t": 4
+    },
+    {
+     "p": "jǐ",
+     "t": 3
+    },
+    {
+     "p": "tiān",
+     "t": 1
+    }
+   ],
+   "spokenZh": "你想在北京住几天？"
+  },
+  {
+   "id": "hsk1-lesson-11-11",
+   "unitId": "lesson-11",
+   "zh": "住三天。",
+   "en": "For three days.",
+   "syl": [
+    {
+     "p": "zhù",
+     "t": 4
+    },
+    {
+     "p": "sān",
+     "t": 1
+    },
+    {
+     "p": "tiān",
+     "t": 1
+    }
+   ],
+   "spokenZh": "住三天。"
+  },
+  {
+   "id": "hsk1-lesson-11-12",
+   "unitId": "lesson-11",
+   "zh": "星期五前能回家吗？",
+   "en": "Can you come back before Friday?",
+   "syl": [
+    {
+     "p": "xīng",
+     "t": 1
+    },
+    {
+     "p": "qī",
+     "t": 1
+    },
+    {
+     "p": "wǔ",
+     "t": 3
+    },
+    {
+     "p": "qián",
+     "t": 2
+    },
+    {
+     "p": "néng",
+     "t": 2
+    },
+    {
+     "p": "huí",
+     "t": 2
+    },
+    {
+     "p": "jiā",
+     "t": 1
+    },
+    {
+     "p": "ma",
+     "t": 0,
+     "s": "weak"
+    }
+   ],
+   "spokenZh": "星期五前能回家吗？"
+  },
+  {
+   "id": "hsk1-lesson-11-13",
+   "unitId": "lesson-11",
+   "zh": "能。",
+   "en": "Yes, I can.",
+   "syl": [
+    {
+     "p": "néng",
+     "t": 2
+    }
+   ],
+   "spokenZh": "能。"
+  },
+  {
+   "id": "hsk1-lesson-12-01",
+   "unitId": "lesson-12",
+   "zh": "昨天北京的天气怎么样？",
+   "en": "How was the weather in Beijing yesterday?",
+   "syl": [
+    {
+     "p": "zuó",
+     "t": 2
+    },
+    {
+     "p": "tiān",
+     "t": 1
+    },
+    {
+     "p": "běi",
+     "t": 3
+    },
+    {
+     "p": "jīng",
+     "t": 1
+    },
+    {
+     "p": "de",
+     "t": 0,
+     "s": "weak"
+    },
+    {
+     "p": "tiān",
+     "t": 1
+    },
+    {
+     "p": "qì",
+     "t": 4
+    },
+    {
+     "p": "zěn",
+     "t": 3
+    },
+    {
+     "p": "me",
+     "t": 0,
+     "s": "weak"
+    },
+    {
+     "p": "yàng",
+     "t": 4
+    }
+   ],
+   "spokenZh": "昨天北京的天气怎么样？"
+  },
+  {
+   "id": "hsk1-lesson-12-02",
+   "unitId": "lesson-12",
+   "zh": "太热了。",
+   "en": "It was too hot.",
+   "syl": [
+    {
+     "p": "tài",
+     "t": 4
+    },
+    {
+     "p": "rè",
+     "t": 4
+    },
+    {
+     "p": "le",
+     "t": 0,
+     "s": "weak"
+    }
+   ],
+   "spokenZh": "太热了。"
+  },
+  {
+   "id": "hsk1-lesson-12-03",
+   "unitId": "lesson-12",
+   "zh": "明天呢？明天天气怎么样？",
+   "en": "What about tomorrow? What will the weather be like tomorrow?",
+   "syl": [
+    {
+     "p": "míng",
+     "t": 2
+    },
+    {
+     "p": "tiān",
+     "t": 1
+    },
+    {
+     "p": "ne",
+     "t": 0,
+     "s": "weak"
+    },
+    {
+     "p": "míng",
+     "t": 2
+    },
+    {
+     "p": "tiān",
+     "t": 1
+    },
+    {
+     "p": "tiān",
+     "t": 1
+    },
+    {
+     "p": "qì",
+     "t": 4
+    },
+    {
+     "p": "zěn",
+     "t": 3
+    },
+    {
+     "p": "me",
+     "t": 0,
+     "s": "weak"
+    },
+    {
+     "p": "yàng",
+     "t": 4
+    }
+   ],
+   "spokenZh": "明天呢？明天天气怎么样？"
+  },
+  {
+   "id": "hsk1-lesson-12-04",
+   "unitId": "lesson-12",
+   "zh": "明天天气很好，不冷不热。",
+   "en": "It will be fine, neither cold nor hot.",
+   "syl": [
+    {
+     "p": "míng",
+     "t": 2
+    },
+    {
+     "p": "tiān",
+     "t": 1
+    },
+    {
+     "p": "tiān",
+     "t": 1
+    },
+    {
+     "p": "qì",
+     "t": 4
+    },
+    {
+     "p": "hěn",
+     "t": 3,
+     "sd": "3-2",
+     "ta": 2
+    },
+    {
+     "p": "hǎo",
+     "t": 3
+    },
+    {
+     "p": "bù",
+     "t": 4
+    },
+    {
+     "p": "lěng",
+     "t": 3
+    },
+    {
+     "p": "bú",
+     "t": 2,
+     "sd": "4-2"
+    },
+    {
+     "p": "rè",
+     "t": 4
+    }
+   ],
+   "spokenZh": "明天天气很好，不冷不热。"
+  },
+  {
+   "id": "hsk1-lesson-12-05",
+   "unitId": "lesson-12",
+   "zh": "今天会下雨吗？",
+   "en": "Will it rain today?",
+   "syl": [
+    {
+     "p": "jīn",
+     "t": 1
+    },
+    {
+     "p": "tiān",
+     "t": 1
+    },
+    {
+     "p": "huì",
+     "t": 4
+    },
+    {
+     "p": "xià",
+     "t": 4
+    },
+    {
+     "p": "yǔ",
+     "t": 3
+    },
+    {
+     "p": "ma",
+     "t": 0,
+     "s": "weak"
+    }
+   ],
+   "spokenZh": "今天会下雨吗？"
+  },
+  {
+   "id": "hsk1-lesson-12-06",
+   "unitId": "lesson-12",
+   "zh": "今天不会下雨。",
+   "en": "No, it won't rain.",
+   "syl": [
+    {
+     "p": "jīn",
+     "t": 1
+    },
+    {
+     "p": "tiān",
+     "t": 1
+    },
+    {
+     "p": "bú",
+     "t": 2,
+     "sd": "4-2"
+    },
+    {
+     "p": "huì",
+     "t": 4
+    },
+    {
+     "p": "xià",
+     "t": 4
+    },
+    {
+     "p": "yǔ",
+     "t": 3
+    }
+   ],
+   "spokenZh": "今天不会下雨。"
+  },
+  {
+   "id": "hsk1-lesson-12-07",
+   "unitId": "lesson-12",
+   "zh": "王小姐今天会来吗？",
+   "en": "Will Miss Wang come today?",
+   "syl": [
+    {
+     "p": "wáng",
+     "t": 2
+    },
+    {
+     "p": "xiǎo",
+     "t": 3,
+     "sd": "3-2",
+     "ta": 2
+    },
+    {
+     "p": "jiě",
+     "t": 3
+    },
+    {
+     "p": "jīn",
+     "t": 1
+    },
+    {
+     "p": "tiān",
+     "t": 1
+    },
+    {
+     "p": "huì",
+     "t": 4
+    },
+    {
+     "p": "lái",
+     "t": 2
+    },
+    {
+     "p": "ma",
+     "t": 0,
+     "s": "weak"
+    }
+   ],
+   "spokenZh": "王小姐今天会来吗？"
+  },
+  {
+   "id": "hsk1-lesson-12-08",
+   "unitId": "lesson-12",
+   "zh": "不会来，天气太冷了。",
+   "en": "No, she won't. It's too cold.",
+   "syl": [
+    {
+     "p": "bú",
+     "t": 2,
+     "sd": "4-2"
+    },
+    {
+     "p": "huì",
+     "t": 4
+    },
+    {
+     "p": "lái",
+     "t": 2
+    },
+    {
+     "p": "tiān",
+     "t": 1
+    },
+    {
+     "p": "qì",
+     "t": 4
+    },
+    {
+     "p": "tài",
+     "t": 4
+    },
+    {
+     "p": "lěng",
+     "t": 3
+    },
+    {
+     "p": "le",
+     "t": 0,
+     "s": "weak"
+    }
+   ],
+   "spokenZh": "不会来，天气太冷了。"
+  },
+  {
+   "id": "hsk1-lesson-12-09",
+   "unitId": "lesson-12",
+   "zh": "你身体怎么样？",
+   "en": "How are you?",
+   "syl": [
+    {
+     "p": "nǐ",
+     "t": 3
+    },
+    {
+     "p": "shēn",
+     "t": 1
+    },
+    {
+     "p": "tǐ",
+     "t": 3
+    },
+    {
+     "p": "zěn",
+     "t": 3
+    },
+    {
+     "p": "me",
+     "t": 0,
+     "s": "weak"
+    },
+    {
+     "p": "yàng",
+     "t": 4
+    }
+   ],
+   "spokenZh": "你身体怎么样？"
+  },
+  {
+   "id": "hsk1-lesson-12-10",
+   "unitId": "lesson-12",
+   "zh": "我身体不太好。天气太热了，不爱吃饭。",
+   "en": "Not very well. It's too hot. I have no appetite.",
+   "syl": [
+    {
+     "p": "wǒ",
+     "t": 3
+    },
+    {
+     "p": "shēn",
+     "t": 1
+    },
+    {
+     "p": "tǐ",
+     "t": 3
+    },
+    {
+     "p": "bú",
+     "t": 2,
+     "sd": "4-2"
+    },
+    {
+     "p": "tài",
+     "t": 4
+    },
+    {
+     "p": "hǎo",
+     "t": 3
+    },
+    {
+     "p": "tiān",
+     "t": 1
+    },
+    {
+     "p": "qì",
+     "t": 4
+    },
+    {
+     "p": "tài",
+     "t": 4
+    },
+    {
+     "p": "rè",
+     "t": 4
+    },
+    {
+     "p": "le",
+     "t": 0,
+     "s": "weak"
+    },
+    {
+     "p": "bú",
+     "t": 2,
+     "sd": "4-2"
+    },
+    {
+     "p": "ài",
+     "t": 4
+    },
+    {
+     "p": "chī",
+     "t": 1
+    },
+    {
+     "p": "fàn",
+     "t": 4
+    }
+   ],
+   "spokenZh": "我身体不太好。天气太热了，不爱吃饭。"
+  },
+  {
+   "id": "hsk1-lesson-12-11",
+   "unitId": "lesson-12",
+   "zh": "你多吃些水果，多喝水。",
+   "en": "Eat more fruit and drink more water.",
+   "syl": [
+    {
+     "p": "nǐ",
+     "t": 3
+    },
+    {
+     "p": "duō",
+     "t": 1
+    },
+    {
+     "p": "chī",
+     "t": 1
+    },
+    {
+     "p": "xiē",
+     "t": 1
+    },
+    {
+     "p": "shuǐ",
+     "t": 3,
+     "sd": "3-2",
+     "ta": 2
+    },
+    {
+     "p": "guǒ",
+     "t": 3
+    },
+    {
+     "p": "duō",
+     "t": 1
+    },
+    {
+     "p": "hē",
+     "t": 1
+    },
+    {
+     "p": "shuǐ",
+     "t": 3
+    }
+   ],
+   "spokenZh": "你多吃些水果，多喝水。"
+  },
+  {
+   "id": "hsk1-lesson-12-12",
+   "unitId": "lesson-12",
+   "zh": "谢谢你，医生。",
+   "en": "Thank you, doctor.",
+   "syl": [
+    {
+     "p": "xiè",
+     "t": 4
+    },
+    {
+     "p": "xie",
+     "t": 0,
+     "s": "weak"
+    },
+    {
+     "p": "nǐ",
+     "t": 3
+    },
+    {
+     "p": "yī",
+     "t": 1
+    },
+    {
+     "p": "shēng",
+     "t": 1
+    }
+   ],
+   "spokenZh": "谢谢你，医生。"
+  },
+  {
+   "id": "hsk1-lesson-13-01",
+   "unitId": "lesson-13",
+   "zh": "喂，你在做什么呢？",
+   "en": "Hello, what are you doing?",
+   "syl": [
+    {
+     "p": "wèi",
+     "t": 4
+    },
+    {
+     "p": "nǐ",
+     "t": 3
+    },
+    {
+     "p": "zài",
+     "t": 4
+    },
+    {
+     "p": "zuò",
+     "t": 4
+    },
+    {
+     "p": "shén",
+     "t": 2
+    },
+    {
+     "p": "me",
+     "t": 0,
+     "s": "weak"
+    },
+    {
+     "p": "ne",
+     "t": 0,
+     "s": "weak"
+    }
+   ],
+   "spokenZh": "喂，你在做什么呢？"
+  },
+  {
+   "id": "hsk1-lesson-13-02",
+   "unitId": "lesson-13",
+   "zh": "我在看书呢。",
+   "en": "I'm reading.",
+   "syl": [
+    {
+     "p": "wǒ",
+     "t": 3
+    },
+    {
+     "p": "zài",
+     "t": 4
+    },
+    {
+     "p": "kàn",
+     "t": 4
+    },
+    {
+     "p": "shū",
+     "t": 1
+    },
+    {
+     "p": "ne",
+     "t": 0,
+     "s": "weak"
+    }
+   ],
+   "spokenZh": "我在看书呢。"
+  },
+  {
+   "id": "hsk1-lesson-13-03",
+   "unitId": "lesson-13",
+   "zh": "大卫也在看书吗？",
+   "en": "Is David reading too?",
+   "syl": [
+    {
+     "p": "dà",
+     "t": 4
+    },
+    {
+     "p": "wèi",
+     "t": 4
+    },
+    {
+     "p": "yě",
+     "t": 3
+    },
+    {
+     "p": "zài",
+     "t": 4
+    },
+    {
+     "p": "kàn",
+     "t": 4
+    },
+    {
+     "p": "shū",
+     "t": 1
+    },
+    {
+     "p": "ma",
+     "t": 0,
+     "s": "weak"
+    }
+   ],
+   "spokenZh": "大卫也在看书吗？"
+  },
+  {
+   "id": "hsk1-lesson-13-04",
+   "unitId": "lesson-13",
+   "zh": "他没看书，他在学做中国菜呢。",
+   "en": "No, he isn't. He is learning to cook Chinese food.",
+   "syl": [
+    {
+     "p": "tā",
+     "t": 1
+    },
+    {
+     "p": "méi",
+     "t": 2
+    },
+    {
+     "p": "kàn",
+     "t": 4
+    },
+    {
+     "p": "shū",
+     "t": 1
+    },
+    {
+     "p": "tā",
+     "t": 1
+    },
+    {
+     "p": "zài",
+     "t": 4
+    },
+    {
+     "p": "xué",
+     "t": 2
+    },
+    {
+     "p": "zuò",
+     "t": 4
+    },
+    {
+     "p": "zhōng",
+     "t": 1
+    },
+    {
+     "p": "guó",
+     "t": 2
+    },
+    {
+     "p": "cài",
+     "t": 4
+    },
+    {
+     "p": "ne",
+     "t": 0,
+     "s": "weak"
+    }
+   ],
+   "spokenZh": "他没看书，他在学做中国菜呢。"
+  },
+  {
+   "id": "hsk1-lesson-13-05",
+   "unitId": "lesson-13",
+   "zh": "昨天上午你在做什么呢？",
+   "en": "What were you doing yesterday morning?",
+   "syl": [
+    {
+     "p": "zuó",
+     "t": 2
+    },
+    {
+     "p": "tiān",
+     "t": 1
+    },
+    {
+     "p": "shàng",
+     "t": 4
+    },
+    {
+     "p": "wǔ",
+     "t": 3
+    },
+    {
+     "p": "nǐ",
+     "t": 3
+    },
+    {
+     "p": "zài",
+     "t": 4
+    },
+    {
+     "p": "zuò",
+     "t": 4
+    },
+    {
+     "p": "shén",
+     "t": 2
+    },
+    {
+     "p": "me",
+     "t": 0,
+     "s": "weak"
+    },
+    {
+     "p": "ne",
+     "t": 0,
+     "s": "weak"
+    }
+   ],
+   "spokenZh": "昨天上午你在做什么呢？"
+  },
+  {
+   "id": "hsk1-lesson-13-06",
+   "unitId": "lesson-13",
+   "zh": "我在睡觉呢。你呢？",
+   "en": "I was sleeping. What about you?",
+   "syl": [
+    {
+     "p": "wǒ",
+     "t": 3
+    },
+    {
+     "p": "zài",
+     "t": 4
+    },
+    {
+     "p": "shuì",
+     "t": 4
+    },
+    {
+     "p": "jiào",
+     "t": 4
+    },
+    {
+     "p": "ne",
+     "t": 0,
+     "s": "weak"
+    },
+    {
+     "p": "nǐ",
+     "t": 3
+    },
+    {
+     "p": "ne",
+     "t": 0,
+     "s": "weak"
+    }
+   ],
+   "spokenZh": "我在睡觉呢。你呢？"
+  },
+  {
+   "id": "hsk1-lesson-13-07",
+   "unitId": "lesson-13",
+   "zh": "我在家看电视呢。你喜欢看电视吗？",
+   "en": "I was watching TV at home. Do you like watching TV?",
+   "syl": [
+    {
+     "p": "wǒ",
+     "t": 3
+    },
+    {
+     "p": "zài",
+     "t": 4
+    },
+    {
+     "p": "jiā",
+     "t": 1
+    },
+    {
+     "p": "kàn",
+     "t": 4
+    },
+    {
+     "p": "diàn",
+     "t": 4
+    },
+    {
+     "p": "shì",
+     "t": 4
+    },
+    {
+     "p": "ne",
+     "t": 0,
+     "s": "weak"
+    },
+    {
+     "p": "nǐ",
+     "t": 3
+    },
+    {
+     "p": "xǐ",
+     "t": 3
+    },
+    {
+     "p": "huan",
+     "t": 0,
+     "s": "weak"
+    },
+    {
+     "p": "kàn",
+     "t": 4
+    },
+    {
+     "p": "diàn",
+     "t": 4
+    },
+    {
+     "p": "shì",
+     "t": 4
+    },
+    {
+     "p": "ma",
+     "t": 0,
+     "s": "weak"
+    }
+   ],
+   "spokenZh": "我在家看电视呢。你喜欢看电视吗？"
+  },
+  {
+   "id": "hsk1-lesson-13-08",
+   "unitId": "lesson-13",
+   "zh": "我不喜欢看电视，我喜欢看电影。",
+   "en": "No, I don't. I like seeing movies.",
+   "syl": [
+    {
+     "p": "wǒ",
+     "t": 3
+    },
+    {
+     "p": "bù",
+     "t": 4
+    },
+    {
+     "p": "xǐ",
+     "t": 3
+    },
+    {
+     "p": "huan",
+     "t": 0,
+     "s": "weak"
+    },
+    {
+     "p": "kàn",
+     "t": 4
+    },
+    {
+     "p": "diàn",
+     "t": 4
+    },
+    {
+     "p": "shì",
+     "t": 4
+    },
+    {
+     "p": "wǒ",
+     "t": 3
+    },
+    {
+     "p": "xǐ",
+     "t": 3
+    },
+    {
+     "p": "huan",
+     "t": 0,
+     "s": "weak"
+    },
+    {
+     "p": "kàn",
+     "t": 4
+    },
+    {
+     "p": "diàn",
+     "t": 4
+    },
+    {
+     "p": "yǐng",
+     "t": 3
+    }
+   ],
+   "spokenZh": "我不喜欢看电视，我喜欢看电影。"
+  },
+  {
+   "id": "hsk1-lesson-13-09",
+   "unitId": "lesson-13",
+   "zh": "八二三零四一五五，这是李老师的电话吗？",
+   "en": "82304155. Is that Ms. Li's telephone number?",
+   "syl": [
+    {
+     "p": "bā",
+     "t": 1
+    },
+    {
+     "p": "èr",
+     "t": 4
+    },
+    {
+     "p": "sān",
+     "t": 1
+    },
+    {
+     "p": "líng",
+     "t": 2
+    },
+    {
+     "p": "sì",
+     "t": 4
+    },
+    {
+     "p": "yāo",
+     "t": 1
+    },
+    {
+     "p": "wǔ",
+     "t": 3,
+     "sd": "3-2",
+     "ta": 2
+    },
+    {
+     "p": "wǔ",
+     "t": 3
+    },
+    {
+     "p": "zhè",
+     "t": 4
+    },
+    {
+     "p": "shì",
+     "t": 4
+    },
+    {
+     "p": "lǐ",
+     "t": 3,
+     "sd": "3-2",
+     "ta": 2
+    },
+    {
+     "p": "lǎo",
+     "t": 3
+    },
+    {
+     "p": "shī",
+     "t": 1
+    },
+    {
+     "p": "de",
+     "t": 0,
+     "s": "weak"
+    },
+    {
+     "p": "diàn",
+     "t": 4
+    },
+    {
+     "p": "huà",
+     "t": 4
+    },
+    {
+     "p": "ma",
+     "t": 0,
+     "s": "weak"
+    }
+   ],
+   "spokenZh": "八二三零四一五五，这是李老师的电话吗？"
+  },
+  {
+   "id": "hsk1-lesson-13-10",
+   "unitId": "lesson-13",
+   "zh": "不是。她的电话是八二三零四一五六。",
+   "en": "No. Her number is 82304156.",
+   "syl": [
+    {
+     "p": "bú",
+     "t": 2,
+     "sd": "4-2"
+    },
+    {
+     "p": "shì",
+     "t": 4
+    },
+    {
+     "p": "tā",
+     "t": 1
+    },
+    {
+     "p": "de",
+     "t": 0,
+     "s": "weak"
+    },
+    {
+     "p": "diàn",
+     "t": 4
+    },
+    {
+     "p": "huà",
+     "t": 4
+    },
+    {
+     "p": "shì",
+     "t": 4
+    },
+    {
+     "p": "bā",
+     "t": 1
+    },
+    {
+     "p": "èr",
+     "t": 4
+    },
+    {
+     "p": "sān",
+     "t": 1
+    },
+    {
+     "p": "líng",
+     "t": 2
+    },
+    {
+     "p": "sì",
+     "t": 4
+    },
+    {
+     "p": "yāo",
+     "t": 1
+    },
+    {
+     "p": "wǔ",
+     "t": 3
+    },
+    {
+     "p": "liù",
+     "t": 4
+    }
+   ],
+   "spokenZh": "不是。她的电话是八二三零四一五六。"
+  },
+  {
+   "id": "hsk1-lesson-13-11",
+   "unitId": "lesson-13",
+   "zh": "好，我现在给她打电话。",
+   "en": "OK. I'll call her right now.",
+   "syl": [
+    {
+     "p": "hǎo",
+     "t": 3
+    },
+    {
+     "p": "wǒ",
+     "t": 3
+    },
+    {
+     "p": "xiàn",
+     "t": 4
+    },
+    {
+     "p": "zài",
+     "t": 4
+    },
+    {
+     "p": "gěi",
+     "t": 3
+    },
+    {
+     "p": "tā",
+     "t": 1
+    },
+    {
+     "p": "dǎ",
+     "t": 3
+    },
+    {
+     "p": "diàn",
+     "t": 4
+    },
+    {
+     "p": "huà",
+     "t": 4
+    }
+   ],
+   "spokenZh": "好，我现在给她打电话。"
+  },
+  {
+   "id": "hsk1-lesson-13-12",
+   "unitId": "lesson-13",
+   "zh": "她在工作呢，你下午打吧。",
+   "en": "She is working. Call her in the afternoon.",
+   "syl": [
+    {
+     "p": "tā",
+     "t": 1
+    },
+    {
+     "p": "zài",
+     "t": 4
+    },
+    {
+     "p": "gōng",
+     "t": 1
+    },
+    {
+     "p": "zuò",
+     "t": 4
+    },
+    {
+     "p": "ne",
+     "t": 0,
+     "s": "weak"
+    },
+    {
+     "p": "nǐ",
+     "t": 3
+    },
+    {
+     "p": "xià",
+     "t": 4
+    },
+    {
+     "p": "wǔ",
+     "t": 3
+    },
+    {
+     "p": "dǎ",
+     "t": 3
+    },
+    {
+     "p": "ba",
+     "t": 0,
+     "s": "weak"
+    }
+   ],
+   "spokenZh": "她在工作呢，你下午打吧。"
+  },
+  {
+   "id": "hsk1-lesson-14-01",
+   "unitId": "lesson-14",
+   "zh": "昨天上午你去哪儿了？",
+   "en": "Where did you go yesterday morning?",
+   "syl": [
+    {
+     "p": "zuó",
+     "t": 2
+    },
+    {
+     "p": "tiān",
+     "t": 1
+    },
+    {
+     "p": "shàng",
+     "t": 4
+    },
+    {
+     "p": "wǔ",
+     "t": 3
+    },
+    {
+     "p": "nǐ",
+     "t": 3
+    },
+    {
+     "p": "qù",
+     "t": 4
+    },
+    {
+     "p": "nǎ",
+     "t": 3
+    },
+    {
+     "p": "er",
+     "t": 0,
+     "s": "weak"
+    },
+    {
+     "p": "le",
+     "t": 0,
+     "s": "weak"
+    }
+   ],
+   "spokenZh": "昨天上午你去哪儿了？"
+  },
+  {
+   "id": "hsk1-lesson-14-02",
+   "unitId": "lesson-14",
+   "zh": "我去商店买东西了。",
+   "en": "I went shopping.",
+   "syl": [
+    {
+     "p": "wǒ",
+     "t": 3
+    },
+    {
+     "p": "qù",
+     "t": 4
+    },
+    {
+     "p": "shāng",
+     "t": 1
+    },
+    {
+     "p": "diàn",
+     "t": 4
+    },
+    {
+     "p": "mǎi",
+     "t": 3
+    },
+    {
+     "p": "dōng",
+     "t": 1
+    },
+    {
+     "p": "xi",
+     "t": 0,
+     "s": "weak"
+    },
+    {
+     "p": "le",
+     "t": 0,
+     "s": "weak"
+    }
+   ],
+   "spokenZh": "我去商店买东西了。"
+  },
+  {
+   "id": "hsk1-lesson-14-03",
+   "unitId": "lesson-14",
+   "zh": "你买什么了？",
+   "en": "What did you buy?",
+   "syl": [
+    {
+     "p": "nǐ",
+     "t": 3,
+     "sd": "3-2",
+     "ta": 2
+    },
+    {
+     "p": "mǎi",
+     "t": 3
+    },
+    {
+     "p": "shén",
+     "t": 2
+    },
+    {
+     "p": "me",
+     "t": 0,
+     "s": "weak"
+    },
+    {
+     "p": "le",
+     "t": 0,
+     "s": "weak"
+    }
+   ],
+   "spokenZh": "你买什么了？"
+  },
+  {
+   "id": "hsk1-lesson-14-04",
+   "unitId": "lesson-14",
+   "zh": "我买了一点儿苹果。",
+   "en": "I bought some apples.",
+   "syl": [
+    {
+     "p": "wǒ",
+     "t": 3,
+     "sd": "3-2",
+     "ta": 2
+    },
+    {
+     "p": "mǎi",
+     "t": 3
+    },
+    {
+     "p": "le",
+     "t": 0,
+     "s": "weak"
+    },
+    {
+     "p": "yì",
+     "t": 4,
+     "sd": "1-4"
+    },
+    {
+     "p": "diǎn",
+     "t": 3
+    },
+    {
+     "p": "er",
+     "t": 0,
+     "s": "weak"
+    },
+    {
+     "p": "píng",
+     "t": 2
+    },
+    {
+     "p": "guǒ",
+     "t": 3
+    }
+   ],
+   "spokenZh": "我买了一点儿苹果。"
+  },
+  {
+   "id": "hsk1-lesson-14-05",
+   "unitId": "lesson-14",
+   "zh": "你看见张先生了吗？",
+   "en": "Have you seen Mr. Zhang?",
+   "syl": [
+    {
+     "p": "nǐ",
+     "t": 3
+    },
+    {
+     "p": "kàn",
+     "t": 4
+    },
+    {
+     "p": "jiàn",
+     "t": 4
+    },
+    {
+     "p": "zhāng",
+     "t": 1
+    },
+    {
+     "p": "xiān",
+     "t": 1
+    },
+    {
+     "p": "sheng",
+     "t": 0,
+     "s": "weak"
+    },
+    {
+     "p": "le",
+     "t": 0,
+     "s": "weak"
+    },
+    {
+     "p": "ma",
+     "t": 0,
+     "s": "weak"
+    }
+   ],
+   "spokenZh": "你看见张先生了吗？"
+  },
+  {
+   "id": "hsk1-lesson-14-06",
+   "unitId": "lesson-14",
+   "zh": "看见了，他去学开车了。",
+   "en": "Yes. He has gone to a driving lesson.",
+   "syl": [
+    {
+     "p": "kàn",
+     "t": 4
+    },
+    {
+     "p": "jiàn",
+     "t": 4
+    },
+    {
+     "p": "le",
+     "t": 0,
+     "s": "weak"
+    },
+    {
+     "p": "tā",
+     "t": 1
+    },
+    {
+     "p": "qù",
+     "t": 4
+    },
+    {
+     "p": "xué",
+     "t": 2
+    },
+    {
+     "p": "kāi",
+     "t": 1
+    },
+    {
+     "p": "chē",
+     "t": 1
+    },
+    {
+     "p": "le",
+     "t": 0,
+     "s": "weak"
+    }
+   ],
+   "spokenZh": "看见了，他去学开车了。"
+  },
+  {
+   "id": "hsk1-lesson-14-07",
+   "unitId": "lesson-14",
+   "zh": "他什么时候能回来？",
+   "en": "When can he come back?",
+   "syl": [
+    {
+     "p": "tā",
+     "t": 1
+    },
+    {
+     "p": "shén",
+     "t": 2
+    },
+    {
+     "p": "me",
+     "t": 0,
+     "s": "weak"
+    },
+    {
+     "p": "shí",
+     "t": 2
+    },
+    {
+     "p": "hou",
+     "t": 0,
+     "s": "weak"
+    },
+    {
+     "p": "néng",
+     "t": 2
+    },
+    {
+     "p": "huí",
+     "t": 2
+    },
+    {
+     "p": "lai",
+     "t": 0,
+     "s": "weak"
+    }
+   ],
+   "spokenZh": "他什么时候能回来？"
+  },
+  {
+   "id": "hsk1-lesson-14-08",
+   "unitId": "lesson-14",
+   "zh": "四十分钟后回来。",
+   "en": "After 40 minutes.",
+   "syl": [
+    {
+     "p": "sì",
+     "t": 4
+    },
+    {
+     "p": "shí",
+     "t": 2
+    },
+    {
+     "p": "fēn",
+     "t": 1
+    },
+    {
+     "p": "zhōng",
+     "t": 1
+    },
+    {
+     "p": "hòu",
+     "t": 4
+    },
+    {
+     "p": "huí",
+     "t": 2
+    },
+    {
+     "p": "lai",
+     "t": 0,
+     "s": "weak"
+    }
+   ],
+   "spokenZh": "四十分钟后回来。"
+  },
+  {
+   "id": "hsk1-lesson-14-09",
+   "unitId": "lesson-14",
+   "zh": "王方的衣服太漂亮了！",
+   "en": "Wang Fang's dress is so pretty!",
+   "syl": [
+    {
+     "p": "wáng",
+     "t": 2
+    },
+    {
+     "p": "fāng",
+     "t": 1
+    },
+    {
+     "p": "de",
+     "t": 0,
+     "s": "weak"
+    },
+    {
+     "p": "yī",
+     "t": 1
+    },
+    {
+     "p": "fu",
+     "t": 0,
+     "s": "weak"
+    },
+    {
+     "p": "tài",
+     "t": 4
+    },
+    {
+     "p": "piào",
+     "t": 4
+    },
+    {
+     "p": "liang",
+     "t": 0,
+     "s": "weak"
+    },
+    {
+     "p": "le",
+     "t": 0,
+     "s": "weak"
+    }
+   ],
+   "spokenZh": "王方的衣服太漂亮了！"
+  },
+  {
+   "id": "hsk1-lesson-14-10",
+   "unitId": "lesson-14",
+   "zh": "是啊，她买了不少衣服。",
+   "en": "Yes. She has bought quite a few clothes.",
+   "syl": [
+    {
+     "p": "shì",
+     "t": 4
+    },
+    {
+     "p": "a",
+     "t": 0,
+     "s": "weak"
+    },
+    {
+     "p": "tā",
+     "t": 1
+    },
+    {
+     "p": "mǎi",
+     "t": 3
+    },
+    {
+     "p": "le",
+     "t": 0,
+     "s": "weak"
+    },
+    {
+     "p": "bù",
+     "t": 4
+    },
+    {
+     "p": "shǎo",
+     "t": 3
+    },
+    {
+     "p": "yī",
+     "t": 1
+    },
+    {
+     "p": "fu",
+     "t": 0,
+     "s": "weak"
+    }
+   ],
+   "spokenZh": "是啊，她买了不少衣服。"
+  },
+  {
+   "id": "hsk1-lesson-14-11",
+   "unitId": "lesson-14",
+   "zh": "我没买，这些都是王方的东西。",
+   "en": "I bought nothing. All these are Wang Fang's stuff.",
+   "syl": [
+    {
+     "p": "wǒ",
+     "t": 3
+    },
+    {
+     "p": "méi",
+     "t": 2
+    },
+    {
+     "p": "mǎi",
+     "t": 3
+    },
+    {
+     "p": "zhè",
+     "t": 4
+    },
+    {
+     "p": "xiē",
+     "t": 1
+    },
+    {
+     "p": "dōu",
+     "t": 1
+    },
+    {
+     "p": "shì",
+     "t": 4
+    },
+    {
+     "p": "wáng",
+     "t": 2
+    },
+    {
+     "p": "fāng",
+     "t": 1
+    },
+    {
+     "p": "de",
+     "t": 0,
+     "s": "weak"
+    },
+    {
+     "p": "dōng",
+     "t": 1
+    },
+    {
+     "p": "xi",
+     "t": 0,
+     "s": "weak"
+    }
+   ],
+   "spokenZh": "我没买，这些都是王方的东西。"
+  },
+  {
+   "id": "hsk1-lesson-15-01",
+   "unitId": "lesson-15",
+   "zh": "你和李小姐是什么时候认识的？",
+   "en": "When did you and Miss Li first meet?",
+   "syl": [
+    {
+     "p": "nǐ",
+     "t": 3
+    },
+    {
+     "p": "hé",
+     "t": 2
+    },
+    {
+     "p": "lǐ",
+     "t": 3
+    },
+    {
+     "p": "xiǎo",
+     "t": 3,
+     "sd": "3-2",
+     "ta": 2
+    },
+    {
+     "p": "jiě",
+     "t": 3
+    },
+    {
+     "p": "shì",
+     "t": 4
+    },
+    {
+     "p": "shén",
+     "t": 2
+    },
+    {
+     "p": "me",
+     "t": 0,
+     "s": "weak"
+    },
+    {
+     "p": "shí",
+     "t": 2
+    },
+    {
+     "p": "hou",
+     "t": 0,
+     "s": "weak"
+    },
+    {
+     "p": "rèn",
+     "t": 4
+    },
+    {
+     "p": "shi",
+     "t": 0,
+     "s": "weak"
+    },
+    {
+     "p": "de",
+     "t": 0,
+     "s": "weak"
+    }
+   ],
+   "spokenZh": "你和李小姐是什么时候认识的？"
+  },
+  {
+   "id": "hsk1-lesson-15-02",
+   "unitId": "lesson-15",
+   "zh": "我们是二零一一年九月认识的。",
+   "en": "We met in September, 2011.",
+   "syl": [
+    {
+     "p": "wǒ",
+     "t": 3
+    },
+    {
+     "p": "men",
+     "t": 0,
+     "s": "weak"
+    },
+    {
+     "p": "shì",
+     "t": 4
+    },
+    {
+     "p": "èr",
+     "t": 4
+    },
+    {
+     "p": "líng",
+     "t": 2
+    },
+    {
+     "p": "yī",
+     "t": 1
+    },
+    {
+     "p": "yī",
+     "t": 1
+    },
+    {
+     "p": "nián",
+     "t": 2
+    },
+    {
+     "p": "jiǔ",
+     "t": 3
+    },
+    {
+     "p": "yuè",
+     "t": 4
+    },
+    {
+     "p": "rèn",
+     "t": 4
+    },
+    {
+     "p": "shi",
+     "t": 0,
+     "s": "weak"
+    },
+    {
+     "p": "de",
+     "t": 0,
+     "s": "weak"
+    }
+   ],
+   "spokenZh": "我们是二零一一年九月认识的。"
+  },
+  {
+   "id": "hsk1-lesson-15-03",
+   "unitId": "lesson-15",
+   "zh": "你们在哪儿认识的？",
+   "en": "Where did you meet each other?",
+   "syl": [
+    {
+     "p": "nǐ",
+     "t": 3
+    },
+    {
+     "p": "men",
+     "t": 0,
+     "s": "weak"
+    },
+    {
+     "p": "zài",
+     "t": 4
+    },
+    {
+     "p": "nǎ",
+     "t": 3
+    },
+    {
+     "p": "er",
+     "t": 0,
+     "s": "weak"
+    },
+    {
+     "p": "rèn",
+     "t": 4
+    },
+    {
+     "p": "shi",
+     "t": 0,
+     "s": "weak"
+    },
+    {
+     "p": "de",
+     "t": 0,
+     "s": "weak"
+    }
+   ],
+   "spokenZh": "你们在哪儿认识的？"
+  },
+  {
+   "id": "hsk1-lesson-15-04",
+   "unitId": "lesson-15",
+   "zh": "我们是在学校认识的，她是我大学同学。",
+   "en": "We met in our university. She was my classmate.",
+   "syl": [
+    {
+     "p": "wǒ",
+     "t": 3
+    },
+    {
+     "p": "men",
+     "t": 0,
+     "s": "weak"
+    },
+    {
+     "p": "shì",
+     "t": 4
+    },
+    {
+     "p": "zài",
+     "t": 4
+    },
+    {
+     "p": "xué",
+     "t": 2
+    },
+    {
+     "p": "xiào",
+     "t": 4
+    },
+    {
+     "p": "rèn",
+     "t": 4
+    },
+    {
+     "p": "shi",
+     "t": 0,
+     "s": "weak"
+    },
+    {
+     "p": "de",
+     "t": 0,
+     "s": "weak"
+    },
+    {
+     "p": "tā",
+     "t": 1
+    },
+    {
+     "p": "shì",
+     "t": 4
+    },
+    {
+     "p": "wǒ",
+     "t": 3
+    },
+    {
+     "p": "dà",
+     "t": 4
+    },
+    {
+     "p": "xué",
+     "t": 2
+    },
+    {
+     "p": "tóng",
+     "t": 2
+    },
+    {
+     "p": "xué",
+     "t": 2
+    }
+   ],
+   "spokenZh": "我们是在学校认识的，她是我大学同学。"
+  },
+  {
+   "id": "hsk1-lesson-15-05",
+   "unitId": "lesson-15",
+   "zh": "你们是怎么来饭店的？",
+   "en": "How did you come here?",
+   "syl": [
+    {
+     "p": "nǐ",
+     "t": 3
+    },
+    {
+     "p": "men",
+     "t": 0,
+     "s": "weak"
+    },
+    {
+     "p": "shì",
+     "t": 4
+    },
+    {
+     "p": "zěn",
+     "t": 3
+    },
+    {
+     "p": "me",
+     "t": 0,
+     "s": "weak"
+    },
+    {
+     "p": "lái",
+     "t": 2
+    },
+    {
+     "p": "fàn",
+     "t": 4
+    },
+    {
+     "p": "diàn",
+     "t": 4
+    },
+    {
+     "p": "de",
+     "t": 0,
+     "s": "weak"
+    }
+   ],
+   "spokenZh": "你们是怎么来饭店的？"
+  },
+  {
+   "id": "hsk1-lesson-15-06",
+   "unitId": "lesson-15",
+   "zh": "我们是坐出租车来的。",
+   "en": "We came by taxi.",
+   "syl": [
+    {
+     "p": "wǒ",
+     "t": 3
+    },
+    {
+     "p": "men",
+     "t": 0,
+     "s": "weak"
+    },
+    {
+     "p": "shì",
+     "t": 4
+    },
+    {
+     "p": "zuò",
+     "t": 4
+    },
+    {
+     "p": "chū",
+     "t": 1
+    },
+    {
+     "p": "zū",
+     "t": 1
+    },
+    {
+     "p": "chē",
+     "t": 1
+    },
+    {
+     "p": "lái",
+     "t": 2
+    },
+    {
+     "p": "de",
+     "t": 0,
+     "s": "weak"
+    }
+   ],
+   "spokenZh": "我们是坐出租车来的。"
+  },
+  {
+   "id": "hsk1-lesson-15-07",
+   "unitId": "lesson-15",
+   "zh": "李先生呢？",
+   "en": "What about Mr. Li?",
+   "syl": [
+    {
+     "p": "lǐ",
+     "t": 3
+    },
+    {
+     "p": "xiān",
+     "t": 1
+    },
+    {
+     "p": "sheng",
+     "t": 0,
+     "s": "weak"
+    },
+    {
+     "p": "ne",
+     "t": 0,
+     "s": "weak"
+    }
+   ],
+   "spokenZh": "李先生呢？"
+  },
+  {
+   "id": "hsk1-lesson-15-08",
+   "unitId": "lesson-15",
+   "zh": "他是和朋友一起开车来的。",
+   "en": "He drove here with his friend.",
+   "syl": [
+    {
+     "p": "tā",
+     "t": 1
+    },
+    {
+     "p": "shì",
+     "t": 4
+    },
+    {
+     "p": "hé",
+     "t": 2
+    },
+    {
+     "p": "péng",
+     "t": 2
+    },
+    {
+     "p": "you",
+     "t": 0,
+     "s": "weak"
+    },
+    {
+     "p": "yì",
+     "t": 4,
+     "sd": "1-4"
+    },
+    {
+     "p": "qǐ",
+     "t": 3
+    },
+    {
+     "p": "kāi",
+     "t": 1
+    },
+    {
+     "p": "chē",
+     "t": 1
+    },
+    {
+     "p": "lái",
+     "t": 2
+    },
+    {
+     "p": "de",
+     "t": 0,
+     "s": "weak"
+    }
+   ],
+   "spokenZh": "他是和朋友一起开车来的。"
+  },
+  {
+   "id": "hsk1-lesson-15-09",
+   "unitId": "lesson-15",
+   "zh": "很高兴认识您！李小姐。",
+   "en": "Nice to meet you, Miss Li.",
+   "syl": [
+    {
+     "p": "hěn",
+     "t": 3
+    },
+    {
+     "p": "gāo",
+     "t": 1
+    },
+    {
+     "p": "xìng",
+     "t": 4
+    },
+    {
+     "p": "rèn",
+     "t": 4
+    },
+    {
+     "p": "shi",
+     "t": 0,
+     "s": "weak"
+    },
+    {
+     "p": "nín",
+     "t": 2
+    },
+    {
+     "p": "lǐ",
+     "t": 3
+    },
+    {
+     "p": "xiǎo",
+     "t": 3,
+     "sd": "3-2",
+     "ta": 2
+    },
+    {
+     "p": "jiě",
+     "t": 3
+    }
+   ],
+   "spokenZh": "很高兴认识您！李小姐。"
+  },
+  {
+   "id": "hsk1-lesson-15-10",
+   "unitId": "lesson-15",
+   "zh": "认识你我也很高兴！",
+   "en": "Nice to meet you too.",
+   "syl": [
+    {
+     "p": "rèn",
+     "t": 4
+    },
+    {
+     "p": "shi",
+     "t": 0,
+     "s": "weak"
+    },
+    {
+     "p": "nǐ",
+     "t": 3,
+     "sd": "3-2",
+     "ta": 2
+    },
+    {
+     "p": "wǒ",
+     "t": 3
+    },
+    {
+     "p": "yě",
+     "t": 3,
+     "sd": "3-2",
+     "ta": 2
+    },
+    {
+     "p": "hěn",
+     "t": 3
+    },
+    {
+     "p": "gāo",
+     "t": 1
+    },
+    {
+     "p": "xìng",
+     "t": 4
+    }
+   ],
+   "spokenZh": "认识你我也很高兴！"
+  },
+  {
+   "id": "hsk1-lesson-15-11",
+   "unitId": "lesson-15",
+   "zh": "听张先生说，您是坐飞机来北京的？",
+   "en": "Mr. Zhang said you came to Beijing by plane, didn't you?",
+   "syl": [
+    {
+     "p": "tīng",
+     "t": 1
+    },
+    {
+     "p": "zhāng",
+     "t": 1
+    },
+    {
+     "p": "xiān",
+     "t": 1
+    },
+    {
+     "p": "sheng",
+     "t": 0,
+     "s": "weak"
+    },
+    {
+     "p": "shuō",
+     "t": 1
+    },
+    {
+     "p": "nín",
+     "t": 2
+    },
+    {
+     "p": "shì",
+     "t": 4
+    },
+    {
+     "p": "zuò",
+     "t": 4
+    },
+    {
+     "p": "fēi",
+     "t": 1
+    },
+    {
+     "p": "jī",
+     "t": 1
+    },
+    {
+     "p": "lái",
+     "t": 2
+    },
+    {
+     "p": "běi",
+     "t": 3
+    },
+    {
+     "p": "jīng",
+     "t": 1
+    },
+    {
+     "p": "de",
+     "t": 0,
+     "s": "weak"
+    }
+   ],
+   "spokenZh": "听张先生说，您是坐飞机来北京的？"
+  },
+  {
+   "id": "hsk1-lesson-15-12",
+   "unitId": "lesson-15",
+   "zh": "是的。",
+   "en": "Yes, I did.",
+   "syl": [
+    {
+     "p": "shì",
+     "t": 4
+    },
+    {
+     "p": "de",
+     "t": 0,
+     "s": "weak"
+    }
+   ],
+   "spokenZh": "是的。"
+  }
+ ]
+}
