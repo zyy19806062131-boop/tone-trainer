@@ -83,8 +83,24 @@ def init_db():
                     """
                 )
                 for path, key in STATE_KEYS.items():
-                    with path.open("r", encoding="utf-8") as f:
-                        seed_payload = json.load(f)
+                    # 种子文件是可选的：*.private.json 已移出版本控制（公开仓库不能带真访问码），
+                    # 所以线上根本没有这两个文件。数据库里已有数据时本就不需要播种；
+                    # 文件缺失时退回同名 *.sample.json，再没有就跳过——**绝不能因此启动失败**。
+                    # 2026-07-25：漏了这一步，导致移除文件后线上 /api/* 全部 502。
+                    seed_payload = None
+                    for candidate in (path, path.with_name(path.name.replace(".private.", ".sample."))):
+                        if candidate.exists():
+                            try:
+                                with candidate.open("r", encoding="utf-8") as f:
+                                    seed_payload = json.load(f)
+                                break
+                            except (OSError, ValueError) as exc:
+                                print(f"[warn] 种子文件 {candidate.name} 读取失败，跳过：{exc}", flush=True)
+                    if seed_payload is None:
+                        cur.execute("SELECT 1 FROM app_state WHERE key = %s", (key,))
+                        if cur.fetchone() is None:
+                            print(f"[warn] 无种子文件且库中无 {key}，该项将为空", flush=True)
+                        continue
                     cur.execute(
                         """
                         INSERT INTO app_state (key, payload)
@@ -262,8 +278,14 @@ def load_json(path):
                 row = cur.fetchone()
         if row:
             return normalize_db_payload(row[0])
-    with path.open("r", encoding="utf-8") as f:
-        return json.load(f)
+    # 落到本地文件：*.private.json 已移出版本控制，线上可能不存在 —— 依次退回
+    # 同名 *.sample.json，再没有就返回空结构，绝不抛异常把整个服务打成 502。
+    for candidate in (path, path.with_name(path.name.replace(".private.", ".sample."))):
+        if candidate.exists():
+            with candidate.open("r", encoding="utf-8") as f:
+                return json.load(f)
+    print(f"[warn] {path.name} 及其 sample 均不存在，返回空数据", flush=True)
+    return {"audio": {}, "decks": []} if state_key_for_path(path) == "trainer_data" else {}
 
 
 def save_json(path, payload):
