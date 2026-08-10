@@ -11,3 +11,4 @@ backups/
 *.private.json
 data/*.private.json
 .claude/
+.worktrees/

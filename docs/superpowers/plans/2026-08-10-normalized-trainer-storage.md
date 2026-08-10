@@ -585,7 +585,8 @@ build_bundle = build_normalized_import.build_bundle
 
 def test_bundle_uses_small_rows_and_two_safe_sql_files(self):
     with tempfile.TemporaryDirectory() as tmp:
-        manifest = build_bundle(online, local, ["hsk1", "nhsk1"], Path(tmp), "abc123")
+        expected_md5 = "a" * 32
+        manifest = build_bundle(online, local, ["hsk1", "nhsk1"], Path(tmp), expected_md5)
         self.assertEqual(manifest["deckCount"], 3)
         self.assertEqual(manifest["audioCount"], 4)
         self.assertEqual(manifest["targets"], {"hsk1": 1, "nhsk1": 1})
@@ -598,7 +599,7 @@ def test_bundle_uses_small_rows_and_two_safe_sql_files(self):
         self.assertNotIn("COMMIT;", check_sql)
         self.assertIn("COMMIT;", apply_sql)
         self.assertIn("md5(payload::text)", apply_sql)
-        self.assertIn("abc123", apply_sql)
+        self.assertIn(expected_md5, apply_sql)
         self.assertIn("INSERT INTO trainer_store_meta", apply_sql)
 ```
 
@@ -666,7 +667,7 @@ def parse_args(argv=None):
 4. 断言旧 `app_state.trainer_data` 的 `md5(payload::text)` 等于参数值。
 5. 删除 `trainer_store_meta`、`trainer_audio`、`trainer_decks` 的旧规范化行。
 6. 从 staging 小行插入 `trainer_decks` 和 `trainer_audio`。
-7. 断言插入行与 staging 逐行 JSONB 相等，目标 `hsk1`/`nhsk1` 句数正确且每句都有 `f.n`/`f.s`。
+7. 断言插入行与 staging 逐行 JSONB 相等；目标项目句数从 manifest 的 `targets` 生成校验，并断言每个目标句子都有 `f.n`/`f.s`。
 8. 最后插入 `trainer_store_meta(id=1)`。
 9. 再断言 meta 期望计数与实际表计数一致。
 10. `check.sql` 回滚；`apply.sql` 提交，并在提交后只输出计数和更新时间，不输出音频或访问码。
@@ -733,17 +734,16 @@ BEGIN
        AND t.payload=s.payload) <> {audio_count} THEN
         RAISE EXCEPTION 'audio rows differ after insert';
     END IF;
-    IF (SELECT jsonb_array_length(payload->'sents') FROM trainer_decks WHERE deck_id='hsk1') <> 153
-       OR (SELECT jsonb_array_length(payload->'sents') FROM trainer_decks WHERE deck_id='nhsk1') <> 198 THEN
+    IF {target_sentence_mismatch_sql} THEN
         RAISE EXCEPTION 'target sentence counts differ';
     END IF;
     IF (SELECT count(*)
         FROM trainer_decks d,
              LATERAL jsonb_array_elements(d.payload->'sents') sentence
         JOIN trainer_audio a ON a.sentence_id = sentence->>'id'
-        WHERE d.deck_id IN ('hsk1', 'nhsk1')
+        WHERE d.deck_id = ANY(ARRAY[{target_deck_literals_sql}])
           AND a.payload->'f' ? 'n'
-          AND a.payload->'f' ? 's') <> 351 THEN
+          AND a.payload->'f' ? 's') <> {target_sentence_total} THEN
         RAISE EXCEPTION 'target audio completeness differs';
     END IF;
 END
@@ -755,7 +755,7 @@ SELECT 1, payload, expected_deck_count, expected_audio_count, NOW() FROM stage_m
 {transaction_end}
 ```
 
-上述 SQL 放在 Python f-string 中；生成器先验证 MD5 格式和整数计数，再插入数值，并对三个绝对路径中的单引号做 SQL 转义。生成 `check.sql` 时 `transaction_end="ROLLBACK;"`；生成 `apply.sql` 时 `transaction_end` 为 `COMMIT;` 加三张规范化表的只读计数查询。
+上述 SQL 放在 Python f-string 中；生成器先验证 MD5 格式和整数计数，再插入数值，并对三个绝对路径及 deck ID 中的单引号做 SQL 转义。`target_sentence_mismatch_sql` 由 manifest 的每个 `deck_id → sentence_count` 组成 `OR` 表达式，`target_deck_literals_sql` 是同一组已转义 deck ID，`target_sentence_total=sum(targets.values())`。生成 `check.sql` 时 `transaction_end="ROLLBACK;"`；生成 `apply.sql` 时 `transaction_end` 为 `COMMIT;` 加三张规范化表的只读计数查询。真实生产清单仍必须得到 `hsk1=153`、`nhsk1=198`、合计 351。
 
 - [ ] **Step 5: 跑生成器测试、全套单元测试和语法检查**
 
