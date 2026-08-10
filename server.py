@@ -281,6 +281,7 @@ def load_json(path):
         init_db()
         with db_connect() as conn:
             if key == "trainer_data":
+                conn.set_session(isolation_level="REPEATABLE READ", readonly=True)
                 normalized = load_normalized_trainer_data(conn)
                 if normalized is not None:
                     return normalized
