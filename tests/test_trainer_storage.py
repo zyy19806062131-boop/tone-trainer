@@ -24,6 +24,40 @@ SAMPLE = {
 }
 
 
+class ScriptedCursor:
+    def __init__(self, responses):
+        self.responses = list(responses)
+        self.current = []
+        self.calls = []
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, *_):
+        return False
+
+    def execute(self, sql, params=None):
+        self.calls.append(("execute", " ".join(sql.split()), params))
+        self.current = self.responses.pop(0) if self.responses else []
+
+    def executemany(self, sql, params):
+        self.calls.append(("executemany", " ".join(sql.split()), list(params)))
+
+    def fetchone(self):
+        return self.current[0] if self.current else None
+
+    def fetchall(self):
+        return list(self.current)
+
+
+class ScriptedConnection:
+    def __init__(self, responses):
+        self.cursor_obj = ScriptedCursor(responses)
+
+    def cursor(self):
+        return self.cursor_obj
+
+
 class PayloadRowsTest(unittest.TestCase):
     def test_split_and_reconstruct_are_exact_with_orphan_and_missing_audio(self):
         original = copy.deepcopy(SAMPLE)
@@ -45,6 +79,66 @@ class PayloadRowsTest(unittest.TestCase):
         payload["decks"][1]["sents"][0]["id"] = "h1-a"
         with self.assertRaisesRegex(ValueError, "重复句子 ID"):
             split_trainer_payload(payload)
+
+
+class NormalizedReadTest(unittest.TestCase):
+    def test_returns_none_when_no_normalized_record_is_active(self):
+        from trainer_storage import load_normalized_trainer_data
+
+        conn = ScriptedConnection([[]])
+
+        self.assertIsNone(load_normalized_trainer_data(conn))
+        self.assertEqual(len(conn.cursor_obj.calls), 1)
+
+    def test_reconstructs_a_complete_normalized_record(self):
+        from trainer_storage import load_normalized_trainer_data
+
+        responses = [
+            [({"_dataVersion": 14}, 2, 3)],
+            [(0, "hsk1", SAMPLE["decks"][0]), (1, "scene", SAMPLE["decks"][1])],
+            [
+                (sid, None if sid == "orphan" else ("hsk1" if sid == "h1-a" else "scene"), voices)
+                for sid, voices in SAMPLE["audio"].items()
+            ],
+        ]
+
+        self.assertEqual(
+            load_normalized_trainer_data(ScriptedConnection(responses)),
+            {"_dataVersion": 14, "decks": SAMPLE["decks"], "audio": SAMPLE["audio"]},
+        )
+
+    def test_warns_and_returns_none_when_normalized_counts_do_not_match(self):
+        from trainer_storage import load_normalized_trainer_data
+
+        warnings = []
+        conn = ScriptedConnection([
+            [({"_dataVersion": 14}, 2, 3)],
+            [(0, "hsk1", SAMPLE["decks"][0])],
+            [("h1-a", "hsk1", SAMPLE["audio"]["h1-a"])],
+        ])
+
+        self.assertIsNone(load_normalized_trainer_data(conn, warn=warnings.append))
+        self.assertEqual(
+            warnings,
+            ["[warn] 规范化训练数据不完整，退回旧 app_state：decks 1/2, audio 1/3"],
+        )
+
+    def test_schema_uses_the_required_tables_and_audio_index(self):
+        from trainer_storage import ensure_normalized_schema
+
+        cursor = ScriptedCursor([])
+
+        ensure_normalized_schema(cursor)
+
+        statements = [call[1] for call in cursor.calls]
+        self.assertEqual(len(statements), 4)
+        self.assertIn("CREATE TABLE IF NOT EXISTS trainer_store_meta", statements[0])
+        self.assertIn("CREATE TABLE IF NOT EXISTS trainer_decks", statements[1])
+        self.assertIn("CREATE TABLE IF NOT EXISTS trainer_audio", statements[2])
+        self.assertEqual(
+            statements[3],
+            "CREATE INDEX IF NOT EXISTS trainer_audio_deck_id_idx ON trainer_audio(deck_id)",
+        )
 
 
 class MergeSelectedDecksTest(unittest.TestCase):

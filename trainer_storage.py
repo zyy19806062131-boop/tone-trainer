@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import copy
+import json
 from dataclasses import dataclass
 from typing import Any
 
@@ -24,6 +25,80 @@ class TrainerRows:
     meta: dict[str, Any]
     decks: list[DeckRow]
     audio: list[AudioRow]
+
+
+NORMALIZED_SCHEMA_SQL = (
+    """
+    CREATE TABLE IF NOT EXISTS trainer_store_meta (
+        id SMALLINT PRIMARY KEY CHECK (id = 1),
+        payload JSONB NOT NULL,
+        expected_deck_count INTEGER NOT NULL,
+        expected_audio_count INTEGER NOT NULL,
+        updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    )
+    """,
+    """
+    CREATE TABLE IF NOT EXISTS trainer_decks (
+        deck_id TEXT PRIMARY KEY,
+        deck_order INTEGER UNIQUE NOT NULL,
+        payload JSONB NOT NULL,
+        updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    )
+    """,
+    """
+    CREATE TABLE IF NOT EXISTS trainer_audio (
+        sentence_id TEXT PRIMARY KEY,
+        deck_id TEXT NULL,
+        payload JSONB NOT NULL,
+        updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    )
+    """,
+    "CREATE INDEX IF NOT EXISTS trainer_audio_deck_id_idx ON trainer_audio(deck_id)",
+)
+
+
+def _json_value(value: Any) -> dict[str, Any] | list[Any]:
+    if isinstance(value, (dict, list)):
+        return value
+    if isinstance(value, str):
+        decoded = json.loads(value)
+        if isinstance(decoded, (dict, list)):
+            return decoded
+    raise ValueError("规范化训练数据必须是 JSON 对象或数组")
+
+
+def ensure_normalized_schema(cursor) -> None:
+    for statement in NORMALIZED_SCHEMA_SQL:
+        cursor.execute(statement)
+
+
+def load_normalized_trainer_data(conn, warn=print) -> dict[str, Any] | None:
+    with conn.cursor() as cur:
+        cur.execute(
+            "SELECT payload, expected_deck_count, expected_audio_count "
+            "FROM trainer_store_meta WHERE id = 1"
+        )
+        meta_row = cur.fetchone()
+        if not meta_row:
+            return None
+        meta, expected_decks, expected_audio = meta_row
+        cur.execute("SELECT deck_order, deck_id, payload FROM trainer_decks ORDER BY deck_order")
+        deck_rows = [
+            DeckRow(order, deck_id, _json_value(payload))
+            for order, deck_id, payload in cur.fetchall()
+        ]
+        cur.execute("SELECT sentence_id, deck_id, payload FROM trainer_audio ORDER BY sentence_id")
+        audio_rows = [
+            AudioRow(sentence_id, deck_id, _json_value(payload))
+            for sentence_id, deck_id, payload in cur.fetchall()
+        ]
+    if len(deck_rows) != expected_decks or len(audio_rows) != expected_audio:
+        warn(
+            "[warn] 规范化训练数据不完整，退回旧 app_state："
+            f"decks {len(deck_rows)}/{expected_decks}, audio {len(audio_rows)}/{expected_audio}"
+        )
+        return None
+    return reconstruct_trainer_payload(TrainerRows(_json_value(meta), deck_rows, audio_rows))
 
 
 def split_trainer_payload(payload: dict[str, Any]) -> TrainerRows:
