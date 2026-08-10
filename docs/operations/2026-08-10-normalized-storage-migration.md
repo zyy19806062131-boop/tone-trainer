@@ -1,7 +1,7 @@
 # 规范化训练器存储迁移操作记录
 
 日期：2026-08-10（PDT）
-状态：核心迁移与验收已完成；管理后台视觉登录复验 `INCOMPLETE`
+状态：核心迁移已完成；生产数据库、API 与学生页验收已通过；管理后台视觉登录复验 `INCOMPLETE`
 
 关联设计：[音调训练器拆行存储与两版 HSK1 恢复设计](../superpowers/specs/2026-08-09-normalized-trainer-storage-design.md)
 
@@ -40,7 +40,8 @@
 ## 回退状态
 
 - 已完成事务内回退开关演练：临时删除 `trainer_store_meta` 单例记录时计数为 0；执行 `ROLLBACK` 后事务外计数恢复为 1。
-- 所有验收均通过时未执行持久化回退。若后续需要回退，只提交删除该 meta 单例记录的短事务；规范化项目/音频行保留用于核查，读取将回到未改动的旧 `app_state.trainer_data`。
+- 因生产数据库读回、API 与学生页验收通过，未执行持久化回退；管理后台视觉登录复验仍为 `INCOMPLETE`。
+- 若后续需要回退，必须在一个专用事务中仅执行 `DELETE FROM trainer_store_meta WHERE id = 1` 并提交该受限变更；保留规范化项目/音频行用于核查。提交后须在生产环境回读确认 `meta=0`，并确认应用服务的是未改动的旧 `app_state.trainer_data`。
 
 ## 未上线边界与后续
 
