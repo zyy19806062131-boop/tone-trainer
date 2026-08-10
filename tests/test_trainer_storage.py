@@ -65,9 +65,44 @@ class MergeSelectedDecksTest(unittest.TestCase):
         merged = merge_selected_decks(online, local, ["hsk1", "nhsk1"])
         self.assertEqual([deck["id"] for deck in merged["decks"]], ["hsk1", "nhsk1", "scene"])
         self.assertEqual(merged["decks"][2], online["decks"][1])
+        self.assertEqual(merged["_dataVersion"], online["_dataVersion"])
+        self.assertEqual(merged["keep"], online["keep"])
         self.assertNotIn("h1-a", merged["audio"])
         self.assertEqual(merged["audio"]["scene-a"], online["audio"]["scene-a"])
         self.assertEqual(merged["audio"]["orphan"], online["audio"]["orphan"])
+
+    def test_merge_deduplicates_requested_ids_while_preserving_first_seen_order(self):
+        from trainer_storage import merge_selected_decks
+
+        local = {
+            "decks": [{"id": "hsk1", "sents": [{"id": "h1-new"}]}],
+            "audio": {"h1-new": {"f": {"n": "h1n", "s": "h1s"}}},
+        }
+        merged = merge_selected_decks(SAMPLE, local, ["hsk1", "hsk1"])
+
+        self.assertEqual([deck["id"] for deck in merged["decks"]], ["hsk1", "scene"])
+
+    def test_merge_keeps_inputs_and_result_independently_mutable(self):
+        from trainer_storage import merge_selected_decks
+
+        online = copy.deepcopy(SAMPLE)
+        local = {
+            "decks": [{"id": "hsk1", "sents": [{"id": "h1-new", "extra": {"value": 1}}]}],
+            "audio": {"h1-new": {"f": {"n": "h1n", "s": "h1s"}}},
+        }
+        original_online = copy.deepcopy(online)
+        original_local = copy.deepcopy(local)
+
+        merged = merge_selected_decks(online, local, ["hsk1"])
+        merged["decks"][0]["sents"][0]["extra"]["value"] = 2
+        merged["audio"]["h1-new"]["f"]["n"] = "changed"
+        merged["keep"]["unchanged"] = False
+
+        self.assertEqual(online, original_online)
+        self.assertEqual(local, original_local)
+        self.assertEqual(local["decks"][0]["sents"][0]["extra"]["value"], 1)
+        self.assertEqual(local["audio"]["h1-new"]["f"]["n"], "h1n")
+        self.assertTrue(online["keep"]["unchanged"])
 
     def test_merge_rejects_a_requested_deck_missing_locally(self):
         from trainer_storage import merge_selected_decks
