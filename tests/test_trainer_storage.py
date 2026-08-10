@@ -202,6 +202,42 @@ class NormalizedReadTest(unittest.TestCase):
         )
 
 
+class NormalizedWriteTest(unittest.TestCase):
+    def test_save_uses_small_rows_and_writes_meta_last(self):
+        from trainer_storage import save_normalized_trainer_data
+
+        conn = ScriptedConnection([])
+
+        save_normalized_trainer_data(conn, SAMPLE)
+
+        calls = conn.cursor_obj.calls
+        sql_text = [call[1] for call in calls]
+        self.assertIn("pg_advisory_xact_lock", sql_text[0])
+        self.assertIn("DELETE FROM trainer_store_meta", " ".join(sql_text))
+        self.assertIn("DELETE FROM trainer_audio", " ".join(sql_text))
+        self.assertIn("DELETE FROM trainer_decks", " ".join(sql_text))
+        self.assertIn("INSERT INTO trainer_store_meta", sql_text[-1])
+        audio_call = next(
+            call for call in calls
+            if call[0] == "executemany" and "trainer_audio" in call[1]
+        )
+        orphan = next(params for params in audio_call[2] if params[0] == "orphan")
+        self.assertIsNone(orphan[1])
+        serialized_sample = json.dumps(SAMPLE, ensure_ascii=False)
+        serialized_parameters = []
+        for call in calls:
+            parameter_sets = call[2] if call[0] == "executemany" else [call[2]]
+            for parameter_set in parameter_sets:
+                if parameter_set:
+                    serialized_parameters.extend(
+                        value for value in parameter_set if isinstance(value, str)
+                    )
+        self.assertNotIn(
+            serialized_sample,
+            serialized_parameters,
+        )
+
+
 class MergeSelectedDecksTest(unittest.TestCase):
     def test_merge_replaces_targets_and_preserves_unrelated_content(self):
         from trainer_storage import merge_selected_decks

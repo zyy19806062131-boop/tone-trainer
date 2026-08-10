@@ -11,6 +11,12 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from urllib.parse import parse_qs, unquote, urlparse
 
+from trainer_storage import (
+    ensure_normalized_schema,
+    load_normalized_trainer_data,
+    save_normalized_trainer_data,
+)
+
 try:
     import psycopg2
 except ImportError:  # Local JSON mode does not need PostgreSQL installed.
@@ -82,6 +88,7 @@ def init_db():
                     )
                     """
                 )
+                ensure_normalized_schema(cur)
                 for path, key in STATE_KEYS.items():
                     # 种子文件是可选的：*.private.json 已移出版本控制（公开仓库不能带真访问码），
                     # 所以线上根本没有这两个文件。数据库里已有数据时本就不需要播种；
@@ -273,6 +280,10 @@ def load_json(path):
     if key and db_enabled():
         init_db()
         with db_connect() as conn:
+            if key == "trainer_data":
+                normalized = load_normalized_trainer_data(conn)
+                if normalized is not None:
+                    return normalized
             with conn.cursor() as cur:
                 cur.execute("SELECT payload FROM app_state WHERE key = %s", (key,))
                 row = cur.fetchone()
@@ -292,6 +303,11 @@ def save_json(path, payload):
     key = state_key_for_path(path)
     if key and db_enabled():
         init_db()
+        if key == "trainer_data":
+            with db_connect() as conn:
+                save_normalized_trainer_data(conn, payload)
+                conn.commit()
+            return
         with db_connect() as conn:
             with conn.cursor() as cur:
                 cur.execute(

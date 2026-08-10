@@ -56,6 +56,8 @@ NORMALIZED_SCHEMA_SQL = (
     "CREATE INDEX IF NOT EXISTS trainer_audio_deck_id_idx ON trainer_audio(deck_id)",
 )
 
+TRAINER_ADVISORY_LOCK = 824_202_608
+
 
 def _json_value(value: Any) -> dict[str, Any] | list[Any]:
     if isinstance(value, (dict, list)):
@@ -70,6 +72,37 @@ def _json_value(value: Any) -> dict[str, Any] | list[Any]:
 def ensure_normalized_schema(cursor) -> None:
     for statement in NORMALIZED_SCHEMA_SQL:
         cursor.execute(statement)
+
+
+def save_normalized_trainer_data(conn, payload: dict[str, Any]) -> None:
+    rows = split_trainer_payload(payload)
+    with conn.cursor() as cur:
+        cur.execute("SELECT pg_advisory_xact_lock(%s)", (TRAINER_ADVISORY_LOCK,))
+        ensure_normalized_schema(cur)
+        cur.execute("DELETE FROM trainer_store_meta WHERE id = 1")
+        cur.execute("DELETE FROM trainer_audio")
+        cur.execute("DELETE FROM trainer_decks")
+        cur.executemany(
+            "INSERT INTO trainer_decks(deck_id, deck_order, payload, updated_at) "
+            "VALUES (%s, %s, %s::jsonb, NOW())",
+            [
+                (row.deck_id, row.deck_order, json.dumps(row.payload, ensure_ascii=False))
+                for row in rows.decks
+            ],
+        )
+        cur.executemany(
+            "INSERT INTO trainer_audio(sentence_id, deck_id, payload, updated_at) "
+            "VALUES (%s, %s, %s::jsonb, NOW())",
+            [
+                (row.sentence_id, row.deck_id, json.dumps(row.payload, ensure_ascii=False))
+                for row in rows.audio
+            ],
+        )
+        cur.execute(
+            "INSERT INTO trainer_store_meta(id, payload, expected_deck_count, expected_audio_count, updated_at) "
+            "VALUES (1, %s::jsonb, %s, %s, NOW())",
+            (json.dumps(rows.meta, ensure_ascii=False), len(rows.decks), len(rows.audio)),
+        )
 
 
 def load_normalized_trainer_data(conn, warn=print) -> dict[str, Any] | None:
