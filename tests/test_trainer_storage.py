@@ -1,4 +1,5 @@
 import copy
+import json
 import unittest
 
 from trainer_storage import reconstruct_trainer_payload, split_trainer_payload
@@ -107,6 +108,27 @@ class NormalizedReadTest(unittest.TestCase):
             {"_dataVersion": 14, "decks": SAMPLE["decks"], "audio": SAMPLE["audio"]},
         )
 
+    def test_reconstructs_complete_data_when_json_columns_are_strings(self):
+        from trainer_storage import load_normalized_trainer_data
+
+        responses = [
+            [(json.dumps({"_dataVersion": 14}), 2, 3)],
+            [(0, "hsk1", json.dumps(SAMPLE["decks"][0])), (1, "scene", json.dumps(SAMPLE["decks"][1]))],
+            [
+                (
+                    sid,
+                    None if sid == "orphan" else ("hsk1" if sid == "h1-a" else "scene"),
+                    json.dumps(voices),
+                )
+                for sid, voices in SAMPLE["audio"].items()
+            ],
+        ]
+
+        self.assertEqual(
+            load_normalized_trainer_data(ScriptedConnection(responses)),
+            {"_dataVersion": 14, "decks": SAMPLE["decks"], "audio": SAMPLE["audio"]},
+        )
+
     def test_warns_and_returns_none_when_normalized_counts_do_not_match(self):
         from trainer_storage import load_normalized_trainer_data
 
@@ -132,12 +154,51 @@ class NormalizedReadTest(unittest.TestCase):
 
         statements = [call[1] for call in cursor.calls]
         self.assertEqual(len(statements), 4)
-        self.assertIn("CREATE TABLE IF NOT EXISTS trainer_store_meta", statements[0])
-        self.assertIn("CREATE TABLE IF NOT EXISTS trainer_decks", statements[1])
-        self.assertIn("CREATE TABLE IF NOT EXISTS trainer_audio", statements[2])
+        self.assertEqual(
+            statements[0],
+            "CREATE TABLE IF NOT EXISTS trainer_store_meta ( "
+            "id SMALLINT PRIMARY KEY CHECK (id = 1), "
+            "payload JSONB NOT NULL, expected_deck_count INTEGER NOT NULL, "
+            "expected_audio_count INTEGER NOT NULL, "
+            "updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW() )",
+        )
+        self.assertEqual(
+            statements[1],
+            "CREATE TABLE IF NOT EXISTS trainer_decks ( "
+            "deck_id TEXT PRIMARY KEY, deck_order INTEGER UNIQUE NOT NULL, "
+            "payload JSONB NOT NULL, updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW() )",
+        )
+        self.assertEqual(
+            statements[2],
+            "CREATE TABLE IF NOT EXISTS trainer_audio ( "
+            "sentence_id TEXT PRIMARY KEY, deck_id TEXT NULL, payload JSONB NOT NULL, "
+            "updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW() )",
+        )
         self.assertEqual(
             statements[3],
             "CREATE INDEX IF NOT EXISTS trainer_audio_deck_id_idx ON trainer_audio(deck_id)",
+        )
+
+    def test_reader_queries_meta_then_decks_then_audio(self):
+        from trainer_storage import load_normalized_trainer_data
+
+        conn = ScriptedConnection([
+            [({"_dataVersion": 14}, 0, 0)],
+            [],
+            [],
+        ])
+
+        self.assertEqual(
+            load_normalized_trainer_data(conn),
+            {"_dataVersion": 14, "decks": [], "audio": {}},
+        )
+        self.assertEqual(
+            [call[1] for call in conn.cursor_obj.calls],
+            [
+                "SELECT payload, expected_deck_count, expected_audio_count FROM trainer_store_meta WHERE id = 1",
+                "SELECT deck_order, deck_id, payload FROM trainer_decks ORDER BY deck_order",
+                "SELECT sentence_id, deck_id, payload FROM trainer_audio ORDER BY sentence_id",
+            ],
         )
 
 
