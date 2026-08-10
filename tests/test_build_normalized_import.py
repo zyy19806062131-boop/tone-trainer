@@ -66,9 +66,20 @@ class BuildNormalizedImportTest(unittest.TestCase):
             self.assertIn("pg_advisory_xact_lock(824202608)", apply_sql)
             self.assertIn("md5(payload::text)", apply_sql)
             self.assertIn(expected_md5, apply_sql)
+            self.assertIn("VALUES (0, 'hsk1'), (1, 'nhsk1'), (2, 'scene')", apply_sql)
+            self.assertIn("FROM stage_decks\n        EXCEPT", apply_sql)
+            self.assertIn("expected deck order or IDs differ", apply_sql)
             self.assertIn("INSERT INTO trainer_store_meta", apply_sql)
             self.assertIn(str((output / "decks.csv").resolve()), apply_sql)
             self.assertNotIn("%s::jsonb", apply_sql)
+            self.assertIn("count(*) FROM trainer_store_meta) AS meta_count", apply_sql)
+
+    def test_normalizes_uppercase_md5_for_postgres_md5_guard(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            sql = (Path(tmp) / "apply.sql")
+            build_bundle(ONLINE, LOCAL, ["hsk1"], Path(tmp), "A" * 32)
+            self.assertIn("'" + "a" * 32 + "'", sql.read_text())
+            self.assertNotIn("'" + "A" * 32 + "'", sql.read_text())
 
     def test_rejects_expected_md5_that_is_not_exactly_32_hex_characters(self):
         with tempfile.TemporaryDirectory() as tmp:

@@ -64,9 +64,14 @@ def _render_sql(
     expected_online_md5: str,
     deck_count: int,
     audio_count: int,
+    expected_deck_rows: list[tuple[int, str]],
     targets: dict[str, int],
     transaction_end: str,
 ) -> str:
+    expected_deck_values = ", ".join(
+        f"({deck_order}, '{_sql_escape(deck_id)}')"
+        for deck_order, deck_id in expected_deck_rows
+    )
     target_checks = " OR ".join(
         "(SELECT count(*) FROM trainer_decks d "
         "CROSS JOIN LATERAL jsonb_array_elements(d.payload->'sents') sentence "
@@ -112,6 +117,19 @@ BEGIN
        OR EXISTS (SELECT 1 FROM stage_decks GROUP BY deck_order HAVING count(*) <> 1)
        OR EXISTS (SELECT 1 FROM stage_audio GROUP BY sentence_id HAVING count(*) <> 1) THEN
         RAISE EXCEPTION 'staging IDs or deck order are not unique';
+    END IF;
+    IF EXISTS (
+        SELECT deck_order, deck_id FROM stage_decks
+        EXCEPT
+        SELECT deck_order, deck_id
+        FROM (VALUES {expected_deck_values}) AS expected_decks(deck_order, deck_id)
+    ) OR EXISTS (
+        SELECT deck_order, deck_id
+        FROM (VALUES {expected_deck_values}) AS expected_decks(deck_order, deck_id)
+        EXCEPT
+        SELECT deck_order, deck_id FROM stage_decks
+    ) THEN
+        RAISE EXCEPTION 'expected deck order or IDs differ';
     END IF;
     IF (SELECT expected_deck_count FROM stage_meta) <> {deck_count}
        OR (SELECT expected_audio_count FROM stage_meta) <> {audio_count} THEN
@@ -187,6 +205,7 @@ def build_bundle(
     """Create a database-free CSV and SQL bundle, returning its public manifest."""
     if not _MD5_RE.fullmatch(expected_online_md5):
         raise ValueError("expected_online_md5 必须是 32 位十六进制")
+    expected_online_md5 = expected_online_md5.lower()
     ordered_deck_ids = list(dict.fromkeys(deck_ids))
     if not ordered_deck_ids:
         raise ValueError("至少需要一个目标项目")
@@ -221,14 +240,16 @@ def build_bundle(
     check_sql = _render_sql(
         meta_csv=meta_csv, decks_csv=decks_csv, audio_csv=audio_csv,
         expected_online_md5=expected_online_md5, deck_count=len(deck_cells),
-        audio_count=len(audio_cells), targets=targets, transaction_end="ROLLBACK;",
+        audio_count=len(audio_cells), expected_deck_rows=[(order, deck_id) for order, deck_id, _ in deck_cells],
+        targets=targets, transaction_end="ROLLBACK;",
     )
     apply_sql = _render_sql(
         meta_csv=meta_csv, decks_csv=decks_csv, audio_csv=audio_csv,
         expected_online_md5=expected_online_md5, deck_count=len(deck_cells),
-        audio_count=len(audio_cells), targets=targets,
+        audio_count=len(audio_cells), expected_deck_rows=[(order, deck_id) for order, deck_id, _ in deck_cells], targets=targets,
         transaction_end=("COMMIT;\n"
-                         "SELECT (SELECT count(*) FROM trainer_decks) AS deck_count,\n"
+                         "SELECT (SELECT count(*) FROM trainer_store_meta) AS meta_count,\n"
+                         "       (SELECT count(*) FROM trainer_decks) AS deck_count,\n"
                          "       (SELECT count(*) FROM trainer_audio) AS audio_count,\n"
                          "       (SELECT updated_at FROM trainer_store_meta WHERE id=1) AS updated_at;"),
     )
