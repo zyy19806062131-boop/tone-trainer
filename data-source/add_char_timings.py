@@ -13,6 +13,9 @@ from pathlib import Path
 ap = argparse.ArgumentParser()
 ap.add_argument('--deck', action='append', default=[])
 ap.add_argument('--force', action='store_true')
+ap.add_argument('--model', default='tiny',
+                help="faster-whisper 模型档。⚠️本机(Apple Silicon+系统Python3.9的CTranslate2)"
+                     "用 small 会静默段错误(进程直接没了,无traceback),只能 tiny")
 args = ap.parse_args()
 
 here = Path(__file__).resolve().parent
@@ -28,7 +31,7 @@ def transcribe_chars(mp3_bytes):
     global _model
     if _model is None:
         from faster_whisper import WhisperModel
-        _model = WhisperModel('small', device='cpu', compute_type='int8')
+        _model = WhisperModel(args.model, device='cpu', compute_type='int8')
     with tempfile.NamedTemporaryFile(suffix='.mp3', delete=False) as f:
         f.write(mp3_bytes); tmp = Path(f.name)
     segs, _ = _model.transcribe(str(tmp), language='zh', beam_size=3,
@@ -84,7 +87,7 @@ for deck in data['decks']:
         if not clip: continue
         if 'ts' in s and not args.force: skip += 1; continue
         raw = base64.b64decode(clip.split(',', 1)[1])
-        key = f"{s['id']}:{len(raw)}"
+        key = f"{s['id']}:{len(raw)}:{args.model}"  # 换模型档识别结果会变,不能复用旧条目
         if key in cache:
             rec = [tuple(x) for x in cache[key]]
         else:

@@ -96,12 +96,17 @@ def clip_uri(mp3, start, end, dur, tempo=None):
 
 data = json.load(open(data_path))
 audio = data.setdefault('audio', {})
+
 ok = bad = 0
 for track, info in sorted(by_track.items()):
     mp3 = audio_dir / f"{track}.mp3"
     if not mp3.exists():
         print(f"MISSING {mp3}"); bad += 1; continue
     segs, dur = detect_segments(mp3)
+    # 段数必须==句数才敢按位对应。对不上一律 SKIP,交给 align_official_audio.py
+    # 用 ASR 逐段回验着对齐——**不要**在这里按「句末标点数之和==段数」硬分配:
+    # 2026-08-05 试过,HSK2 有 10 条轨靠这个巧合命中却整体错位一位(句内长停顿被切开,
+    # 数字照样凑得上),而且静默无报错,是 ASR 全量回验才抓出来的。数字相等≠位置正确。
     if len(segs) != info['total']:
         print(f"SKIP {track}: 切出{len(segs)}段 ≠ 句数{info['total']} segs={[(round(a,1),round(b,1)) for a,b in segs]}")
         bad += 1; continue

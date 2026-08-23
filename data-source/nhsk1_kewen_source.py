@@ -1,5 +1,5 @@
 # 《新HSK教程1》(外研社, 2025年12月, HSK3.0) 课文原文 —— 逐句转录
-# 来源: /Volumes/My PSSD/课件和教材/1.HSK/1.新HSK/新HSK 1/新hsk1教材.pdf (扫描版,逐页看图转录)
+# 来源: /Volumes/My PSSD/教材库/01_成套教材/xin-hsk-jiaocheng/新HSK 1/新hsk1教材.pdf (扫描版,逐页看图转录)
 # 每课: id, 标题(教材真实课名), en标题, scenes[ {name, track, sents:[(zh, py_textbook, en)] } ]
 # track = 官方配套音频轨号(教材课文栏印的 🔊 编号),音频在 新HSK 1/2026版新HSK1听力/<track>.mp3
 # 规律: 每课三篇课文,音轨 N-1/N-3/N-5 为课文,双数轨为生词

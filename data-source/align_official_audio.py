@@ -26,6 +26,10 @@ ap.add_argument('--gap', type=float, default=GAP, help='句界静音阈值(秒)'
 ap.add_argument('--force', action='store_true', help='已有音频也重切')
 ap.add_argument('--max-take', type=int, default=2,
                 help='每句最多并几个相邻段(句内含句号会断段,默认2;误并播报由NW边界+时长惩罚兜住)')
+ap.add_argument('--model', default='tiny',
+                help="faster-whisper 模型档。⚠️本机(Apple Silicon+系统Python3.9的CTranslate2)"
+                     "用 small 会静默段错误(进程直接没了,无traceback),只能 tiny;"
+                     "精度够用——内容有教材原文兜底,机器只负责定位")
 args = ap.parse_args()
 
 here = Path(__file__).resolve().parent
@@ -33,6 +37,7 @@ sys.path.insert(0, str(here))
 LESSONS = __import__(args.source).LESSONS
 data_path = here.parent / 'data' / 'trainer_data.private.json'
 cache_path = here / f"{args.deck}_asr_cache.json"
+# 缓存键含 gap 与模型档:换任一个,分段边界/识别结果都会变,不能复用旧条目
 audio_dir = Path(args.audio_dir)
 cache = json.load(open(cache_path)) if cache_path.exists() else {}
 
@@ -65,7 +70,7 @@ def asr(mp3, a, b):
     global _model
     if _model is None:
         from faster_whisper import WhisperModel
-        _model = WhisperModel('small', device='cpu', compute_type='int8')
+        _model = WhisperModel(args.model, device='cpu', compute_type='int8')
     with tempfile.NamedTemporaryFile(suffix='.wav', delete=False) as f:
         tmp = Path(f.name)
     subprocess.run(['ffmpeg', '-y', '-i', str(mp3), '-ss', f'{a:.3f}', '-to', f'{b:.3f}',
@@ -77,7 +82,7 @@ def asr(mp3, a, b):
     return text.strip()
 
 def track_asr(track, mp3, segs):
-    key = f"{track}:{len(segs)}"
+    key = f"{track}:{len(segs)}:g{args.gap}:{args.model}"
     if key in cache: return cache[key]
     texts = [asr(mp3, a, b) for a, b in segs]
     cache[key] = texts
@@ -165,7 +170,12 @@ for L in LESSONS:
             print(f"MISSING {mp3}"); warn += 1; continue
         segs, dur = detect_segments(mp3)
         texts = track_asr(track, mp3, segs)
-        expected = [zh for zh, _, _ in (s[:3] for s in sc['sents'])]
+        expected = [s[0] for s in sc['sents']]
+        # 源文件第4元组 {"clip":(起,止)} = 手工钉死的绝对区间,覆盖 DP 结果。
+        # 用途:相邻句首尾撞词时(如「小雪,生日快乐!」后接「姐姐,生日快乐!」)DP 会整段挪位,
+        # 靠分数看不出来——只能人工定界。zh 去标点后作键,与 zh2sid 同口径。
+        clips = {hanzi(s[0]): s[3]['clip'] for s in sc['sents']
+                 if len(s) > 3 and isinstance(s[3], dict) and s[3].get('clip')}
         path, score = align(expected, segs, texts, args.max_take)
         if path is None or score < MIN_SCORE:
             print(f"REVIEW {track} score={score:.2f}")
@@ -176,8 +186,11 @@ for L in LESSONS:
             sid = zh2sid.get(hanzi(zh_full))
             if sid is None: continue  # 去重被丢的句子:跳过(首现那条已配)
             a = segs[path[j][0]][0]; b = segs[path[j][1]][1]
+            manual = clips.get(hanzi(zh_full))
+            if manual:
+                a, b = manual
             nsyl = len(hanzi(zh_full))
-            flag = ''
+            flag = '  [手工区间]' if manual else ''
             if not (0.15 * nsyl + 0.1 <= b - a <= 0.7 * nsyl + 2.0):
                 flag = f'  ⚠时长{b-a:.1f}s vs {nsyl}音节'
             if not args.dry_run and (args.force or 'f' not in audio.get(sid, {})):

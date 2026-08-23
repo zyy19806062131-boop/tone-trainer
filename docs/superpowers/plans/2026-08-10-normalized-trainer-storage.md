@@ -855,7 +855,7 @@ Run:
 ```bash
 PATH="/opt/homebrew/opt/libpq/bin:$PATH" \
 render psql tone-trainer-db --command \
-"\i /Users/a1/Claude/repos/tone-trainer/backups/normalized-hsk1-20260810/check.sql"
+"\i ~/Claude/repos/tone-trainer/backups/normalized-hsk1-20260810/check.sql"
 ```
 
 Expected: staging、逐行插入、目标音频验证全部通过，最终明确 `ROLLBACK`，连接不被杀死。
@@ -871,7 +871,7 @@ Expected: `trainer_store_meta/decks/audio` 均为 0；旧行 MD5、17 项、184 
 ```bash
 PATH="/opt/homebrew/opt/libpq/bin:$PATH" \
 render psql tone-trainer-db --command \
-"\i /Users/a1/Claude/repos/tone-trainer/backups/normalized-hsk1-20260810/apply.sql"
+"\i ~/Claude/repos/tone-trainer/backups/normalized-hsk1-20260810/apply.sql"
 ```
 
 Expected: `COMMIT`；输出只显示 meta=1、decks=18、audio=415 和更新时间。
@@ -911,7 +911,7 @@ Expected: `COMMIT`；输出只显示 meta=1、decks=18、audio=415 和更新时�
 **Files:**
 - Create: `docs/operations/2026-08-10-normalized-storage-migration.md`
 - Modify: `docs/superpowers/specs/2026-08-09-normalized-trainer-storage-design.md`
-- Update outside repo: `/Users/a1/Claude/当前行动台账.md`
+- Update outside repo: `~/Claude/当前行动台账.md`
 
 **Interfaces:**
 - Consumes: Task 6 的实际命令时间、提交号、数据库计数和播放结果。
