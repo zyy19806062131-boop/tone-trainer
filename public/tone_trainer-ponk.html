@@ -6,15 +6,17 @@
 <title>声调旋律训练器 · TONE MELODY</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/gazette/fonts.css">
 <style>
 :root{
-  --bg:#070A14; --bg-2:#0C1426; --panel:rgba(12,20,40,.66); --ink:#D8FBFF; --soft:#5E7CA0;
-  --accent:#05D9E8; --accent-2:#FF2A6D; --weak:#2C5A6B; --amber:#F5D90A;
-  --glow:rgba(5,217,232,.7); --glow-2:rgba(255,42,109,.7);
-  --line:rgba(5,217,232,.28); --line-2:rgba(5,217,232,.12); --grid:rgba(5,217,232,.10);
-  --cjk:"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
-  --display:"Chakra Petch",sans-serif; --body:"Chakra Petch",system-ui,sans-serif; --mono:"Share Tech Mono",monospace;
+  /* 2026-10-03：从赛博霓虹换成官网《悦報》同一张纸（老师：工具要跟官网风格、色彩、排版、字体统一） */
+  --bg:#D3CCC2; --bg-2:#C9C1B5; --panel:transparent; --ink:#1D1D1B; --soft:#55504A;
+  --accent:#1D1D1B; --accent-2:#B72E20; --weak:#8C857B; --amber:#B72E20;
+  --glow:transparent; --glow-2:transparent;
+  --line:rgba(29,29,27,.85); --line-2:rgba(29,29,27,.24); --grid:transparent;
+  --cjk:"Noto Serif SC","Songti SC","STSong",serif;
+  --display:"Noto Serif Display","Didot",serif; --body:"Instrument Serif",Georgia,serif; --mono:"IBM Plex Mono",ui-monospace,monospace;
 }
 *{box-sizing:border-box;margin:0;padding:0}
 html{max-width:100%;overflow-x:hidden}
@@ -253,9 +255,83 @@ header{display:flex;justify-content:space-between;align-items:flex-start;gap:14p
 @media(max-width:900px){.gate-shell{grid-template-columns:1fr}.gate-side{display:none}}
 @media(max-width:760px){.data-rail{display:none}.topline{margin-bottom:8px}.stage-hud{flex-wrap:wrap}}
 @media(max-width:520px){#app{padding-left:12px;padding-right:12px}.gate-card{padding:26px 18px 22px}.gate-orb{width:104px;height:104px}.gate-meta{grid-template-columns:1fr}.gate-form{flex-direction:column}.stage{padding:22px 14px}.stage-hud{font-size:.58rem}.controls{gap:9px}.control-pack{width:100%;justify-content:center}.rec-panel{align-items:stretch}.rec-title,.rec-status,.rec-preview{width:100%;text-align:center}.practice-panel{align-items:stretch}.practice-meta,.hard-btn{width:100%;text-align:center}.tone-grid{gap:7px}.tone-grid .tone-cell{flex:1 1 64px;min-width:64px;max-width:104px}.list-head{align-items:flex-start}.list-toggle{flex:none}.item{align-items:flex-start;padding:11px 12px}.sentence .py{font-size:.86rem;letter-spacing:.03em}.sentence .zh{font-size:clamp(1.45rem,9vw,2rem)}}
+
+/* ===== 《悦報》纸面覆盖层：放在最后，压过原来的霓虹效果 ===== */
+html,body{background:var(--bg)!important}
+body::before,body::after,.ambient,.ambient::before,.ambient::after,.data-rail,.gate-matrix,.gate-vignette,#gate::before,.gate-orb,.gate-side,.stage::before,.stage::after,.gate-card::before,.gate-card::after,.gate-input-wrap::before,.topline::before,.topline::after,.sys-chip::before,.stage-hud span::before,#gate h1::before,#gate h1::after,.gate-footer::before,.gate-footer::after,.tone-cell::before,.tone-cell::after{display:none!important;animation:none!important}
+.gz-paper{position:fixed;inset:0;z-index:9998;pointer-events:none;background:url(/assets/gazette/paper.jpg) 0 0/512px 512px repeat;mix-blend-mode:multiply;opacity:.42}
+*{text-shadow:none!important;box-shadow:none!important}
+body{font-family:var(--body)!important;color:var(--ink)!important}
+#gate{background:var(--bg)!important}
+.gate-card{background:transparent!important;border:1px solid var(--ink)!important;border-top:3px double var(--ink)!important;border-radius:0!important;backdrop-filter:none!important;clip-path:none!important}
+#gate h1,.title h1{font-family:var(--cjk)!important;font-weight:900!important;color:var(--ink)!important;letter-spacing:-.01em!important;background:none!important;-webkit-text-fill-color:var(--ink)!important}
+#gate h1{font-size:clamp(46px,6vw,96px)!important}
+#gate .badge,#gate .sub,.gate-meta span,.gate-footer,.title p,.sys-chip,.stage-hud span,.control-label,.rec-title,.rec-status,.practice-meta,.list-meta,.legend,.kbd,.deck-note,.tone-num,.tone-sd{font-family:var(--mono)!important;color:var(--soft)!important;letter-spacing:.16em}
+#gate .badge,.sys-chip{color:var(--accent-2)!important;border-color:var(--accent-2)!important;background:transparent!important}
+.gate-meta span{border:1px solid var(--line-2)!important;background:transparent!important}
+#gate input{background:transparent!important;border:1px solid var(--ink)!important;border-radius:0!important;color:var(--ink)!important;font-family:var(--mono)!important}
+#gate input::placeholder{color:var(--soft)!important}
+#gate button,.play,.rec-btn,.hard-btn,.nav button,.nav-side,.icon-btn,.seg button,.pay-link{border-radius:0!important;clip-path:none!important;font-family:var(--display)!important;font-variation-settings:"wdth" 62.5;font-weight:800!important;text-transform:uppercase;letter-spacing:.03em!important}
+#gate button,.play{background:var(--ink)!important;color:var(--bg)!important;border:1px solid var(--ink)!important}
+#gate button:hover,.play:hover{background:var(--accent-2)!important;border-color:var(--accent-2)!important}
+.play svg{fill:currentColor!important}
+.rec-btn,.hard-btn,.nav button,.nav-side,.icon-btn,.seg button{background:transparent!important;color:var(--ink)!important;border:1px solid var(--ink)!important}
+.rec-btn:hover:not(:disabled),.hard-btn:hover,.nav button:hover,.nav-side:hover,.icon-btn:hover,.seg button.on,.hard-btn.on{background:var(--ink)!important;color:var(--bg)!important}
+.rec-btn.danger.on{background:var(--accent-2)!important;border-color:var(--accent-2)!important;color:#F6F0E2!important}
+header{border-bottom:3px double var(--ink)!important;background:transparent!important}
+.tab,.unit-tab{border-radius:0!important;background:transparent!important;border:1px solid var(--line-2)!important;color:var(--ink)!important;font-family:var(--mono)!important;clip-path:none!important}
+.tab .cn,.unit-tab .cn{font-family:var(--cjk)!important}
+.tab:hover,.unit-tab:hover{border-color:var(--ink)!important}
+.tab.on,.unit-tab.on{background:var(--ink)!important;color:var(--bg)!important;border-color:var(--ink)!important}
+.stage,.rec-panel,.practice-panel,.list-panel,.locked-panel,.control-pack{background:transparent!important;border:1px solid var(--ink)!important;border-radius:0!important;backdrop-filter:none!important;clip-path:none!important}
+.stage{border-top:3px double var(--ink)!important}
+.sentence .py{font-family:var(--body)!important;font-style:italic;color:var(--soft)!important;letter-spacing:.02em!important}
+.sentence .zh{font-family:var(--cjk)!important;font-weight:900!important;color:var(--ink)!important}
+.sentence .en{font-family:var(--body)!important;font-style:italic;color:var(--soft)!important}
+.tone-cell{background:transparent!important;border:1px solid var(--line-2)!important;border-radius:0!important;clip-path:none!important}
+.tone-cell.active{border-color:var(--ink)!important;background:rgba(29,29,27,.05)!important}
+.tone-cell.stress{border-color:var(--accent-2)!important}
+.tone-hanzi{font-family:var(--cjk)!important;font-weight:900!important;color:var(--ink)!important}
+.tone-py{font-family:var(--body)!important;font-style:italic;color:var(--soft)!important}
+.tone-guide{stroke:var(--line-2)!important}
+.tone-path{stroke:var(--accent-2)!important;filter:none!important}
+.tone-cell.weak .tone-path{stroke:var(--weak)!important}
+.tone-dot{fill:var(--accent-2)!important;filter:none!important}
+.dot{background:var(--line-2)!important;border-radius:0!important}
+.dot.on{background:var(--accent-2)!important}
+.item{border-bottom:1px solid var(--line-2)!important;background:transparent!important;border-radius:0!important}
+.item:hover{background:rgba(29,29,27,.05)!important}
+.item.on{background:var(--ink)!important;color:var(--bg)!important}
+.item.on .zh,.item.on .py,.item.on .mini{color:var(--bg)!important}
+.item .zh{font-family:var(--cjk)!important}
+.voice-row select{background:transparent!important;border:1px solid var(--ink)!important;color:var(--ink)!important;border-radius:0!important;font-family:var(--mono)!important}
+.gz-mast{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--ink);font-family:var(--cjk);font-weight:900;font-size:22px}
+.gz-mast img{width:20px;transform:rotate(-4deg)}
+
+
+/* 门禁：居中一张报纸框（侧栏、光环、装饰标签都撤掉） */
+#gate{background:var(--bg)!important}
+.gate-shell{display:block!important;width:min(620px,92vw)!important}
+.gate-card{padding:28px 32px 26px!important;text-align:center}
+.gate-meta{display:none!important}
+#gate .badge{display:inline-block;margin:14px 0 6px!important;padding:0!important;border:0!important}
+#gate h1{margin:4px 0 6px!important;line-height:1.05!important;font-size:clamp(34px,7.6vw,68px)!important;white-space:nowrap}
+#gate .sub{font-family:var(--display)!important;font-variation-settings:"wdth" 62.5;font-weight:800;text-transform:uppercase;letter-spacing:.04em!important;color:var(--ink)!important;font-size:clamp(20px,2.2vw,30px)!important;margin-bottom:22px!important}
+.gate-form{flex-wrap:nowrap!important}
+#gate input{height:48px;min-width:0;flex:1 1 auto;font-size:15px!important;text-align:left!important;padding:0 14px!important}
+#gate button{height:48px;padding:0 26px!important;font-size:20px!important}
+.gate-footer{margin-top:18px!important;font-size:11px!important}
+.gz-mast{justify-content:center}
+.seg button.on{background:var(--ink)!important;color:var(--bg)!important}
+.seg{border:1px solid var(--ink)!important;background:transparent!important;border-radius:0!important}
+.tone-sd{color:var(--accent-2)!important;background:transparent!important;border:1px solid var(--accent-2)!important;border-radius:0!important}
+.tone-cell.sandhi{border-color:var(--accent-2)!important}
+.title p{text-transform:none!important;letter-spacing:.06em!important;font-family:var(--body)!important;font-style:italic;font-size:18px!important}
+@media(max-width:520px){.gate-form{flex-wrap:wrap!important}#gate button{width:100%}}
 </style>
 </head>
-<body class="">
+<body class="noscan">
+<div class="gz-paper" aria-hidden="true"></div>
 <div class="ambient" aria-hidden="true"></div>
 <div class="data-rail left" aria-hidden="true">
   <div class="rail-line"></div><div class="rail-tick"></div><div class="rail-tick"></div><div class="rail-tick"></div><div class="rail-tick"></div><div class="rail-tick"></div><div class="rail-tick"></div><div class="rail-tick"></div>
@@ -277,7 +353,8 @@ header{display:flex;justify-content:space-between;align-items:flex-start;gap:14p
     </div>
     <div class="gate-card">
       <div class="gate-orb" aria-hidden="true"><span></span><span></span></div>
-      <div class="badge">// Mandarin Tones</div>
+      <a class="gz-mast" href="https://zhanyiyue.online" aria-label="悦報 · The Yue Gazette"><span>悦報</span><img src="/assets/gazette/yuebiao.png" alt=""></a>
+      <div class="badge">Tools · Mandarin tones</div>
       <h1 class="cn" data-text="声调旋律训练器">声调旋律训练器</h1>
       <div class="sub">Tone Melody Trainer</div>
       <div class="gate-meta" aria-hidden="true">
@@ -291,7 +368,7 @@ header{display:flex;justify-content:space-between;align-items:flex-start;gap:14p
         <button id="enter">Enter</button>
       </div>
       <div class="err" id="gerr"></div>
-      <div class="gate-footer">secure pronunciation console</div>
+      <div class="gate-footer">Ask your teacher for an access code · 访问码找老师要</div>
     </div>
     <div class="gate-side right" aria-hidden="true">
       <span class="side-title">access telemetry</span>
@@ -307,11 +384,11 @@ header{display:flex;justify-content:space-between;align-items:flex-start;gap:14p
   <header>
     <div class="title">
       <h1 class="cn">声调旋律训练器</h1>
-      <p>// speak it as one melody</p>
+      <p>Hear the pitch line, then say it as one melody</p>
     </div>
     <div class="hbtns">
       <button class="icon-btn" id="langBtn">EN</button>
-      <button class="icon-btn" id="themeBtn">SCAN</button>
+      <button class="icon-btn" id="themeBtn" hidden>SCAN</button>
     </div>
   </header>
 
