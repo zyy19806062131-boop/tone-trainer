@@ -79,6 +79,18 @@ textarea{width:100%;min-height:72px;padding:11px 12px;border:1px solid var(--lin
 textarea:focus{border-color:var(--cyan);box-shadow:0 0 0 3px rgba(18,215,232,.12)}
 .hidden{display:none!important}
 @media(max-width:850px){.grid,.unit-bar{grid-template-columns:1fr}header{display:block}.chip{display:inline-block;margin-top:12px}}
+@media(max-width:640px){
+.wrap{padding:18px 12px 48px}
+.card-head,.body{padding-left:12px;padding-right:12px}
+.form.two{grid-template-columns:1fr}
+.table,.table tbody,.table tr,.table td{display:block;width:100%}
+.table thead{display:none}
+.table tr{padding:10px 0;border-bottom:1px solid rgba(35,68,95,.75)}
+.table th,.table td{padding:5px 0;border-bottom:0;word-break:break-word;overflow-wrap:anywhere}
+.table td[data-label]::before{content:attr(data-label);display:block;font-size:.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:2px}
+.table td.actions{display:flex;justify-content:flex-start;padding-top:8px}
+.table td.actions button{flex:1;min-height:40px}
+}
 </style>
 </head>
 <body>
@@ -401,9 +413,9 @@ function renderCodes(){
       return deckName(deckId);
     }).join('、') || '未分配项目';
     return `<tr>
-      <td><code>${escapeHtml(code)}</code></td>
-      <td>${escapeHtml(profile.label || '')}</td>
-      <td>${escapeHtml(projectText)}</td>
+      <td data-label="Code"><code>${escapeHtml(code)}</code></td>
+      <td data-label="Label">${escapeHtml(profile.label || '')}</td>
+      <td data-label="Projects">${escapeHtml(projectText)}</td>
       <td class="actions">
         <button data-preview="${escapeHtml(code)}">预览</button>
         <button data-edit="${escapeHtml(code)}">编辑</button>
@@ -493,8 +505,8 @@ function renderUnits(){
   if(!selectedDeck || !unitsTable) return;
   const units = selectedDeck.units || [];
   unitsTable.innerHTML = units.map((unit,i)=>`<tr>
-    <td><code>${escapeHtml(unit.id)}</code></td>
-    <td>${escapeHtml(unit.name)} <span class="muted">${unit.access === 'paid' ? '付费' : '免费'}${unit.paymentUrl ? ' · 已填付款链接' : ''}${unit.hidden?' · 已隐藏':''}</span></td>
+    <td data-label="ID"><code>${escapeHtml(unit.id)}</code></td>
+    <td data-label="名称">${escapeHtml(unit.name)} <span class="muted">${unit.access === 'paid' ? '付费' : '免费'}${unit.paymentUrl ? ' · 已填付款链接' : ''}${unit.hidden?' · 已隐藏':''}</span></td>
     <td class="actions">
       <button type="button" class="icon-btn" title="上移" data-unit-move="${escapeHtml(unit.id)}" data-direction="up" ${i===0?'disabled':''}>↑</button>
       <button type="button" class="icon-btn" title="下移" data-unit-move="${escapeHtml(unit.id)}" data-direction="down" ${i===units.length-1?'disabled':''}>↓</button>
@@ -563,10 +575,10 @@ function renderSentences(){
   sentenceTitle.textContent = `句子管理 · ${selectedDeck.name}`;
   renderUnits();
   sentencesTable.innerHTML = (selectedDeck.sents || []).map(s=>`<tr>
-    <td><code>${escapeHtml(s.id)}</code></td>
-    <td>${escapeHtml(unitName(s.unitId || 'default'))}</td>
-    <td>${escapeHtml(s.zh)}</td>
-    <td>${escapeHtml(s.en)}</td>
+    <td data-label="ID"><code>${escapeHtml(s.id)}</code></td>
+    <td data-label="二级项目">${escapeHtml(unitName(s.unitId || 'default'))}</td>
+    <td data-label="中文">${escapeHtml(s.zh)}</td>
+    <td data-label="English">${escapeHtml(s.en)}</td>
     <td class="actions">
       <button data-sentence-edit="${escapeHtml(s.id)}">编辑</button>
       <button class="danger" data-sentence-delete="${escapeHtml(s.id)}">删除</button>
